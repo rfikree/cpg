@@ -1,0 +1,37 @@
+# Development Servers
+s-01316-c5f,dev-wladm
+s-01317-c5f,dev-cpodeploy
+s-01042-c5c,dev-a-soaz0
+s-01043-c5c,dev-a-soaz1
+
+# Staging Servers
+
+s-00724-c5f,stg-cpodeploy
+s-00716-c5f,stg-wladm
+
+s-00721-c5f,stg-a-uicpo
+s-00720-c5f,stg-a-blcpo
+s-00719-c5f,stg-a-bdt
+s-00722-c5f,stg-a-ws
+s-00725-c5f,stg-a-appadm
+
+s-00718-c5f,stg-b-uicpo
+s-00717-c5f,stg-b-blcpo
+s-00715-c5f,stg-b-bdt
+s-00723-c5f,stg-b-ws
+s-00726-c5f,stg-b-appadm
+
+s-01044-c5c,stg-a-soaz1
+s-01045-c5c,stg-b-soaz1
+s-01046-c5c,stg-a-soaz0
+s-01047-c5c,stg-b-soaz0
+
+# Non CPO Online
+
+s-00714-c5f,stg-sellonline
+
+l-00685-c5c,stg-a-lscs
+l-00696-c5c,stg-b-lscs
+
+# EOF
+
