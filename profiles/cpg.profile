@@ -156,8 +156,8 @@ if [ "${STACKUSER}" == 'true' ]; then
 	done
 fi
 
-export automation scripts PS1
-unset domains
+export automation scripts
+unset domain domains
 
 
 #================================================
@@ -237,7 +237,7 @@ if [ ! -f ${CPG_ALIAS_LOOKUP_FILE} ]; then
 	echo
 fi
 
-CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}.*" ${CPG_ALIAS_LOOKUP_FILE})
+CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
 CPG_HOSTNAME_COUNT=$(echo ${CPG_HOSTNAME} | fgrep ',' | wc -l)
 
 CPG_TIER=None
@@ -289,6 +289,17 @@ if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
 		esac
 	}
 fi
+
+# Make wget work with HTTPS connections
+alias wget='\wget --no-check-certificate'
+
+# Fix timezones for some databases - Temporary ??
+alias java='java -Doracle.jdbc.timezoneAsRegion=false'
+
+# Fix for WLST - Configure custom trust path.
+export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
+-Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks"
+
 
 
 #==================================================
