@@ -32,14 +32,14 @@ s-01047-c5c,stg-b-soaz0
 s-00875-c5f,prd-cpodeploy
 s-00886-c5f,prd-wladm
 
-s-00884-c5f,prd-a-uicpo **
+s-00881-c5f,prd-a-uicpo
 s-00880-c5f,prd-a-blcpo
 s-00879-c5f,prd-a-bdt
 s-00887-c5f,prd-a-ws
 s-00882-c5f,prd-a-appadm
 
 s-00885-c5f,prd-b-uicpo
-s-00884-c5f,prd-b-blcpo **
+s-00884-c5f,prd-b-blcpo
 s-00883-c5f,prd-b-bdt
 s-00888-c5f,prd-b-ws
 s-00892-c5f,prd-b-appadm
