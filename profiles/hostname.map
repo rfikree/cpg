@@ -2,6 +2,7 @@
 
 s-01316-c5f,dev-wladm
 s-01317-c5f,dev-cpodeploy
+
 s-01042-c5c,dev-a-soaz0
 s-01043-c5c,dev-a-soaz1
 
@@ -29,8 +30,8 @@ s-01047-c5c,stg-b-soaz0
 
 # Production Servers
 
-s-00875-c5f,prd-cpodeploy
-s-00886-c5f,prd-wladm
+s-00875-c5a,prd-cpodeploy
+s-00886-c5a,prd-wladm
 
 s-00881-c5f,prd-a-uicpo
 s-00880-c5f,prd-a-blcpo
@@ -49,10 +50,10 @@ s-00877-c5f,prd-c-blcpo
 s-00876-c5f,prd-c-bdt
 s-00889-c5f,prd-c-ws
 
-s-xxx-c5c,prd-a-soaz0
-s-xxx-c5c,prd-b-soaz0
-s-xxx-c5c,prd-a-soaz1
-s-xxx-c5c,prd-b-soaz1
+s-01222-c5a,prd-a-soaz0
+s-01223-c5a,prd-b-soaz0
+s-01220-c5a,prd-a-soaz1
+s-01221-c5a,prd-b-soaz1
 
 s-00873-d5a,prd-data-appmon
 
