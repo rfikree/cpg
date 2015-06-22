@@ -1,10 +1,11 @@
 # Development Servers
 
-s-01316-c5f,dev-wladm
 s-01317-c5f,dev-cpodeploy
+s-01316-c5f,dev-wladm
 
 s-01042-c5c,dev-a-soaz0
 s-01043-c5c,dev-a-soaz1
+
 
 # Staging Servers
 
@@ -28,34 +29,36 @@ s-01045-c5c,stg-b-soaz1
 s-01046-c5c,stg-a-soaz0
 s-01047-c5c,stg-b-soaz0
 
+
 # Production Servers
 
 s-00875-c5a,prd-cpodeploy
 s-00886-c5a,prd-wladm
 
-s-00881-c5f,prd-a-uicpo
-s-00880-c5f,prd-a-blcpo
-s-00879-c5f,prd-a-bdt
-s-00887-c5f,prd-a-ws
-s-00882-c5f,prd-a-appadm
+s-00881-c5a,prd-a-uicpo
+s-00880-c5a,prd-a-blcpo
+s-00879-c5a,prd-a-bdt
+s-00887-c5a,prd-a-ws
+s-00882-c5a,prd-a-appadm
 
-s-00885-c5f,prd-b-uicpo
-s-00884-c5f,prd-b-blcpo
-s-00883-c5f,prd-b-bdt
-s-00888-c5f,prd-b-ws
-s-00892-c5f,prd-b-appadm
+s-00885-c5a,prd-b-uicpo
+s-00884-c5a,prd-b-blcpo
+s-00883-c5a,prd-b-bdt
+s-00888-c5a,prd-b-ws
+s-00892-c5a,prd-b-appadm
 
-s-00878-c5f,prd-c-uicpo
-s-00877-c5f,prd-c-blcpo
-s-00876-c5f,prd-c-bdt
-s-00889-c5f,prd-c-ws
+s-00878-c5a,prd-c-uicpo
+s-00877-c5a,prd-c-blcpo
+s-00876-c5a,prd-c-bdt
+s-00889-c5a,prd-c-ws
 
 s-01222-c5a,prd-a-soaz0
-s-01223-c5a,prd-b-soaz0
 s-01220-c5a,prd-a-soaz1
+s-01223-c5a,prd-b-soaz0
 s-01221-c5a,prd-b-soaz1
 
-s-00873-d5a,prd-data-appmon
+s-00890-c5a,prd-data-appmon
+
 
 # Non CPO Online
 
@@ -64,13 +67,13 @@ s-00714-c5f,stg-sellonline
 l-00685-c5c,stg-a-lscs
 l-00696-c5c,stg-b-lscs
 
-l-00893-c5c,prd-a-lscs
-l-00894-c5c,prd-b-lscs
+l-00893-c5e,prd-a-lscs
+l-00894-c5e,prd-b-lscs
 
-l-00868-c5c,prd-a-rp
-l-00870-c5c,prd-b-rp
+l-00868-a5a,prd-a-rp
+l-00870-a5a,prd-b-rp
 
-s-00870-d5a,prd-a-ldap
+s-00873-d5a,prd-a-ldap
 s-00874-d5a,prd-b-ldap
 
 # EOF
