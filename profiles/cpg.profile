@@ -184,8 +184,8 @@ unset WL_DIR
 # Force standard $PATH directory
 PATH=
 for DIR in ${JAVA_HOME}/bin ${WL_HOME}/common/bin /usr/bin /usr/sfw/bin \
-		/usr/local/bin ${scripts} /opt/WANdisco/bin /usr/openwin/bin \
-		/usr/sbin /bin /sbin ${SQLPLUS_HOME}; do
+		/usr/local/bin ${scripts} ${scripts%/*}/bin /opt/WANdisco/bin \
+		/usr/openwin/bin /bin /usr/sbin /sbin ${SQLPLUS_HOME}; do
 	if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
 		PATH=${PATH}:${DIR}
 	fi
