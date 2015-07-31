@@ -63,7 +63,7 @@ renameFile() {
 			# Timestamp is modification date less 1 hours
 			# This is to work around DST time shifts
 			mtime=$(perl -MPOSIX -e '$mt = (stat $ARGV[0])[9] - 3900; \
-				print POSIX::strftime "%Y-%m-%d\n", localtime($mt);', ${1})
+				print POSIX::strftime "%Y-%m-%d\n", localtime($mt)', ${1})
 
 			suffix=${1#$prefix}
 			suffix=.${suffix//[^a-z]/}
