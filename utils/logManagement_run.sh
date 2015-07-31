@@ -5,7 +5,6 @@ minimumCompress=1
 minimumDelete=14
 scriptDir=$(dirname $0)
 script=$0
-scriptSum=$(md5sum ${script})
 
 usage() {
 	cat <<EOF
