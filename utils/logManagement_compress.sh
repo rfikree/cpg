@@ -62,8 +62,8 @@ renameFile() {
 		if [[ ${prefix} = ${prefix/20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/} ]]; then
 			# Timestamp is modification date less 1 hours
 			# This is to work around DST time shifts
-			mtime=$(perl -MPOSIX -e 'print POSIX::strftime "%Y-%m-%d\n", \ 
-				localtime((stat $ARGV[0])[9] - 3900);' ${1})
+			mtime=$(perl -MPOSIX -e '$mt = (stat $ARGV[0])[9] - 3900; \
+				print POSIX::strftime "%Y-%m-%d\n", localtime($mt);', ${1})
 
 			suffix=${1#$prefix}
 			suffix=.${suffix//[^a-z]/}
@@ -161,7 +161,7 @@ fi
 
 # Recently rotated logs
 # Use two digits for log files to skip rotated GC logs
-for file in ${STACK}*/*/*.log*[0-9][0-9]* ${STACK}*/*/*.out*[0-9]* \
+for file in ${STACK}*/*/*.log*[0-9][0-9]* ${STACK}*/servers/*.out*[0-9]* \
 		${STACK}*/*/*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*; do
 	if [ -f ${file} ]; then
 		archiveFile ${file}
