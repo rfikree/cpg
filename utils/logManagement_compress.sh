@@ -69,7 +69,7 @@ renameFile() {
 			suffix=.${suffix//[^a-z]/}
 			newName=${prefix}_${mtime}${suffix}
 			if [[ -f ${newName} || -f ${newName}.gz ]]; then
-				for x in {0..9}; do
+				for x in {0..99}; do
 					newName=${prefix}_${mtime}x${x}${suffix}
 					if [[ ! -f ${newName} && ! -f ${newName}.gz ]]; then
 						break
