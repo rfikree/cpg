@@ -28,24 +28,20 @@ echo "Executing $SCRIPT_NAME for $OS_USERNAME"
 
 case "${OS_USERNAME:0:3}" in
 	prd )
-		ENVIRONMENT="prd"
-		ENVIRONMENT_SHORT="p"
-		DELETE_DAYS=400
+		ENVIRONMENT="p"
+		if [ ${DELETE_DAYS:-999} -lt 400 ]; then
+			DELETE_DAYS=400
+		fi
 		;;
 	stg )
-		ENVIRONMENT="stg"
-		ENVIRONMENT_SHORT="s"
-		if [ ${DELETE_DAYS} -lt 28 ]; then
+		ENVIRONMENT="s"
+		if [ ${DELETE_DAYS:-999} -lt 28 ]; then
 			DELETE_DAYS=35
 		fi
 		;;
 	dev )
-		ENVIRONMENT=""
-		ENVIRONMENT_SHORT="d"
-		if [ "${OS_USERNAME}" == "dev60" ]; then
-			 ENVIRONMENT="stg"
-		fi
-		if [ ${DELETE_DAYS} -lt 3 ]; then
+		ENVIRONMENT="d"
+		if [ ${DELETE_DAYS:-999} -lt 3 ]; then
 			DELETE_DAYS=3
 		fi
 		;;
@@ -55,12 +51,9 @@ case "${OS_USERNAME:0:3}" in
 		USER_ID="" ;;
 esac
 
-STACK="a$PROJECT$ENVIRONMENT_SHORT$STACK_NUM"
-if [[ "$ENVIRONMENT" != "" && -d "/$ENVIRONMENT/cpo" ]]; then
-	CPO_VAR="/$ENVIRONMENT/cpo/cpo_var/$STACK"
-else
-	CPO_VAR="/cpo/cpo_var/$STACK"
-fi
+STACK="a${PROJECT}${ENVIRONMENT}${STACK_NUM}"
+CPO_VAR="/cpg/cpo_var/$STACK"
+
 
 # Delete compressed files after delete period has expired.
 echo "Deleting..."
@@ -75,7 +68,7 @@ if [ $(date +%H) -eq 20 ]; then
 	find ${CPO_VAR}/httpcheck -type f -mtime +35 -print -exec rm {} \;
 	find ${CPO_VAR}/cleanup_logs -type f -mtime +189 -print -exec rm {} \;
 
-	# Cleanup this directory (stack traces etc.)
+	# Cleanup CPO_VAR stack directory (stack traces etc.)
 	#HACK:  Uses two "-type f" arguments to limit list to files.
 	# Order of arguments is important
 	# Inner if is paranoid programming.
