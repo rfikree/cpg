@@ -1,22 +1,14 @@
 #!/bin/bash
+
 SCRIPT_DIR=`dirname $0`
 SCRIPT_NAME=`basename $0`
 OS_USERNAME=`id | cut -d'(' -f2 | cut -d')' -f1`
 STACK_NUM=${OS_USERNAME:3:2}
 PROJECT=${OS_USERNAME:3:1}
-PATH=$PATH:/usr/local/bin
 
 MIN_DAYS=1
-MAX_DAYS=91
+MAX_DAYS=31
 unset doCCclean
-
-# Handle logs rotated shortly after midnight and/or using EST instead of EDT
-export TZ=Canada/Mountain
-
-if [ ! -x /usr/local/bin/stat ]; then
-	echo FATAL: /usr/local/bin/stat not executable
-	exit 1
-fi
 
 COMPRESS_DAYS=${1}
 
@@ -68,9 +60,10 @@ renameFile() {
 		prefix=${1%.log*}
 		prefix=${prefix%.out*}
 		if [[ ${prefix} = ${prefix/20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/} ]]; then
-			# Timestamp is modification date less 2 hours
-			# This should the date of the last write
-			mtime=$(stat -c %y ${1} | cut -c1-10)
+			# Timestamp is modification date less 1 hours
+			# This is to work around DST time shifts
+			mtime=$(perl -MPOSIX -e 'print POSIX::strftime "%Y-%m-%d\n", \ 
+				localtime((stat $ARGV[0])[9] - 3900);' ${1})
 
 			suffix=${1#$prefix}
 			suffix=.${suffix//[^a-z]/}
@@ -127,23 +120,17 @@ echo "Executing $SCRIPT_NAME for $OS_USERNAME."
 
 case "${OS_USERNAME:0:3}" in
 	prd )
-		ENVIRONMENT="prd"
-		ENVIRONMENT_SHORT="p"
+		ENVIRONMENT="p"
 		MAX_DAYS=14
 		if [ ${OS_USERNAME:0:4} == "prd1" ];then
 			doCCclean=true
 		fi
 		;;
 	stg )
-		ENVIRONMENT="stg"
-		ENVIRONMENT_SHORT="s"
+		ENVIRONMENT="s"
 		;;
 	dev )
-		ENVIRONMENT=""
-		ENVIRONMENT_SHORT="d"
-		if [ "${OS_USERNAME}" == "dev60" ]; then
-			 ENVIRONMENT="stg"
-		fi
+		ENVIRONMENT="d"
 		;;
 	* )
 		echo "Run only from a stack userid"
@@ -151,12 +138,9 @@ case "${OS_USERNAME:0:3}" in
 		;;
 esac
 
-STACK="a$PROJECT$ENVIRONMENT_SHORT$STACK_NUM"
-if [[ "$ENVIRONMENT" != "" && -d "/$ENVIRONMENT/cpo" ]]; then
-	CPO_VAR="/$ENVIRONMENT/cpo/cpo_var/$STACK"
-else
-	CPO_VAR="/cpo/cpo_var/$STACK"
-fi
+STACK="a${PROJECT}${ENVIRONMENT}${STACK_NUM}"
+CPO_VAR="/cpg/cpo_var/$STACK"
+
 if [ ! -d ${CPO_VAR} ]; then
 	echo "Can not locate working directory ${CPO_VAR}"
 	exit 99
@@ -286,11 +270,11 @@ for file in $(find ${STACK}*/applications/ssoprofilelogs \
 	compressFile ${file}
 done
 
-#### Remove old garbage collection logs (after 14 days)
+#### Remove old garbage collection logs (after 4 weeks)
 # Keeps rotated logs a reasonable amount of time.
 
 for file in $(find ${STACK}*/servers/*-gc.log* \
-		-mtime +14 2>/dev/null); do
+		-mtime +28 2>/dev/null); do
 	echo ${file}
 	rm ${file}
 done
