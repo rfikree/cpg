@@ -1,10 +1,9 @@
 #!/bin/bash
 
-SCRIPT_DIR=`dirname $0`
-SCRIPT_NAME=`basename $0`
-OS_USERNAME=`id | cut -d'(' -f2 | cut -d')' -f1`
-STACK_NUM=${OS_USERNAME:3:2}
-PROJECT=${OS_USERNAME:3:1}
+SCRIPT_DIR=$(cd $(dirname $0) > /dev/null; pwd)
+SCRIPT_NAME=$(basename $0)
+STACK_NUM=${LOGNAME:3:2}
+PROJECT=${LOGNAME:3:1}
 
 MIN_DAYS=1
 MAX_DAYS=31
@@ -18,8 +17,9 @@ if [[ -z "${COMPRESS_DAYS}" \
 	echo "    ${SCRIPT_DIR}/logManagement_compress.sh 3"
 	echo "    Compress files older than 3 days"
 	echo ""
-	exit -1
+	exit 1
 fi
+
 
 #### Subroutines
 
@@ -116,13 +116,13 @@ compressFile() {
 
 #### Mainline
 
-echo "Executing $SCRIPT_NAME for $OS_USERNAME."
+echo "Executing $SCRIPT_NAME for $LOGNAME."
 
-case "${OS_USERNAME:0:3}" in
+case "${LOGNAME:0:3}" in
 	prd )
 		ENVIRONMENT="p"
 		MAX_DAYS=14
-		if [ ${OS_USERNAME:0:4} == "prd1" ];then
+		if [ ${LOGNAME:0:4} == "prd1" ];then
 			doCCclean=true
 		fi
 		;;
@@ -176,6 +176,72 @@ for file in $(find ${STACK}*/servers/*[1-9].log ${STACK}*/servers/*.out \
 	fi
 done
 
+# Inactive log files
+for file in $(find ${STACK}*/*/*.log -mtime +300); do
+	if [ -f $file ]; then
+		archiveFile $file
+	fi
+done
+
+
+#### Rename logs in history directories
+
+# Rename files for later compression
+for file in $(find  ${STACK}*/*/history -type f \
+		\( ! -name \*.gz -a ! -name \*.zip -a ! -name \*-gc.log* \
+		-a ! -name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]* \)  2>/dev/null); do
+	renameFile ${file}
+done
+
+
+#### Begin compression
+echo "Compressing..."
+
+# Compress rotated domain logs after 1 day
+for file in $(find ${STACK}*/servers/history/AdminServer \
+		-name "${STACK}d?_20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*.log" \
+		-mtime +1 2>/dev/null); do
+
+	compressFile ${file}
+done
+
+# Compress remaining logs (logback format) and server files(.log, .out)
+for file in $(find ${STACK}*/*/history ! -name \*gz ! -name \*zip -type f \
+		-name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\* \
+		-mtime +${COMPRESS_DAYS} 2>/dev/null); do
+
+	compressFile ${file}
+done
+
+# Compress sso profile log files.
+for file in $(find ${STACK}*/applications/ssoprofilelogs \
+		! -name \*gz ! -name \*zip -type f \
+		-name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\* \
+		-mtime +${COMPRESS_DAYS} 2>/dev/null); do
+
+	compressFile ${file}
+done
+
+
+#### Remove old garbage collection logs (after 4 weeks)
+# Keeps rotated logs a reasonable amount of time.
+
+for file in $(find ${STACK}*/servers/*-gc.log* \
+		-mtime +28 2>/dev/null); do
+	echo Removing ${file}
+	rm ${file}
+done
+
+
+#### Skip SOA Cleanup for non-SOA stacks
+if [ ${PROJECT} -lt 5 ]; then
+	echo "Complete."
+	exit 0
+fi
+
+
+#### SOA Cleanup
+
 # SOA diagnostic logs
 for file in ${STACK}*/servers/*/logs/*-diagnostic-[0-9]*.log; do
 	if [ -f $file ]; then
@@ -224,61 +290,7 @@ for file in ${STACK}*/servers/*/sysman/log/emoms-[0-9]*.log ; do
 	fi
 done
 
-# Inactive log files
-for file in $(find ${STACK}*/*/*.log -mtime +300); do
-	if [ -f $file ]; then
-		archiveFile $file
-	fi
-done
-
-
-#### Rename logs in history directories
-
-# Rename files for later compression
-for file in $(find  ${STACK}*/*/history -type f \
-		\( ! -name \*.gz -a ! -name \*.zip -a ! -name \*-gc.log* \
-		-a ! -name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]* \)  2>/dev/null); do
-	renameFile ${file}
-done
-
-
-#### Begin compression
-echo "Compressing..."
-
-# Compress rotated domain logs after 1 day
-for file in $(find ${STACK}*/servers/history/AdminServer \
-		-name "${STACK}d?_20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*.log" \
-		-mtime +1 2>/dev/null); do
-
-	compressFile ${file}
-done
-
-# Compress remaining logs (logback format) and server files(.log, .out)
-for file in $(find ${STACK}*/*/history ! -name \*gz ! -name \*zip -type f \
-		-name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\* \
-		-mtime +${COMPRESS_DAYS} 2>/dev/null); do
-
-	compressFile ${file}
-done
-
-# Compress sso profile log files.
-for file in $(find ${STACK}*/applications/ssoprofilelogs \
-		! -name \*gz ! -name \*zip -type f \
-		-name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\* \
-		-mtime +${COMPRESS_DAYS} 2>/dev/null); do
-
-	compressFile ${file}
-done
-
-#### Remove old garbage collection logs (after 4 weeks)
-# Keeps rotated logs a reasonable amount of time.
-
-for file in $(find ${STACK}*/servers/*-gc.log* \
-		-mtime +28 2>/dev/null); do
-	echo ${file}
-	rm ${file}
-done
-
 echo "Complete."
+
 
 # EOF
