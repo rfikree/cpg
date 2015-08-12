@@ -202,7 +202,7 @@ for FILE in ${WL_HOME}/server/lib/weblogic.jar; do
 		fi
 	fi
 done
-CLASSPATH=${CLASSPATH%:}
+CLASSPATH=${CLASSPATH%:}:/cpg/3rdParty/scripts/cpg/testing
 
 for DIR in /opt/WANdisco/lib ${SQLPLUS_HOME} ${SAPJCO_HOME} ${SAPSEC_HOME}; do
 	if [ -d ${DIR} ]; then
