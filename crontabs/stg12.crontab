@@ -6,6 +6,6 @@
 14 19 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3
 
 # Reload crontab Monday evening
-14 23 * * 1 /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.crontab
+14 23 * * 1 crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.crontab
 
 # EOF
