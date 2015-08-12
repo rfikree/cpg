@@ -47,7 +47,7 @@ if [ ${deleteDays:-$minimumDelete} -lt ${minimumDelete} ]; then
 fi
 
 # Don't allow setting deletion in production
-if [ ${{LOGNAME:0:3} = "prd" ]; then
+if [ ${LOGNAME:0:3} = "prd" ]; then
 	if [ ${deleteDays:-0} -le ${minimumDelete} ]; then
 		echo "Skipping deletion for production: ${ENVIRONMENT:-prd}"
 		deleteDays=
