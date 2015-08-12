@@ -4,7 +4,7 @@
 minimumCompress=1
 minimumDelete=14
 scriptDir=$(dirname $0)
-script=$0
+
 
 usage() {
 	cat <<EOF
@@ -21,6 +21,7 @@ usage $0 [compress_days [delete_days]
 EOF
 	exit 1
 }
+
 
 if [ "${1//[0-9]/}" != "" ]; then
 	usage
@@ -46,14 +47,18 @@ if [ ${deleteDays:-$minimumDelete} -lt ${minimumDelete} ]; then
 fi
 
 # Don't allow setting deletion in production
-if [ ${ENVIRONMENT:-prd} = "prd" ]; then
+if [ ${{LOGNAME:0:3} = "prd" ]; then
 	if [ ${deleteDays:-0} -le ${minimumDelete} ]; then
 		echo "Skipping deletion for production: ${ENVIRONMENT:-prd}"
+		deleteDays=
+	else
 		deleteDays=400
 	fi
 fi
 
-# Logfile
+
+# Setup logging directory
+VAR_STACK=/cpg/cpo_var/a${LOGNAME:3:1}${LOGNAME:0:1}${LOGNAME:3:2}
 logDir=${VAR_STACK}/cleanup_logs
 [ -d ${logDir} ] || mkdir ${logDir}
 
