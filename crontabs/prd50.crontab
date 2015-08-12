@@ -1,0 +1,11 @@
+#! prd50.crontab
+
+# Compress (and delete) log files
+50  1 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 5 400
+50  7 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 5
+50 19 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 5
+
+# Reload crontab Monday evening
+50 23 * * 1 crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.crontab
+
+# EOF
