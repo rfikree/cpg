@@ -35,7 +35,7 @@ umask 027
 # OS / User - Automatically Determine
 #================================================
 if [ -z ${CPG_USER} ]; then
-	OS_USERNAME=$(id | cut -d'(' -f2 | cut -d')' -f1)
+	OS_USERNAME=${LOGNAME}
 else
 	OS_USERNAME=${CPG_USER}
 fi
@@ -65,7 +65,6 @@ case "${OS_USERNAME:0:3}" in
 		;;
 esac
 export ENVIRONMENT STACKUSER
-
 
 #### Default values - may be overriden; DSS project overrides these
 
@@ -333,7 +332,7 @@ unset OS_USERNAME STACKNUM CPG_TIER
 #==================================================
 # Verify status of the automation directory
 #==================================================
-if [[ ${STACKUSER} = true && ${CPG_HOSTNAME} = ???-cpodeploy ]]; then
+if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = ???-cpodeploy ]]; then
 	if [ -d ${APP_STACK}/automation ]; then
 		svn update ${automation}
 		svn status ${automation}
