@@ -56,7 +56,7 @@ export automation
 # Force standard $PATH directory
 PATH=
 for DIR in ${JAVA_HOME}/bin ${WL_HOME}/common/bin /usr/bin /usr/sfw/bin \
-		/usr/local/bin ${scripts} ${scripts%/*} /bin/opt/WANdisco/bin \
+		/usr/local/bin ${scripts} /bin/opt/WANdisco/bin \
 		/usr/openwin/bin /bin /usr/sbin /sbin; do
 	if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
 		PATH=${PATH}:${DIR}
@@ -116,11 +116,6 @@ else
 fi
 export PS1
 
-memuse() {
-	memory=($(/usr/sbin/swap -s | tr -d -c '0123456789 '))
-	echo Memory utilization: $(( ${memory[2]} * 100 / \
-		(  ${memory[2]} +  ${memory[3]} ) ))%
-}
 
 # Make wget work with HTTPS connections
 alias wget='\wget --no-check-certificate'
@@ -131,13 +126,11 @@ alias wget='\wget --no-check-certificate'
 # Show settings
 #==================================================
 echo "    HOSTNAME = ${CPG_HOSTNAME}"
-echo "    USERNAME = ${OS_USERNAME}"
+echo "    USERNAME = ${LOGNAME}"
 echo
 echo "   JAVA_HOME = ${JAVA_HOME}"
 echo
 echo "        PATH = ${PATH}"
-echo
-echo "      MEMORY = $(memuse | cut -d\  -f3)"
 echo
 echo '------------------------------------------------------------'
 echo
