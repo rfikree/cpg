@@ -18,12 +18,16 @@ if grep vers=3 ${VFSTAB}; then
 	exit 0
 fi
 
+# Backup
 if [ ! -f ${VFSTAB}.orig ]; then
-	cp ${VFSTAB}.orig ${VFSTAB}
+	cp ${VFSTAB} ${VFSTAB}.orig
 fi
 
+# Update the file in place
 perl -pi -e 's/-$/vers=3/ if (/nfs/)' ${VFSTAB}
 
+
+#### Build a remounte script and execute it
 echo <<EOT  > ${TMPSCRIPT}
 #!/bin/bash
 
