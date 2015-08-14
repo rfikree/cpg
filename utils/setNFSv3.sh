@@ -28,20 +28,20 @@ perl -pi -e 's/-$/vers=3/ if (/nfs/)' ${VFSTAB}
 
 
 #### Build a remounte script and execute it
-echo <<EOT  > ${TMPSCRIPT}
+cat <<EOT  > ${TMPSCRIPT}
 #!/bin/bash
 
-sleep 10
+sleep 2
 
 EOT
 
-for MOUNT in awk '/nfs/ {print $3}' ${VFSTAB}; do
+for MOUNT in $(awk '/nfs/ {print $3}' ${VFSTAB}); do
 	echo umount ${MOUNT} >>  ${TMPSCRIPT}
 	echo mount ${MOUNT} >>  ${TMPSCRIPT}
 done
 
 
-echo <<EOT  >> ${TMPSCRIPT}
+cat <<EOT  >> ${TMPSCRIPT}
 
 sleep 2
 nfsstat -m
