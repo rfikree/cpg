@@ -24,7 +24,7 @@ if [ ! -f ${VFSTAB}.orig ]; then
 fi
 
 # Update the file in place
-perl -pi -e 's/-$/vers=3/ if (/nfs/)' ${VFSTAB}
+perl -pi -e 's/\S+timeo=14,intr/rw,hard,intr,vers=3,rsize=8192,wsize=8192,timeo=14/ if (/nfs/)' ${VFSTAB}
 perl -pi -e 's/intr,rsize/intr,vers=3,rsize/ if (/nfs/)' ${VFSTAB}
 
 # EOF
