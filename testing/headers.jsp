@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" session="false"%>
 <%--
   Copyright (c) 2002 by Phil Hanna
   All rights reserved.
