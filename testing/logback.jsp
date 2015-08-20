@@ -141,7 +141,7 @@
 	String BEGIN_WITH_FILTER = "Begins With";
 	String RESET_ACTION = "Reset";
 
-	String[] logLevels = {"debug", "info", "warn", "error", "fatal", "off"};
+	String[] logLevels = {"trace", "debug", "info", "warn", "error", "fatal", "off"};
 
 	// parameters
 	String paramOperation = request.getParameter("operation");
@@ -159,7 +159,7 @@
 
 	<div class="filter-form">
 
-		<form action="logback.jsp" name="logFilterForm">
+		<form action="<%=request.getRequestURI()%>" name="logFilterForm">
 			Filter Loggers:&nbsp;&nbsp;
 			<input name="logNameFilter" type="text" size="50" value="<%=(paramLogNameFilter == null ? "":paramLogNameFilter)%>"
 				   class="filter-text"/>
@@ -259,7 +259,7 @@
 						<%
 							for (int cnt = 0; cnt < logLevels.length; cnt++) {
 
-								String url = "logback.jsp?operation=changeLogLevel&logger=" + loggerName
+								String url = request.getRequestURL() + "?operation=changeLogLevel&logger=" + loggerName
 										+ "&newLogLevel=" + logLevels[cnt] + "&logNameFilter="
 										+ (paramLogNameFilter != null ? paramLogNameFilter : "")
 										+ "&logNameFilterType=" + (paramLogNameFilterType != null ? paramLogNameFilterType : "");
