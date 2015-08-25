@@ -35,21 +35,21 @@ fi
 # Check and fix compressDays parameter
 compressDays=${1:-$minimumCompress}
 if [ ${compressDays} -lt ${minimumCompress} ]; then
-	echo "Setting compress days to $minimumCompress"
+	tty -s && echo "Setting compress days to $minimumCompress"
 	compressDays=${minimumCompress}
 fi
 
 # Check and fix deleteDays parameter
 deleteDays=${2}
 if [ ${deleteDays:-$minimumDelete} -lt ${minimumDelete} ]; then
-	echo "Setting delete days to $minimumDelete"
+	tty -s && echo "Setting delete days to $minimumDelete"
 	deleteDays=${minimumDelete}
 fi
 
 # Don't allow setting deletion in production
 if [ ${LOGNAME:0:3} = "prd" ]; then
 	if [ ${deleteDays:-0} -le ${minimumDelete} ]; then
-		echo "Skipping deletion for production: ${ENVIRONMENT:-prd}"
+		tty -s && echo "Skipping deletion for production: ${ENVIRONMENT:-prd}"
 		deleteDays=
 	else
 		deleteDays=400
