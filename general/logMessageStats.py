@@ -12,6 +12,13 @@ import re
 exceptionMatch = ''
 exceptionRe = re.compile('^((Caused By: )?\S+Exception:|\s+at\s)')
 
+lineRe1 = re.compile('(\w+) (ERROR|WARN) \[\[\w+\].*\] (\S+)')
+lineRe2 = re.compile('<(Notice|Info|Warning|Error)>\s<([^>]+)>')
+
+exceptionRe = re.compile(
+	'^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\s+at\scom\.cpc\..*?\(([^)]+))?',
+	re.DOTALL)
+
 
 def usage():
 	print """
@@ -37,14 +44,14 @@ def openLogFile(fileName):
 def processLine(line, stats):
 	''' parse a line gathering stats
 	'''
-	match = re.search('(\w+) (ERROR|WARN) \[\[\w+\].*\] (\S+)', line)
+	match = lineRe1.search(line)
 	if match is not None:
 		key = ' '.join(match.groups())
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(line))
 		return
 
-	match = re.search('<(Notice|Info|Warning|Error)>\s<([^>]+)>', line)
+	match = lineRe2.search(line)
 	if match is not None:
 		key = ' '.join(match.groups())
 		count, size = stats.get(key, (0, 0))
@@ -56,12 +63,7 @@ def processLine(line, stats):
 def processException(lines, stats):
 	''' parse an exception gathering stats
 	'''
-
-	#^(\S+?):(?:.*?\s+at\s.*?\()?([^)]+)?(?:.*?\sat\scom.cpc.*?\(([^)]+))?
-	#match = re.search('^(^:]+).*\(((^[\)]+)\)+.*(?:com\.cpc\..*\((^[\)]\+\))?',
-	#match = re.search('^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\sat\scom.cpc.*?\(([^)]+))?',
-	match = re.search('^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\s+at\scom\.cpc\..*?\(([^)]+))?',
-		lines, re.DOTALL)
+	match = exceptionRe.search(lines)
 	if match is not None:
 		#print 'b:', match.groups()
 		key = ''
