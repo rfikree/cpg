@@ -27,6 +27,28 @@ cleanCC() {
 	${SCRIPT_DIR}/cc_clean.py ${1}
 }
 
+lockfile() {
+	local lockfile=$1.lok
+	if [ ! -f $1 ]; then
+		echo Lockfile: missing file $1
+		return 1
+	elif ( umask 777; mkdir ${lockfile} ); then
+		trap 'rmdir ${lockfile}' EXIT
+		return 0
+	else
+		echo Lockfile: already locked $1
+		return 1
+	fi
+}
+
+unlockfile() {
+	local lockfile=$1.lok
+	if [ ! -d ${lockfile} ]; then
+		echo Unlockfile: no lock for $1
+	else
+		rmdir ${lockfile}
+	fi
+
 # Move files to history directory creating directory if required
 # Skip if target exists.  It should be moved on a later run.
 archiveFile() {
@@ -78,6 +100,12 @@ renameFile() {
 			fi
 			echo  ${1} $(basename ${newName})
 			mv -i ${1} ${newName}
+			# Temporary fix to handle duplicated SSO lines
+			if [[ ${newName} =~ /a1p1.d1-c1m.ms01_20 ]]; then
+				nice uniq ${newName} ${newName}.uniq
+				touch -mr ${newName} ${newName}.uniq
+				mv -i ${newName}.uniq ${newName}
+			fi
 		fi
 	else
 		echo "Filename \"${1}\" is not a file"
@@ -164,7 +192,9 @@ fi
 for file in ${STACK}*/*/*.log*[0-9][0-9]* ${STACK}*/servers/*.out*[0-9]* \
 		${STACK}*/*/*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*; do
 	if [ -f ${file} ]; then
+		lockfile ${file} || continue
 		archiveFile ${file}
+		unlockfile ${file}
 	fi
 done
 
@@ -172,14 +202,18 @@ done
 for file in $(find ${STACK}*/servers/*[1-9].log ${STACK}*/servers/*.out \
 		-mtime +2 -size +1); do
 	if [ -f ${file} ]; then
+		lockfile ${file} || continue
 		archiveFile ${file}
+		unlockfile ${file}
 	fi
 done
 
 # Inactive log files
 for file in $(find ${STACK}*/*/*.log -mtime +300); do
 	if [ -f $file ]; then
+		lockfile ${file} || continue
 		archiveFile $file
+		unlockfile ${file}
 	fi
 done
 
@@ -190,7 +224,10 @@ done
 for file in $(find  ${STACK}*/*/history -type f \
 		\( ! -name \*.gz -a ! -name \*.zip -a ! -name \*-gc.log* \
 		-a ! -name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]* \)  2>/dev/null); do
+
+	lockfile ${file} || continue
 	renameFile ${file}
+	unlockfile ${file}
 done
 
 
@@ -202,7 +239,9 @@ for file in $(find ${STACK}*/servers/history/AdminServer \
 		-name "${STACK}d?_20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*.log" \
 		-mtime +1 2>/dev/null); do
 
+	lockfile ${file} || continue
 	compressFile ${file}
+	unlockfile ${file}
 done
 
 # Compress remaining logs (logback format) and server files(.log, .out)
@@ -210,7 +249,9 @@ for file in $(find ${STACK}*/*/history ! -name \*gz ! -name \*zip -type f \
 		-name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\* \
 		-mtime +${COMPRESS_DAYS} 2>/dev/null); do
 
+	lockfile ${file} || continue
 	compressFile ${file}
+	unlockfile ${file}
 done
 
 # Compress sso profile log files.
@@ -219,7 +260,9 @@ for file in $(find ${STACK}*/applications/ssoprofilelogs \
 		-name \*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\* \
 		-mtime +${COMPRESS_DAYS} 2>/dev/null); do
 
+	lockfile ${file} || continue
 	compressFile ${file}
+	unlockfile ${file}
 done
 
 
@@ -245,6 +288,7 @@ fi
 # SOA diagnostic logs
 for file in ${STACK}*/servers/*/logs/*-diagnostic-[0-9]*.log; do
 	if [ -f $file ]; then
+		lockfile ${file} || continue
 		fname=$(basename ${file})
 		sname=$(basename ${file%/logs/*})
 		dbase=${file%/servers/*}/servers
@@ -255,12 +299,14 @@ for file in ${STACK}*/servers/*/logs/*-diagnostic-[0-9]*.log; do
 		[ -d ${tdir} ] || mkdir ${tdir}
 		echo  ${file} ${tdir}/${target}
 		mv -i ${file} ${tdir}/${target}
+		unlockfile ${file}
 	fi
 done
 
 # SOA owsm/msglogging logs
 for file in ${STACK}*/servers/*/logs/owsm/msglogging/diagnostic-[0-9]*.log ; do
 	if [ -f $file ]; then
+		lockfile ${file} || continue
 		fname=$(basename ${file})
 		sname=$(basename ${file%/logs/*})
 		dbase=${file%/servers/*}/servers
@@ -271,12 +317,14 @@ for file in ${STACK}*/servers/*/logs/owsm/msglogging/diagnostic-[0-9]*.log ; do
 		[ -d ${tdir} ] || mkdir ${tdir}
 		echo  ${file} ${tdir}/${target}
 		mv -i ${file} ${tdir}/${target}
+		unlockfile ${file}
 	fi
 done
 
 # SOA syman logs
 for file in ${STACK}*/servers/*/sysman/log/emoms-[0-9]*.log ; do
 	if [ -f $file ]; then
+		lockfile ${file} || continue
 		fname=$(basename ${file})
 		sname=$(basename ${file%/sysman/*})
 		dbase=${file%/servers/*}/servers
@@ -287,6 +335,7 @@ for file in ${STACK}*/servers/*/sysman/log/emoms-[0-9]*.log ; do
 		[ -d ${tdir} ] || mkdir ${tdir}
 		echo  ${file} ${tdir}/${target}
 		mv -i ${file} ${tdir}/${target}
+		unlockfile ${file}
 	fi
 done
 

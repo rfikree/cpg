@@ -64,30 +64,32 @@ find ${CPO_VAR}/${STACK}*/* -type f -mtime +${DELETE_DAYS} -name '*.zip' \
 
 
 # Cleanup http and compression logs
-if [ $(date +%H) -eq 20 ]; then
-	find ${CPO_VAR}/httpcheck -type f -mtime +35 -print -exec rm {} \;
-	find ${CPO_VAR}/cleanup_logs -type f -mtime +189 -print -exec rm {} \;
+find ${CPO_VAR}/httpcheck -type f -mtime +35 -print -exec rm {} \;
+find ${CPO_VAR}/cleanup_logs -type f -mtime +189 -print -exec rm {} \;
 
-	# Cleanup CPO_VAR stack directory (stack traces etc.)
-	#HACK:  Uses two "-type f" arguments to limit list to files.
-	# Order of arguments is important
-	# Inner if is paranoid programming.
-	for file in $( find ${CPO_VAR}/* -mtime +98 -type f -o \
-			\( -type d -prune \) -type f  2>/dev/null ); do
-		if [[ -f ${file} && "${CPO_VAR}" = "$(dirname ${file})" ]]; then
-			echo ${file}
-			rm ${file}
-		fi
-	done
+# Cleanup CPO_VAR stack directory (stack traces etc.)
+#HACK:  Uses two "-type f" arguments to limit list to files.
+# Order of arguments is important
+# Inner if is paranoid programming.
+for file in $( find ${CPO_VAR}/* -mtime +98 -type f -o \
+		\( -type d -prune \) -type f  2>/dev/null ); do
+	if [[ -f ${file} && "${CPO_VAR}" = "$(dirname ${file})" ]]; then
+		echo ${file}
+		rm ${file}
+	fi
+done
 
-	# Agressively cleanup compressed console logs (old format)
-	find ${CPO_VAR}/${STACK}*/servers/history/AdminServer -mtime +7 \
-		-name 'a????d?.log*[0-9].gz' -print -exec rm {} \; 2> /dev/null
+# Agressively cleanup compressed console logs (old format)
+find ${CPO_VAR}/${STACK}*/servers/history/AdminServer -mtime +7 \
+	-name 'a*log.gz' -print -exec rm {} \; 2> /dev/null
 
-	# Agressively cleanup compressed console logs (new format)
-	find ${CPO_VAR}/${STACK}*/servers/history/AdminServer -mtime +7 \
-		-name 'a????d?_20[0-9][0-9]-*.log.gz' -print -exec rm {} \; 2> /dev/null
-fi
+# Agressively cleanup compressed console logs (new format)
+find ${CPO_VAR}/${STACK}*/servers/history/AdminServer -mtime +7 \
+	-name 'a????d?_20[0-9][0-9]-*.log.gz' -print -exec rm {} \; 2> /dev/null
+
+# Cleanup stale locks
+find ${CPO_VAR}/${STACK}*/ -type d -name \*.lok -mtime +1 \
+	-print -exec rmdir {} \; 2> /dev/null
 
 echo "Complete."
 
