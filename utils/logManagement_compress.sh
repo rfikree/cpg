@@ -48,6 +48,7 @@ unlockfile() {
 	else
 		rmdir ${lockfile}
 	fi
+}
 
 # Move files to history directory creating directory if required
 # Skip if target exists.  It should be moved on a later run.
