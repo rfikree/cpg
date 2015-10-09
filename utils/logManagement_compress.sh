@@ -33,7 +33,7 @@ lockfile() {
 		echo Lockfile: missing file $1
 		return 1
 	elif ( umask 777; mkdir ${lockfile} ); then
-		trap 'rmdir ${lockfile}' EXIT
+		trap '[ -d ${lockfile} ] && rmdir ${lockfile}' EXIT
 		return 0
 	else
 		echo Lockfile: already locked $1
@@ -54,9 +54,9 @@ unlockfile() {
 # Skip if target exists.  It should be moved on a later run.
 archiveFile() {
 	[ -n "$doCCclean" ] && cleanCC ${1}
-	file=$(basename $1)
-	baseDir=$(dirname $1)/history
-	subDir=${file%%.*}
+	local file=$(basename $1)
+	local baseDir=$(dirname $1)/history
+	local subDir=${file%%.*}
 	subDir=${subDir%-${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]*}
 	subDir=${subDir%_${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]*}
 	subDir=${subDir%AdminServer*}
@@ -66,7 +66,7 @@ archiveFile() {
 		suffix=${suffix#AdminServer}
 		subDir=${file%$suffix}
 	fi
-	targetDir=${baseDir}/${subDir}
+	local targetDir=${baseDir}/${subDir}
 	if [ ! -d ${targetDir} ]; then
 		mkdir -p ${targetDir}
 	fi
@@ -80,17 +80,17 @@ archiveFile() {
 # uses modification date
 renameFile() {
 	if [ -f "${1}" ]; then
-		prefix=${1%.log*}
+		local prefix=${1%.log*}
 		prefix=${prefix%.out*}
 		if [[ ${prefix} = ${prefix/20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/} ]]; then
 			# Timestamp is modification date less 1 hours
 			# This is to work around DST time shifts
-			mtime=$(perl -MPOSIX -e '$mt = (stat $ARGV[0])[9] - 3900; \
+			local mtime=$(perl -MPOSIX -e '$mt = (stat $ARGV[0])[9] - 3900; \
 				print POSIX::strftime "%Y-%m-%d\n", localtime($mt)', ${1})
 
-			suffix=${1#$prefix}
-			suffix=.${suffix//[^a-z]/}
-			newName=${prefix}_${mtime}${suffix}
+			local suffix=${1#$prefix}
+			local suffix=.${suffix//[^a-z]/}
+			local newName=${prefix}_${mtime}${suffix}
 			if [[ -f ${newName} || -f ${newName}.gz ]]; then
 				for x in {0..99}; do
 					newName=${prefix}_${mtime}x${x}${suffix}
@@ -117,12 +117,12 @@ renameFile() {
 compressFile() {
 	if [ -f "${1}" ]; then
 		if [[ ${1} = ${1%.gz} && ${1} = ${1%.zip} ]]; then
-			file=${1}
+			local file=${1}
 			if [ -f ${file}.gz ]; then
-				filebase=${file%.*}
-				fileext=.${file##*.}
+				local filebase=${file%.*}
+				local fileext=.${file##*.}
 				for x in {0..9}; do
-					newfile=${filebase}x${x}${fileext}
+					local newfile=${filebase}x${x}${fileext}
 					if [[ ! -f ${newfile} && ! -f ${newfile}.gz ]]; then
 						echo ${file} $(basename ${newfile})
 						mv -i ${file} ${newfile}
