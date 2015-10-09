@@ -33,7 +33,7 @@ lockfile() {
 		echo Lockfile: missing file $1
 		return 1
 	elif ( umask 777; mkdir ${lockfile} ); then
-		trap '[ -d ${lockfile} ] && rmdir ${lockfile}' EXIT
+		trap "[ -d ${lockfile} ] && rmdir ${lockfile}" EXIT
 		return 0
 	else
 		echo Lockfile: already locked $1
