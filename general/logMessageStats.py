@@ -13,7 +13,7 @@ exceptionMatch = ''
 exceptionRe = re.compile('^((Caused By: )?\S+Exception:|\s+at\s)')
 
 lineRe1 = re.compile('(\w+) (ERROR|WARN) \[\[\w+\].*\] (\S+)')
-lineRe2 = re.compile('<(Notice|Info|Warning|Error)>\s<([^>]+)>')
+lineRe2 = re.compile('<(Debug|Notice|Info|Warning|Error)>\s<([^>]+)>')
 
 exceptionRe = re.compile(
 	'^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\s+at\scom\.cpc\..*?\(([^)]+))?',
@@ -74,11 +74,24 @@ def processException(lines, stats):
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 		#print key, '-', stats[key]
+	elif lines.startswith("Couldn't get price of SKUs")
+	or   lines.startswith("  Status Message Code: NoRateFoundPSID"):
+		key = "Couldn't get price of SKU(s)"
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+	elif lines.startswith('Error Code: '):
+		key = (' ').join(lines.split(maxsplit=4)[:4])
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
 	else:
-		print 'processException', lines,
+		key = "Unhandled case:" + lines.split(maxsplit=2)[0]
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+		print 'Unmatched Case:', lines,
 
 def processFile(fileName, stats):
-	''' process the lines in a file
+	''' Process the lines in a file gathering summary data.
+		Gathers multiple message lines for summarization.
 	'''
 	global exceptionMatch
 
@@ -86,7 +99,6 @@ def processFile(fileName, stats):
 		#print 'Z', line,
 
 		if not line.startswith('##'):
-			#print 'Y', line,
 			exceptionMatch = exceptionMatch + line
 			continue
 
