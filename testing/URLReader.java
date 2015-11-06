@@ -15,8 +15,8 @@ public class URLReader {
 
 		try {
 			myURL = new URL(URL);
-
-		} catch (MalformedURLException e) {
+		}
+		catch (MalformedURLException e) {
 			System.out.println("Malformed URL: " + URL);
 			e.printStackTrace();
 
@@ -24,7 +24,8 @@ public class URLReader {
 
 		try {
 			urlConn = myURL.openConnection();
-		} catch ( IOException e ) {
+		}
+		catch ( IOException e ) {
 			System.out.println("Failed to open URL: " + URL);
 			e.printStackTrace();
 		}
@@ -38,8 +39,8 @@ public class URLReader {
 			while ((inputLine = in.readLine()) != null)
 				System.out.println(inputLine);
 			in.close();
-
-		} catch ( IOException e ) {
+		}
+		catch ( IOException e ) {
 			System.out.println("Failed reading URL: " + URL);
 			e.printStackTrace();
 		}
