@@ -9,14 +9,14 @@ s-01043-c5c,dev-a-soaz1
 s-01957-c5f,dev-a-uicpo
 s-01956-c5f,dev-a-blcpo
 s-01954-c5f,dev-a-bdt
-s-01966-c5f,dev-a-ws
+s-01955-c5f,dev-a-ws
 s-01958-c5f,dev-a-appadm
 
 s-01962-c5f,dev-b-uicpo
 s-01961-c5f,dev-b-blcpo
 s-01959-c5f,dev-b-bdt
 s-01960-c5f,dev-b-ws
-s-0173-c5f,dev-b-appadm
+s-01973-c5f,dev-b-appadm
 
 
 # Staging Servers
