@@ -1,0 +1,11 @@
+#! dev33.crontab
+
+# Compress (and delete) log files
+36  1 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3 35
+36  7 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3
+36 19 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3
+
+# Reload crontab Monday evening
+36 23 * * 1  crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.crontab
+
+# EOF
