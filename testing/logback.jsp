@@ -161,7 +161,7 @@
 
 		<form action="<%=request.getRequestURI()%>" name="logFilterForm">
 			Filter Loggers:&nbsp;&nbsp;
-			<input name="logNameFilter" type="text" size="50" value="<%=(paramLogNameFilter == null ? '':paramLogNameFilter)%>"
+			<input name="logNameFilter" type="text" size="50" value="<%=(paramLogNameFilter == null ? "":paramLogNameFilter)%>"
 				   class="filter-text"/>
 
 			<input name="logNameFilterType" type="submit" value="<%=BEGIN_WITH_FILTER%>" class="filter-button"/>&nbsp;
@@ -262,7 +262,7 @@
 								String url = request.getRequestURL() + "?operation=changeLogLevel&logger=" + loggerName
 										+ "&newLogLevel=" + logLevels[cnt] + "&logNameFilter="
 										+ (paramLogNameFilter != null ? paramLogNameFilter : "")
-										+ "&logNameFilterType=" + (paramLogNameFilterType != null '' ? paramLogNameFilterType : "");
+										+ "&logNameFilterType=" + (paramLogNameFilterType != null ? paramLogNameFilterType : "");
 
 							if (logger.getLevel() == Level.toLevel(logLevels[cnt]) || logger.getEffectiveLevel() == Level.toLevel(logLevels[cnt])) {
 								%>
