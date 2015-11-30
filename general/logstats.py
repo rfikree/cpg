@@ -54,8 +54,8 @@ def parseLog(fileName, data, contents):
 			fields = line.split('\t')
 			if len(fields) != 9:
 				continue
-			(ip, aDate, aTime, method, uri, status, bytes,
-				timeTaken, userAgent) = fields
+			(ip, aDate, aTime, method, status, bytes,
+				timeTaken, uri, userAgent) = fields
 			if contents is not None and contents not in uri:
 				continue
 			key = parseURI(uri)
