@@ -18,9 +18,6 @@ s-01959-c5f,dev-b-bdt
 s-01960-c5f,dev-b-ws
 s-01973-c5f,dev-b-appadm
 
-# Fix incorrect server configuration
-s-01960,dev-b-ws
-
 
 # Staging Servers
 
