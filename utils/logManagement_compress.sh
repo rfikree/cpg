@@ -102,11 +102,11 @@ renameFile() {
 			echo  ${1} $(basename ${newName})
 			mv -i ${1} ${newName}
 			# Temporary fix to handle duplicated SSO lines
-			if [[ ${newName} =~ /a1p1.d1-c1m.ms0._20 ]]; then
-				nice uniq ${newName} ${newName}.uniq
-				touch -mr ${newName} ${newName}.uniq
-				mv ${newName}.uniq ${newName}
-			fi
+			#if [[ ${newName} =~ /a1p1.d1-c1m.ms0._20 ]]; then
+			#	nice uniq ${newName} ${newName}.uniq
+			#	touch -mr ${newName} ${newName}.uniq
+			#	mv ${newName}.uniq ${newName}
+			#fi
 		fi
 	else
 		echo "Filename \"${1}\" is not a file"
