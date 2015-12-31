@@ -102,10 +102,10 @@ renameFile() {
 			echo  ${1} $(basename ${newName})
 			mv -i ${1} ${newName}
 			# Temporary fix to handle duplicated SSO lines
-			if [[ ${newName} =~ /a1p1.d1-c1m.ms01_20 ]]; then
+			if [[ ${newName} =~ /a1p1.d1-c1m.ms0._20 ]]; then
 				nice uniq ${newName} ${newName}.uniq
 				touch -mr ${newName} ${newName}.uniq
-				mv -i ${newName}.uniq ${newName}
+				mv ${newName}.uniq ${newName}
 			fi
 		fi
 	else
