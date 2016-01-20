@@ -3,7 +3,7 @@
 
 minimumCompress=1
 minimumDelete=14
-scriptDir=$(dirname $0)
+scriptDir=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 
 
 usage() {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT_DIR=$(cd $(dirname $0) > /dev/null; pwd)
+SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 SCRIPT_NAME=$(basename $0)
 STACK_NUM=${LOGNAME:3:2}
 PROJECT=${LOGNAME:3:1}
@@ -101,12 +101,12 @@ renameFile() {
 			fi
 			echo  ${1} $(basename ${newName})
 			mv -i ${1} ${newName}
-			# Temporary fix to handle duplicated SSO lines
-			#if [[ ${newName} =~ /a1p1.d1-c1m.ms0._20 ]]; then
-			#	nice uniq ${newName} ${newName}.uniq
-			#	touch -mr ${newName} ${newName}.uniq
-			#	mv ${newName}.uniq ${newName}
-			#fi
+			loc			# Temporary fix to handle duplicated SSO lines
+			if [[ ${newName} =~ /a1p1.d1-c1m.ms0._20 ]]; then
+				nice uniq ${newName} ${newName}.uniq
+				touch -mr ${newName} ${newName}.uniq
+				mv ${newName}.uniq ${newName}
+			fi
 		fi
 	else
 		echo "Filename \"${1}\" is not a file"

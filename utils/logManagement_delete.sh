@@ -1,5 +1,5 @@
 #!/bin/bash
-SCRIPT_DIR=`dirname $0`
+SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 SCRIPT_NAME=`basename $0`
 OS_USERNAME=`id | cut -d'(' -f2 | cut -d')' -f1`
 STACK_NUM=${OS_USERNAME:3:5}
