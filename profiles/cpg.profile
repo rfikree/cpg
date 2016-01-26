@@ -338,7 +338,7 @@ if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = ???-cpodeploy 
 		svn update ${automation} || ( svn --non-interactive --password '' \
 			relocate http://cposvn.innovapost.ca \
 					 http://cposvn.cpggpc.ca ${automation} ; \
-			svn --non-interactive --password '' update ${automation} )
+			svn update ${automation} )
 		svn status ${automation}
 	else
 		svn co ${SVN_REPO}/trunk/secure ${automation}
