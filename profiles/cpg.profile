@@ -16,7 +16,7 @@ echo
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 PROJECT_NAME=USER
 STACK=a1l10
-SVN_REPO=http://cposvn.innovapost.ca/configuration_repo/automation
+SVN_REPO=http://cposvn.cpggpc.ca/configuration_repo/automation
 
 
 #TERM=vt220; export TERM
@@ -334,7 +334,10 @@ unset OS_USERNAME STACKNUM CPG_TIER
 #==================================================
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = ???-cpodeploy ]]; then
 	if [ -d ${APP_STACK}/automation ]; then
-		svn update ${automation}
+		# Temporarily doing svn locate on update failure
+		svn update ${automation} || \
+			svn relocate http://cposvn.innovapost.ca \
+						 http://cposvn.cpggpc.ca ${automation}
 		svn status ${automation}
 	else
 		svn co ${SVN_REPO}/trunk/secure ${automation}
