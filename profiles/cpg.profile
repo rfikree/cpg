@@ -335,9 +335,9 @@ unset OS_USERNAME STACKNUM CPG_TIER
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = ???-cpodeploy ]]; then
 	if [ -d ${APP_STACK}/automation ]; then
 		# Temporarily doing svn locate on update failure
-		svn update ${automation} || \
+		svn update ${automation} || ( echo -e "\nyes" \
 			svn relocate http://cposvn.innovapost.ca \
-						 http://cposvn.cpggpc.ca ${automation}
+						 http://cposvn.cpggpc.ca ${automation} )
 		svn status ${automation}
 	else
 		svn co ${SVN_REPO}/trunk/secure ${automation}
