@@ -18,8 +18,6 @@ PROJECT_NAME=USER
 STACK=a1l10
 SVN_REPO=http://cposvn.cpggpc.ca/configuration_repo/automation
 
-
-#TERM=vt220; export TERM
 VISUAL=vi
 
 export PROJECT_NAME STACK SVN_REPO VISUAL
