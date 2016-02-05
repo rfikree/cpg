@@ -7,7 +7,7 @@ PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 export CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," \
 	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
-USERPREFIX=${CPG_HOSTNAME%%_*}
+USERPREFIX=${CPG_HOSTNAME%%-*}
 
 # Ensure currenty directory is readable
 cd /tmp
@@ -29,12 +29,17 @@ runWebLogicScript() {
 	cmdName=${2}
 	cmdOptions=${3}
 
+	if [ ! -x $cmdScript ]; then
+		echo Unable to exectute ${cmdScript}
+		exit 1
+	fi
+
 	wlDomain=${cmdScript%/bin*}
 	wlDomain=${wlDomain##*/}
 	wlPort=${wlDomain:3:2}${wlDomain:6:1}00
 
-	echo $0
-	echo ${wlDomain} ${wlPort} ${wlUser}
+	#echo $1
+	#echo ${wlDomain} ${wlPort} ${wlUser}
 	if $(netstat -an | grep 10100 >/dev/null); then
 		echo ${wlDomain}: ${cmdName} is already running
 	else
@@ -53,7 +58,7 @@ case ${USERPREFIX:=''} in
 		# OK - do nothing
 		;;
 	*)
-		echo $0 is not intended to run on ${CPG_HOSTNAME} \($(HOSTNAME)\)
+		echo $0 is not intended to run on ${CPG_HOSTNAME} \(${HOSTNAME}\)
 		exit 1;
 		;;
 esac
@@ -68,41 +73,41 @@ esac
 # 	EPAGENT	- epagent directory to run epagent script from
 
 case ${CPG_HOSTNAME:=''} in
-	*_uicpo)
+	*-uicpo)
 		NODEMANAGERS=a1
 		DOMAIN=d1
 		EPAGENT=epagent
 		;;
-	*_blcpo)
+	*-blcpo)
 		NODEMANAGERS=a1
 		DOMAIN=d2
 		EPAGENT=epagent
 		;;
-	*_bdt)
+	*-bdt)
 		NODEMANAGERS=a2
 		DOMAIN=d1
 		EPAGENT=epagent
 		;;
-	*_ws)
+	*-ws)
 		NODEMANAGERS=a3
 		DOMAIN=d1
 		EPAGENT=epagent
 		;;
-	*_appadm)
+	*-appadm)
 		NODEMANAGERS='a?'
 		DOMAIN=d9
 		EPAGENT=epagent
 		;;
-	*_wladm)
+	*-wladm)
 		ADMINSERVERS=true
 		DOMAIN=d[129]
 		EPAGENT=epagent
 		;;
-	*_cpodeploy)]
+	*-cpodeploy)
 		EPAGENT=epagent_deploy
 		;;
 	*)
-		echo $0 is not intended to run on ${CPG_HOSTNAME} \($(HOSTNAME)\)
+		echo $0 is not intended to run on ${CPG_HOSTNAME} \(${HOSTNAME}\)
 		exit 1;
 		;;
 esac
@@ -124,7 +129,7 @@ fi
 
 # Start WebLogic admin servers - SOA servers start differently s
 if [[ -n ${ADMINSERVERS} && -n ${DOMAIN} ]]; then
-	for SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/startWebLogic.sh; do
+	for SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
 		runWebLogicScript ${SCRIPT} "WebLogic AdminServer" "'& disown'"
 	done
 	#for SCRIPT in /cpg/cpo_apps/a[56]???/a????${DOMAIN}/bin/startWebLogic.sh; do
