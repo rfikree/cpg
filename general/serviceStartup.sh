@@ -20,7 +20,7 @@ startEPAgent() {
 		echo Introscope EPAgent is already running
 	else
 		echo Introscope EPAgent is NOT running
-		echo su apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
+		su apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
 	fi
 }
 
@@ -45,7 +45,7 @@ runWebLogicScript() {
 	else
 		echo ${wlDomain}: ${cmdName} is NOT running
 		wlUser=${USERPREFIX}${wlDomain:3:2}
-		echo su ${wlUser} -c "${cmdScript} ${cmdOptions}"
+		su ${wlUser} -c "${cmdScript} ${cmdOptions}"
 	fi
 }
 
@@ -123,14 +123,14 @@ fi
 # Start node managers
 if [[ -n ${NODEMANAGERS} && -n ${DOMAIN} ]]; then
 	for SCRIPT in /cpg/cpo_apps/${NODEMANAGERS}???/a????${DOMAIN}/bin/startNodeManager.sh; do
-		runWebLogicScript ${SCRIPT} "NodeManager"
+		runWebLogicScript ${SCRIPT} "NodeManager" ''
 	done
 fi
 
 # Start WebLogic admin servers - SOA servers start differently s
 if [[ -n ${ADMINSERVERS} && -n ${DOMAIN} ]]; then
 	for SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
-		runWebLogicScript ${SCRIPT} "WebLogic AdminServer" "'& disown'"
+		runWebLogicScript ${SCRIPT} "WebLogic AdminServer" '& disown'
 	done
 	#for SCRIPT in /cpg/cpo_apps/a[56]???/a????${DOMAIN}/bin/startWebLogic.sh; do
 		#runWebLogicScript "${SCRIPT}"  "WebLogic AdminServer"
