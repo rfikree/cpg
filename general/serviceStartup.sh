@@ -20,7 +20,7 @@ startEPAgent() {
 		echo Introscope EPAgent is already running
 	else
 		echo Introscope EPAgent is NOT running
-		su apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
+		su - apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
 	fi
 }
 
@@ -40,12 +40,12 @@ runWebLogicScript() {
 
 	#echo $1
 	#echo ${wlDomain} ${wlPort} ${wlUser}
-	if $(netstat -an | grep 10100 >/dev/null); then
+	if $(netstat -an | grep "$wlPort.*LISTEN" >/dev/null); then
 		echo ${wlDomain}: ${cmdName} is already running
 	else
 		echo ${wlDomain}: ${cmdName} is NOT running
 		wlUser=${USERPREFIX}${wlDomain:3:2}
-		su ${wlUser} -c "${cmdScript} ${cmdOptions}"
+		su - ${wlUser} -c "${cmdScript} ${cmdOptions}"
 	fi
 }
 
@@ -53,7 +53,7 @@ runWebLogicScript() {
 #### Select processes
 
 # Verify user prefix is valid
-case ${USERPREFIX:=''} in
+case ${USERPREFIX:-''} in
 	dev|stg|prd)
 		# OK - do nothing
 		;;
@@ -72,7 +72,7 @@ esac
 #		Required if either ADMINSERVERS or NODEMANAGERS is set
 # 	EPAGENT	- epagent directory to run epagent script from
 
-case ${CPG_HOSTNAME:=''} in
+case ${CPG_HOSTNAME:-''} in
 	*-uicpo)
 		NODEMANAGERS=a1
 		DOMAIN=d1
@@ -104,7 +104,17 @@ case ${CPG_HOSTNAME:=''} in
 		EPAGENT=epagent
 		;;
 	*-cpodeploy)
-		EPAGENT=epagent_deploy
+		EPAGENT=epagent_cpodeploy
+		;;
+	*-soaz0)
+		NODEMANAGERS=a5
+		DOMAIN=d1
+		EPAGENT=epagent
+		;;
+	*-soaz1)
+		NODEMANAGERS=a6
+		DOMAIN=d1
+		EPAGENT=epagent
 		;;
 	*)
 		echo $0 is not intended to run on ${CPG_HOSTNAME} \(${HOSTNAME}\)

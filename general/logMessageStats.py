@@ -74,17 +74,17 @@ def processException(lines, stats):
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 		#print key, '-', stats[key]
-	elif lines.startswith("Couldn't get price of SKUs")
+	elif lines.startswith("Couldn't get price of SKUs") \
 	or   lines.startswith("  Status Message Code: NoRateFoundPSID"):
 		key = "Couldn't get price of SKU(s)"
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 	elif lines.startswith('Error Code: '):
-		key = (' ').join(lines.split(maxsplit=4)[:4])
+		key = (' ').join(lines.split(None, 4)[:4])
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 	else:
-		key = "Unhandled case:" + lines.split(maxsplit=2)[0]
+		key = "Unhandled case:" + lines.split(None, 2)[0]
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 		print 'Unmatched Case:', lines,
