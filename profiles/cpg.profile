@@ -1,13 +1,16 @@
 # cpg.profile
 
-VERSION=1.0
+VERSION='$Rev $'
+VERSION=$(echo ${VERSION} | tr - '$')
 
-echo
-echo '------------------------------------------------------------'
-echo '                   Welcome to CPG Server'
-echo "       Global cpg.profile (ver. ${VERSION}) for ${LOGNAME} ..."
-echo '------------------------------------------------------------'
-echo
+if [[ $0 =~ -bash ]]; then
+	echo
+	echo '------------------------------------------------------------'
+	echo '                   Welcome to CPG Server'
+	echo "       Global cpg.profile (${VERSION}) for ${LOGNAME} ..."
+	echo '------------------------------------------------------------'
+	echo
+fi
 
 
 #================================================
@@ -300,29 +303,30 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks"
 
 
-
 #==================================================
 # Show settings
 #==================================================
-echo "    HOSTNAME = ${CPG_HOSTNAME}"
-echo "    USERNAME = ${OS_USERNAME}"
-if [ "${PROJECT_NAME}" != 'USER' ]; then
-	echo "     PROJECT = ${PROJECT_NAME}"
-	echo "        TIER = ${CPG_TIER}"
-	echo "   APP_STACK = ${APP_STACK}"
-	echo "   VAR_STACK = ${VAR_STACK}"
+if [[ $0 =~ -bash ]]; then
+	echo "    HOSTNAME = ${CPG_HOSTNAME}"
+	echo "    USERNAME = ${OS_USERNAME}"
+	if [ "${PROJECT_NAME}" != 'USER' ]; then
+		echo "     PROJECT = ${PROJECT_NAME}"
+		echo "        TIER = ${CPG_TIER}"
+		echo "   APP_STACK = ${APP_STACK}"
+		echo "   VAR_STACK = ${VAR_STACK}"
+	fi
+	echo
+	echo "   JAVA_HOME = ${JAVA_HOME}"
+	echo "     WL_HOME = ${WL_HOME}"
+	echo
+	echo "        PATH = ${PATH}"
+	echo "   CLASSPATH = ${CLASSPATH}"
+	echo
+	echo "      MEMORY = $(memuse | cut -d\  -f3)"
+	echo
+	echo '------------------------------------------------------------'
+	echo
 fi
-echo
-echo "   JAVA_HOME = ${JAVA_HOME}"
-echo "     WL_HOME = ${WL_HOME}"
-echo
-echo "        PATH = ${PATH}"
-echo "   CLASSPATH = ${CLASSPATH}"
-echo
-echo "      MEMORY = $(memuse | cut -d\  -f3)"
-echo
-echo '------------------------------------------------------------'
-echo
 
 unset OS_USERNAME STACKNUM CPG_TIER
 
