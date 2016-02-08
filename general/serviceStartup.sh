@@ -73,14 +73,9 @@ esac
 # 	EPAGENT	- epagent directory to run epagent script from
 
 case ${CPG_HOSTNAME:-''} in
-	*-uicpo)
-		NODEMANAGERS=a1
-		DOMAIN=d1
-		EPAGENT=epagent
-		;;
-	*-blcpo)
-		NODEMANAGERS=a1
-		DOMAIN=d2
+	*-appadm)
+		NODEMANAGERS='a?'
+		DOMAIN=d9
 		EPAGENT=epagent
 		;;
 	*-bdt)
@@ -88,19 +83,9 @@ case ${CPG_HOSTNAME:-''} in
 		DOMAIN=d1
 		EPAGENT=epagent
 		;;
-	*-ws)
-		NODEMANAGERS=a3
-		DOMAIN=d1
-		EPAGENT=epagent
-		;;
-	*-appadm)
-		NODEMANAGERS='a?'
-		DOMAIN=d9
-		EPAGENT=epagent
-		;;
-	*-wladm)
-		ADMINSERVERS=true
-		DOMAIN=d[129]
+	*-blcpo)
+		NODEMANAGERS=a1
+		DOMAIN=d2
 		EPAGENT=epagent
 		;;
 	*-cpodeploy)
@@ -113,6 +98,21 @@ case ${CPG_HOSTNAME:-''} in
 		;;
 	*-soaz1)
 		NODEMANAGERS=a6
+		DOMAIN=d1
+		EPAGENT=epagent
+		;;
+	*-uicpo)
+		NODEMANAGERS=a1
+		DOMAIN=d1
+		EPAGENT=epagent
+		;;
+	*-wladm)
+		ADMINSERVERS=true
+		DOMAIN=d[129]
+		EPAGENT=epagent
+		;;
+	*-ws)
+		NODEMANAGERS=a3
 		DOMAIN=d1
 		EPAGENT=epagent
 		;;
