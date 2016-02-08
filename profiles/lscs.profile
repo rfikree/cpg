@@ -3,7 +3,7 @@
 VERSION='$Rev $'
 VERSION=$(echo ${VERSION} | tr - '$')
 
-if [[ $0 =~ -bash ]]; then
+if [[ $0 =~ bash ]]; then
 	echo
 	echo '------------------------------------------------------------'
 	echo '                   Welcome to CPG Server'
@@ -43,7 +43,7 @@ export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 
 if [ ! -f ${CPG_ALIAS_LOOKUP_FILE} ]; then
-	if [[ $0 =~ -bash ]]; then
+	if [[ $0 =~ bash ]]; then
 		echo
 		echo 'ERROR in PROFILE:  CPG Hostname mapping file NOT found:'
 		echo "                   ${CPG_ALIAS_LOOKUP_FILE}"
@@ -130,7 +130,7 @@ alias wget='\wget --no-check-certificate'
 #==================================================
 # Show settings
 #==================================================
-if [[ $0 =~ -bash ]]; then
+if [[ $0 =~ bash ]]; then
 	echo "    HOSTNAME = ${CPG_HOSTNAME}"
 	echo "    USERNAME = ${LOGNAME}"
 	echo

@@ -3,7 +3,7 @@
 VERSION='$Rev $'
 VERSION=$(echo ${VERSION} | tr - '$')
 
-if [[ $0 =~ -bash ]]; then
+if [[ $0 =~ bash ]]; then
 	echo
 	echo '------------------------------------------------------------'
 	echo '                   Welcome to CPG Server'
@@ -306,7 +306,7 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 #==================================================
 # Show settings
 #==================================================
-if [[ $0 =~ -bash ]]; then
+if [[ $0 =~ bash ]]; then
 	echo "    HOSTNAME = ${CPG_HOSTNAME}"
 	echo "    USERNAME = ${OS_USERNAME}"
 	if [ "${PROJECT_NAME}" != 'USER' ]; then

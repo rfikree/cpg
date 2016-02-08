@@ -66,15 +66,15 @@ esac
 # Determine what to run for this stack
 # Values:
 #   ADMINSERVERS - non empty if node managers should run on this server
-#		should only be set for one pattern
-#	NODEMANGERS - application prefix for nodmanagers (two characters)
-#   DOMAIN - domain suffix pattern for weblogic script path
+#		This should only be set for one case (WebLogic Admin server zones)
+#	NODEMANGERS - application prefix for nodemanagers (matches 2 characters)
+#   DOMAIN - domain suffix pattern for weblogic script path (matches 2 characters)
 #		Required if either ADMINSERVERS or NODEMANAGERS is set
-# 	EPAGENT	- epagent directory to run epagent script from
+# 	EPAGENT	- epagent directory to run epagent startup script from
 
 case ${CPG_HOSTNAME:-''} in
 	*-appadm)
-		NODEMANAGERS='a?'
+		NODEMANAGERS='a[12]'
 		DOMAIN=d9
 		EPAGENT=epagent
 		;;
@@ -108,7 +108,7 @@ case ${CPG_HOSTNAME:-''} in
 		;;
 	*-wladm)
 		ADMINSERVERS=true
-		DOMAIN=d[129]
+		DOMAIN='d[129]'
 		EPAGENT=epagent
 		;;
 	*-ws)
