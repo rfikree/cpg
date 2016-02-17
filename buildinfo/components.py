@@ -91,7 +91,8 @@ def _testGetArtifacts():
 	print user, passwd, adminurl
 
 	artifacts = getArtifacts(user, passwd, adminurl)
-	print artifacts
+	for artifact in artifacts:
+		print artifact
 
 if __name__ == "main":
 	_testGetArtifacts()
