@@ -1,9 +1,12 @@
-#components.py get componets for a weblogic domain
+#components.py - get components for a weblogic domain
 
 from os import listdir
 
 def _getEntry(category, entry):
-	(name, version) = entry.split('#')
+	if '#' in entry:
+		(name, version) = entry.split('#')
+	else:
+		(name, version) = (entry, 'none')
 	targets = _getNames('/'.join((category, entry, 'Targets')))
 	states = _getStates(entry, targets)
 	targets = ' '.join(targets)
@@ -78,7 +81,7 @@ def getArtifacts(user, passwd, adminurl):
 def _testGetArtifacts():
 	if len(sys.argv) < 4:
 		print
-		print 'usage', sys.argv[0], 'user password adminurl'
+		print 'usage: wlst.sh', sys.argv[0], 'user password adminurl'
 		print
 		exit('', 1)
 
