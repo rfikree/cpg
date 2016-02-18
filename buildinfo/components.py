@@ -10,7 +10,7 @@ def _getWLdetails(category, entry):
 	targets = _getNames('/'.join((category, entry, 'Targets')))
 	states = _getStates(entry, targets)
 	for i in range (1, len(targets)):
-		target[i] = '-'.split(target[i])[-1]
+		targets[i] = '-'.split(targets[i])[-1]
 	targets = ','.join(targets)
 	#print '\t'.join((name, version, states, targets))
 	return (name, version, states, targets)
