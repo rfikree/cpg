@@ -9,7 +9,7 @@ def _getWLdetails(category, entry):
 		(name, version) = (entry, 'none')
 	targets = _getNames('/'.join((category, entry, 'Targets')))
 	states = _getStates(entry, targets)
-	for i in range (1, len(targets):
+	for i in range (1, len(targets)):
 		target[i] = '-'.split(target[i])[-1]
 	targets = ','.join(targets)
 	#print '\t'.join((name, version, states, targets))
@@ -53,10 +53,16 @@ def _getLibJars():
 	return libJars
 
 
-def getArtifacts(user, passwd, adminurl):
+def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev5S'):
 	global appStateRuntime
 
-	connect(user, passwd, adminurl)
+	try:
+		connect(user, passwd, adminurl, timeout=10000)
+	except Exception, e:
+		print 'Connection to', adminurl, 'failed'
+		print e
+		return None
+
 	appStateRuntime = getMBean('domainRuntime:AppRuntimeStateRuntime').getAppRuntimeStateRuntime()
 	serverConfig()
 
@@ -81,20 +87,27 @@ def getArtifacts(user, passwd, adminurl):
 
 
 def _testGetArtifacts():
-	if len(sys.argv) < 4:
+	if len(sys.argv) not in [2, 4]:
 		print
-		print 'usage: wlst.sh', sys.argv[0], 'user password adminurl'
+		print 'usage: wlst.sh', sys.argv[0], 'adminurl'
+		print 'usage: wlst.sh', sys.argv[0], 'adminurl user password'
 		print
 		exit('', 1)
 
-	user = sys.argv[1]
-	passwd = sys.argv[2]
-	adminurl = sys.argv[3]
-	print user, passwd, adminurl
+	adminurl = sys.argv[1]
 
-	artifacts = getArtifacts(user, passwd, adminurl)
-	for artifact in artifacts:
-		print artifact
+	if len(sys.argv) == 2:
+		#print adminurl
+		artifacts = getArtifacts(adminurl)
+	else:
+		user = sys.argv[2]
+		passwd = sys.argv[3]
+		#print adminurl, user, passwd
+		artifacts = getArtifacts(adminurl, user, passwd)
+
+	if artifacts:
+		for artifact in artifacts:
+			print artifact
 
 if __name__ == "main":
 	_testGetArtifacts()
