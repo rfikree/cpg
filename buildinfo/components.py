@@ -5,12 +5,13 @@ from os import listdir
 def _getWLdetails(category, entry):
 	if '#' in entry:
 		(name, version) = entry.split('#')
+		version = version.split('@')[0]
 	else:
 		(name, version) = (entry, 'none')
 	targets = _getNames('/'.join((category, entry, 'Targets')))
 	states = _getStates(entry, targets)
 	for i in range (1, len(targets)):
-		targets[i] = '-'.split(targets[i])[-1]
+		targets[i] = targets[i].split('-')[-1]
 	targets = ','.join(targets)
 	#print '\t'.join((name, version, states, targets))
 	return (name, version, states, targets)
