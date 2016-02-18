@@ -1,6 +1,7 @@
 #components.py - get components for a weblogic domain
 
 from os import listdir
+from wlstModule import *
 
 def _getWLdetails(category, entry):
 	if '#' in entry:
