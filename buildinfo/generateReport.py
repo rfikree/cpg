@@ -67,7 +67,7 @@ def _testReport():
 
 	if len(sys.argv) == 2:
 		#print adminurl
-		artifacts = getArtifacts(adminurl)
+		artifacts = getArtifacts(adminurl, 'Deployment Monitor', 'yIHj6oSGoRpl66muev5S')
 	else:
 		user = sys.argv[2]
 		passwd = sys.argv[3]
