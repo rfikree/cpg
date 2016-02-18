@@ -2,14 +2,16 @@
 
 from os import listdir
 
-def _getEntry(category, entry):
+def _getWLdetails(category, entry):
 	if '#' in entry:
 		(name, version) = entry.split('#')
 	else:
 		(name, version) = (entry, 'none')
 	targets = _getNames('/'.join((category, entry, 'Targets')))
 	states = _getStates(entry, targets)
-	targets = ' '.join(targets)
+	for i in range (1, len(targets):
+		target[i] = '-'.split(target[i])[-1]
+	targets = ','.join(targets)
 	#print '\t'.join((name, version, states, targets))
 	return (name, version, states, targets)
 
@@ -64,13 +66,13 @@ def getArtifacts(user, passwd, adminurl):
 	deployments.sort()
 	#print 'deployments', deployments
 	for item in deployments:
-		artifactList.append(_getEntry('AppDeployments', item))
+		artifactList.append(_getWLdetails('AppDeployments', item))
 
 	libraries = _getNames('Libraries')
 	libraries.sort()
 	#print 'libraries', libraries
 	for item in libraries:
-		artifactList.append(_getEntry('Libraries', item))
+		artifactList.append(_getWLdetails('Libraries', item))
 
 	artifactList.extend(_getLibJars())
 
