@@ -10,6 +10,7 @@
 import socket
 import datetime
 import getopt, sys
+from socket import error as socket_error
 
 
 class listener:
@@ -34,12 +35,27 @@ class listener:
 				print "SSL is not available secure connection not possible"
 				cert = None
 
-		self.bind(address, port)
+		try:
+			self.bind(address, port)
+		except socket_error, sock_err:
+			# Treat bind error as success, logging condition
+			print 'Failed to bind to', address, port
+			print sock_err
+			sys.exit(0)
+
 		self.sock.listen(5)
 
 		while True:
 			# Establish connection with client.
-			connsocket, addr = self.sock.accept()
+			try:
+				connsocket, addr = self.sock.accept()
+			except socket_error, sock_err:
+				# Ignore socket errors - occurs on LDAP servers under load
+				print 'socket_error occured at', \
+					datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ")
+				print sock_err
+				continue
+
 			print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S "),
 			print 'Got connection from', addr
 
