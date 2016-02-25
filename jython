@@ -1,0 +1,15 @@
+#!/bin/bash
+#set -x
+
+SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
+
+java -Dpython.path=${SCRIPT_DIR} \
+	-Dwlst.offline.log=${HOME}/.log \
+	-Dweblogic.security.allowCryptoJDefaultJCEVerification=true \
+	-Dweblogic.security.allowCryptoJDefaultPRNG=true \
+	-Dweblogic.security.SSL.ignoreHostnameVerification=true \
+	-Dweblogic.security.TrustKeyStore=CustomTrust \
+	-Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks \
+	${0}
+
+# EOF
