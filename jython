@@ -16,7 +16,7 @@ fi
 
 
 # Required modules for WLST support
-SERVER_MODULES='wls-api.jar weblogic.jar'
+SERVER_MODULES='wls-api.jar weblogic.jar ojdbc6.jar'
 WLST_MODULES='jython-modules.jar jython-modules.jar/Lib .'
 
 # Setup Classpath
