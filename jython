@@ -1,14 +1,34 @@
 #!/bin/bash
 #set -x
 
-SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 
+# Directory script is being run from
+SCRIPT_DIR=$(cd $(dirname $1) >/dev/null; echo ${PWD})
+
+
+# Jython configuration files
 JYTHON_DIR=~/.jythonDir
 JYTHON_CACHE=${JYTHON_DIR}/cache
 JYTHON_LOG=${JYTHON_DIR}/jython.log
 if [ ! -d ${JYTHON_CACHE} ]; then
 	mkdir -p ${JYTHON_CACHE}
 fi
+
+
+# Required modules for WLST support
+SERVER_MODULES='wls-api.jar weblogic.jar'
+WLST_MODULES='jython-modules.jar jython-modules.jar/Lib .'
+
+# Setup Classpath
+for module in ${SERVER_MODULES}; do
+	SERVER_PATH=${SERVER_PATH}:${WL_HOME}/server/lib/${module}
+done
+for module in ${WLST_MODULES}; do
+	WLST_PATH=${WLST_PATH}:${WL_HOME}/common/wlst/modules/${module}
+done
+CLASSPATH=${SERVER_PATH#:}${WLST_PATH}
+PYTHON_PATH=${SERVER_PATH#:}${WLST_PATH}:${SCRIPT_DIR}
+
 
 java -cp ${CLASSPATH} -Dpython.path=${PYTHON_PATH} \
 	-Dwlst.offline.log=${JYTHON_LOG} \
