@@ -3,13 +3,21 @@
 
 SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 
-java -Dpython.path=${SCRIPT_DIR} \
-	-Dwlst.offline.log=${HOME}/.log \
+JYTHON_DIR=~/.jythonDir
+JYTHON_CACHE=${JYTHON_DIR}/cache
+JYTHON_LOG=${JYTHON_DIR}/jython.log
+if [ ! -d ${JYTHON_CACHE} ]; then
+	mkdir -p ${JYTHON_CACHE}
+fi
+
+java -cp ${CLASSPATH} -Dpython.path=${PYTHON_PATH} \
+	-Dwlst.offline.log=${JYTHON_LOG} \
+	-Dpython.cachedir=${JYTHON_CACHE} \
 	-Dweblogic.security.allowCryptoJDefaultJCEVerification=true \
 	-Dweblogic.security.allowCryptoJDefaultPRNG=true \
 	-Dweblogic.security.SSL.ignoreHostnameVerification=true \
 	-Dweblogic.security.TrustKeyStore=CustomTrust \
 	-Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks \
-	${0}
+	org.python.util.jython ${@}
 
 # EOF
