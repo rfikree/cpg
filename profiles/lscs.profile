@@ -78,8 +78,9 @@ export scripts=/cpg/3rdParty/scripts/cpg
 export odlogs=/cpg/cpo_var/${CPG_HOSTNAME}/interwvn
 export odhome=/cpg/interwoven/OpenDeployNG
 
+# Really don't need *lscc001 subdirectories - need to fix install scripts
 if [[ ${LOGNAME} =~ s00* ]]; then
-	export logs=/cpg/cpo_var/${CPG_HOSTNAME}/${LOGNAME}
+	export logs=/cpg/cpo_var/${CPG_HOSTNAME}/${LOGNAME}/${LOGNAME}lscs001
 	export stack=/cpg/stacks/${LOGNAME}/${LOGNAME}lscs001
 fi
 
