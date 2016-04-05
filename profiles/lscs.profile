@@ -45,6 +45,7 @@ Linux)
 	else
 		echo JAVA_HOME not set
 	fi
+	;;
 *)
 	echo JAVA_HOME: unsupported OS $(uname -s)
 	;;
