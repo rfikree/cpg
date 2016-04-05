@@ -40,10 +40,10 @@ SunOS)
 	;;
 Linux)
 	JAVA_HOME=$(readlink /usr/java/latest)
-	if [[ -z ${JAVA_HOME} ]]; then
-		echo JAVA_HOME not set
+	if [[ -n ${JAVA_HOME} ]]; then
+		echo JAVA_HOME is ${JAVA_HOME}
 	else
-		JAVA_HOME is ${JAVA_HOME}
+		echo JAVA_HOME not set
 	fi
 *)
 	echo JAVA_HOME: unsupported OS $(uname -s)
