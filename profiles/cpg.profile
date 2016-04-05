@@ -167,8 +167,19 @@ unset domain domains
 #================================================
 if [[ "${JAVA_HOME}" != "jdkPath" \
 && -f "${jdkPath:-/XXX}/bin/java" ]]; then
-	echo Setting JAVA_HOME from Domain.properties
-	JAVA_HOME=${ROOT_PREFIX}${jdkPath}
+	case $(uname -s) in
+	SunOS)
+		echo Setting JAVA_HOME from Domain.properties
+		JAVA_HOME=${ROOT_PREFIX}${jdkPath}
+		;;
+	*)
+		if [[ -z ${JAVA_HOME} ]]; then
+			echo JAVA_HOME not set
+		else
+			JAVA_HOME is ${JAVA_HOME}
+		fi
+		;;
+	esac
 fi
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 && -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then

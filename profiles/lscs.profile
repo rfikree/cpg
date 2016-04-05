@@ -33,9 +33,19 @@ umask 027
 #================================================
 # Configure JAVA
 #================================================
-JAVA_VERSION=jdk1.7.0_80
-export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
-
+case $(uname -s) in
+SunOS)
+	JAVA_VERSION=jdk1.7.0_80
+	export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
+	;;
+*)
+	if [[ -z ${JAVA_HOME} ]]; then
+		echo JAVA_HOME not set
+	else
+		JAVA_HOME is ${JAVA_HOME}
+	fi
+	;;
+esac
 
 #==================================================
 # OS / Host - Determine CPG Hostname and Tier
