@@ -38,12 +38,15 @@ SunOS)
 	JAVA_VERSION=jdk1.7.0_80
 	export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
 	;;
-*)
+Linux)
+	JAVA_HOME=$(readlink /usr/java/latest)
 	if [[ -z ${JAVA_HOME} ]]; then
 		echo JAVA_HOME not set
 	else
 		JAVA_HOME is ${JAVA_HOME}
 	fi
+*)
+	echo JAVA_HOME: unsupported OS $(uname -s)
 	;;
 esac
 
