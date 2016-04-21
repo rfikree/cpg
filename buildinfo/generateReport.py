@@ -1,7 +1,9 @@
-#!/bin/env wlst.sh
+#! /bin/env wlst.sh
+#
 
 import os
 import sys
+import time
 sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from components import getArtifacts
@@ -34,27 +36,40 @@ tableFooter = '''</table>
 '''
 
 pageFooter = '''
+<p align=center>Generated: %s</p>
 </body>
 </HTML>'''
 
 
 def genBody(server, port, artifacts):
-	print tableHeader % (server, port),
+	'''
+	Generate the body portion for a single url
+	- a report may contain multiple bodies
+	'''
+	content = tableHeader % (server, port)
+
 	for artifact in artifacts:
-		print tableRow % artifact,
-	print tableFooter,
+		content += tableRow % artifact
+
+	content += tableFooter
+	return content
 
 def genReport(reportid, contents):
-	#print contents
-	print pageHeader % (reportid, reportid)
+	''' generate a report with the specified report id
+		given a list of of url, artificats '''
+	report = pageHeader % (reportid, reportid)
 
 	for (adminurl, artifacts) in contents:
 		(protocol, server, port) = adminurl.split(':')
 		server = server.lstrip('/')
-		genBody(server, port, artifacts)
+		body = genBody(server, port, artifacts)
+		report += body
 
-	print pageFooter,
+	now = time.localtime()
+	now = time.strftime('%Y-%m-%d %H:%M', now)
 
+	report += pageFooter % (now,)
+	return report
 
 def _testReport():
 	if len(sys.argv) not in [2, 4]:
@@ -79,8 +94,8 @@ def _testReport():
 		(protocol, server, port) = adminurl.split(':')
 		server = server.lstrip('/')
 		userid = server.split('-')[0] + port[:2]
-		#print 'calling genReport'
-		genReport(userid, [(adminurl, artifacts)])
+		print 'calling genReport'
+		print genReport(userid, [(adminurl, artifacts)])
 
 if __name__ == "main":
 	_testReport()

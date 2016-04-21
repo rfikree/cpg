@@ -1,3 +1,4 @@
+#! /bin/env wlst.sh
 #components.py - get components for a weblogic domain
 
 from os import listdir
@@ -85,6 +86,7 @@ def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev
 	artifactList.extend(_getLibJars())
 
 	disconnect()
+	#print artifactList
 	return artifactList
 
 
