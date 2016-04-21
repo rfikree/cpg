@@ -12,7 +12,7 @@ from generateReport import genReport
 def usage(status):
 	print '''
 
-	Usage: wlst.sh buildReports.py [-h] [-e environment] [-u user] [-p passsword]
+	Usage: ./buildReports.py [-h] [-e environment] [-u user] [-p passsword]
 
 	Options
 		-h, --help: Print this help message
