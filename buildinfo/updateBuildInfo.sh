@@ -24,7 +24,7 @@ CPG_ENV=${CPG_HOSTNAME%%-*}
 
 
 # Generate reports
-$(dirname ${0})/buildReports.py -e ${CGP_ENV} > buildReports.log
+$(dirname ${0})/buildReports.py -e ${CPG_ENV} > buildReports.log
 
 # Copy reports to reporting server
 scp ${CGP_ENV}*.html optadm@10.131.237.93:/cpo/cpo_apps/build-info/wipro > scp.log
