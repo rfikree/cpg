@@ -19,12 +19,17 @@ def usage(status):
 		-e, --environment: Specify environment to run for
 		-u, --user: Specify user to connect with
 		-p, --password: Specify the password to connect with
+
+	Valid environments are defined in buildReports.properties.
+
 	'''
 	sys.exit(status)
 
-def getStacks(config, environment, stackList):
+def getStacks(config, environment):
 	''' Generate a list of stacks add related URLs from a list
 	'''
+	stackList = config.options(environment)
+	#print 'stackList:', stackList
 	if not stackList:
 		print 'FATAL: Environment', environment, 'has no stacks.'
 		sys.exit(2)
@@ -61,7 +66,7 @@ def saveReport(reportName, report):
 
 
 def createReports(propertyFile, environment, user, passwd):
-	'''create the reports for the selected environment
+	''' Create the reports for the selected environment
 	'''
 	allComponents = []
 	config = ConfigParser.ConfigParser()
@@ -70,11 +75,10 @@ def createReports(propertyFile, environment, user, passwd):
 		print 'FATAL: Invalid environment', environment, 'selected.'
 		sys.exit(2)
 
-	stackList = config.options(environment)
-	#print 'stackList:', stackList
-	stacks = getStacks(config, environment, stackList)
+	stacks = getStacks(config, environment)
 	#print 'stacks:', stacks
 
+	# Generate reports for each stack
 	for (stackName, urls) in stacks:
 		#print 'stackName:', stackName, ' - urls:', urls
 		stackComponents = getComponents(urls, user, passwd)
@@ -85,15 +89,16 @@ def createReports(propertyFile, environment, user, passwd):
 			saveReport(stackName, report)
 			allComponents.extend(stackComponents)
 
+	# Generate report for all stacks
 	if allComponents:
 		title = config.get('titles', environment)
 		report = genReport(title, allComponents)
-		saveReport(environment, report)
 		#print report
+		saveReport(environment, report)
 
 
 def main():
-	''' Read options and generate reportss
+	''' Read options and generate reports
 	'''
 
 	user='Deployment Monitor'
