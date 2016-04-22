@@ -42,9 +42,8 @@ pageFooter = '''
 
 
 def genBody(server, port, artifacts):
-	'''
-	Generate the body portion for a single url
-	- a report may contain multiple bodies
+	'''	Generate the body portion for a single url
+		- a report may contain multiple bodies (tables)
 	'''
 	content = tableHeader % (server, port)
 
@@ -55,7 +54,7 @@ def genBody(server, port, artifacts):
 	return content
 
 def genReport(reportid, contents):
-	''' generate a report with the specified report id
+	''' Generate a report with the specified report id
 		given a list of of url, artificats '''
 	report = pageHeader % (reportid, reportid)
 
