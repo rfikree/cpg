@@ -19,6 +19,7 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
+CPG_HOSTNAME=${CPG_HOSTNAME##*,}
 CPG_ENV=${CPG_HOSTNAME%%-*}
 
 
