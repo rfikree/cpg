@@ -60,13 +60,13 @@ def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev
 	global appStateRuntime
 
 	try:
-		connect(user, passwd, adminurl, timeout=10000)
+		connect(user, passwd, adminurl, timeout=200000)
 	except Exception, e:
 		print 'Connection to', adminurl, 'failed'
 		print e
 		return None
 
-	try;
+	try:
 		appStateRuntime = getMBean('domainRuntime:AppRuntimeStateRuntime').getAppRuntimeStateRuntime()
 		serverConfig()
 
