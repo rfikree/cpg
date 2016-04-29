@@ -66,24 +66,30 @@ def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev
 		print e
 		return None
 
-	appStateRuntime = getMBean('domainRuntime:AppRuntimeStateRuntime').getAppRuntimeStateRuntime()
-	serverConfig()
+	try;
+		appStateRuntime = getMBean('domainRuntime:AppRuntimeStateRuntime').getAppRuntimeStateRuntime()
+		serverConfig()
 
-	artifactList=[]
+		artifactList=[]
 
-	deployments = _getNames('AppDeployments')
-	deployments.sort()
-	#print 'deployments', deployments
-	for item in deployments:
-		artifactList.append(_getWLdetails('AppDeployments', item))
+		deployments = _getNames('AppDeployments')
+		deployments.sort()
+		#print 'deployments', deployments
+		for item in deployments:
+			artifactList.append(_getWLdetails('AppDeployments', item))
 
-	libraries = _getNames('Libraries')
-	libraries.sort()
-	#print 'libraries', libraries
-	for item in libraries:
-		artifactList.append(_getWLdetails('Libraries', item))
+		libraries = _getNames('Libraries')
+		libraries.sort()
+		#print 'libraries', libraries
+		for item in libraries:
+			artifactList.append(_getWLdetails('Libraries', item))
 
-	artifactList.extend(_getLibJars())
+		artifactList.extend(_getLibJars())
+
+	except Exception, e:
+		print 'Getting artifacts from', adminurl, 'failed'
+		print e
+		return None
 
 	disconnect()
 	#print artifactList
