@@ -1,16 +1,18 @@
-#!/usr/bin/bash
+#! /usr/bin/bash
 #set -x
 
 # Config parameters
+SCRIPT_NAME=$(basename ${0})
+
 INTROSCOPE_DIR=/cpg/3rdParty/installs/introscope/9.7.1.0
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
+
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-export CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," \
+export CPG_HOSTNAME=$(egrep -i "^$(hostname)," \
 	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
+
 USERPREFIX=${CPG_HOSTNAME%%-*}
 
-# Ensure currenty directory is readable
-cd /tmp
 
 
 #### Function definitions
@@ -20,7 +22,7 @@ startEPAgent() {
 		echo Introscope EPAgent is already running
 	else
 		echo Introscope EPAgent is NOT running
-		su - apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
+		$SKIP su - apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
 	fi
 }
 
@@ -38,19 +40,58 @@ runWebLogicScript() {
 	wlDomain=${wlDomain##*/}
 	wlPort=${wlDomain:3:2}${wlDomain:6:1}00
 
-	#echo $1
-	#echo ${wlDomain} ${wlPort} ${wlUser}
 	if $(netstat -an | grep "$wlPort.*LISTEN" >/dev/null); then
 		echo ${wlDomain}: ${cmdName} is already running
 	else
 		echo ${wlDomain}: ${cmdName} is NOT running
 		wlUser=${USERPREFIX}${wlDomain:3:2}
-		su - ${wlUser} -c "${cmdScript} ${cmdOptions}"
+		$SKIP su - ${wlUser} -c "${cmdScript} ${cmdOptions}"
 	fi
 }
 
+doStartups() {
+	# Just echo commands if not running as root
+	if [[ ! $(id) =~ uid=0\(root\) ]];
+		SKIP=echo
+	fi
 
-#### Select processes
+	# Start Introscope EP Agent - doesn't run in dev
+	if [[ -n ${EPAGENT} && ${USERPREFIX} != dev ]]; then
+		startEPAgent
+	fi
+
+	# Start node managers
+	if [[ -n ${NODEMANAGERS} && -n ${DOMAIN} ]]; then
+		for SCRIPT in /cpg/cpo_apps/${NODEMANAGERS}???/a????${DOMAIN}/bin/startNodeManager.sh; do
+			runWebLogicScript ${SCRIPT} 'NodeManager' ''
+		done
+	fi
+
+	# Start WebLogic admin servers - SOA servers start differently s
+	if [[ -n ${ADMINSERVERS} && -n ${DOMAIN} ]]; then
+		for SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
+			runWebLogicScript ${SCRIPT} 'WebLogic AdminServer' '& disown'
+		done
+		#for SCRIPT in /cpg/cpo_apps/a[56]???/a????${DOMAIN}/bin/startWebLogic.sh; do
+			#runWebLogicScript ${SCRIPT} 'WebLogic AdminServer'
+		#done
+	fi
+}
+
+removeScript() {
+	rm -f /etc/init.d/${SCRIPT_NAME}
+	rm -f /etc/rc?.d/[SK][0-9][0-9]${SCRIPT_NAME}
+}
+
+installScript() {
+	cp ${0} /etc/init.d/${SCRIPT_NAME}
+	for x in {2..3}; do
+		ln /etc/init.d/${SCRIPT_NAME} /etc/rc${x}.d/S99${SCRIPT_NAME}
+	done
+}
+
+
+#### Mainline
 
 # Verify user prefix is valid
 case ${USERPREFIX:-''} in
@@ -65,12 +106,13 @@ esac
 
 # Determine what to run for this stack
 # Values:
-#   ADMINSERVERS - non empty if node managers should run on this server
+#   ADMINSERVERS - non empty if WebLogic AdminServers should run on this server
 #		This should only be set for one case (WebLogic Admin server zones)
 #	NODEMANGERS - application prefix for nodemanagers (matches 2 characters)
 #   DOMAIN - domain suffix pattern for weblogic script path (matches 2 characters)
 #		Required if either ADMINSERVERS or NODEMANAGERS is set
 # 	EPAGENT	- epagent directory to run epagent startup script from
+#       cpodeploy has a custom agent setup
 
 case ${CPG_HOSTNAME:-''} in
 	*-appadm)
@@ -122,29 +164,29 @@ case ${CPG_HOSTNAME:-''} in
 		;;
 esac
 
+# Perform selected action
 
-#### Do the startups
-
-# Start Introscope EP Agent - doesn't run in dev
-if [[ -n ${EPAGENT} && ${USERPREFIX} != dev ]]; then
-	startEPAgent
-fi
-
-# Start node managers
-if [[ -n ${NODEMANAGERS} && -n ${DOMAIN} ]]; then
-	for SCRIPT in /cpg/cpo_apps/${NODEMANAGERS}???/a????${DOMAIN}/bin/startNodeManager.sh; do
-		runWebLogicScript ${SCRIPT} "NodeManager" ''
-	done
-fi
-
-# Start WebLogic admin servers - SOA servers start differently s
-if [[ -n ${ADMINSERVERS} && -n ${DOMAIN} ]]; then
-	for SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
-		runWebLogicScript ${SCRIPT} "WebLogic AdminServer" '& disown'
-	done
-	#for SCRIPT in /cpg/cpo_apps/a[56]???/a????${DOMAIN}/bin/startWebLogic.sh; do
-		#runWebLogicScript "${SCRIPT}"  "WebLogic AdminServer"
-	#done
-fi
+case ${1} in
+	start)
+		doStartups
+		;;
+	status)
+		SKIP=echo
+		doStartups
+		;;
+	stop)	# noop
+		;;
+	install)
+		installScript
+		;;
+	remove)
+		removeScript
+		;;
+	*)
+		echo
+		echo "usage: $0 start|status|stop|install|remove"
+		echo
+		;;
+esac
 
 # EOF
