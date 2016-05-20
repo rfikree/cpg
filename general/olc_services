@@ -51,7 +51,7 @@ runWebLogicScript() {
 
 doStartups() {
 	# Just echo commands if not running as root
-	if [[ ! $(id) =~ uid=0\(root\) ]];
+	if [[ ! $(id) =~ uid=0\(root\) ]]; then
 		SKIP=echo
 	fi
 
