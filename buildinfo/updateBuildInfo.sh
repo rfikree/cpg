@@ -28,6 +28,6 @@ $(dirname ${0})/buildReports.py -e ${CPG_ENV} &> buildReports.log
 
 # Copy reports to reporting server
 scp ${CGP_ENV}*.html \
-	optadm@cpowiki.cpggpc.ca:/cpo/cpo_apps/build-info/wipro &> scp.log
+	optadm@cpowiki.cpggpc.ca:/cpg/cpo_apps/build-info/wipro &> scp.log
 
 # EOF
