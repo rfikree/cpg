@@ -28,6 +28,7 @@ def _getNames(target):
 def _getStates(entry, targets):
 	states = []
 	for target in targets:
+		#print 'xxxx', entry, target
 		state=appStateRuntime.getCurrentState(entry, target).split('_')[1]
 		if state not in states:
 			states.append(state)
