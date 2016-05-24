@@ -59,7 +59,7 @@ def getComponents(urls, user, passwd):
 def saveReport(reportName, report):
 	''' Save the report to a file
 	'''
-	filename = ''.join((reportName, '.html'))
+	filename = ''.join((reportName, '-build.html'))
 	f = open(filename, 'w')
 	f.write(report)
 	f.close

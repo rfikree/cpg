@@ -22,10 +22,15 @@ pageHeader = '''<!DOCTYPE html>
 <h1 style="text-align: center; color: black"> %s Artifacts Information</h1>
 '''
 
-tableHeader = '''
+applicationHeader = '''
 <h3 align=center>Server:%s  Port:%s </h3>
 <table class="sortable" align=center>
 <tr><th>Application</th><th>Build Number</th><th>State</th><th>TargetName</th></tr>
+'''
+
+libraryHeader = '''
+<table class="sortable" align=center>
+<tr><th>Library</th><th>Build Number</th><th>State</th><th>TargetName</th></tr>
 '''
 
 tableRow = '''<tr><td> %s </td><td> %s </td><td> %s </td><td> %s </td></tr>
@@ -45,20 +50,24 @@ def genBody(server, port, artifacts):
 	'''	Generate the body portion for a single url
 		- a report may contain multiple bodies (tables)
 	'''
-	content = tableHeader % (server, port)
+	applications, libraries = artifacts
 
-	for artifact in artifacts:
+	content = applicationHeader % (server, port)
+	for artifact in applications:
 		content += tableRow % artifact
 
-	content += tableFooter
+	content = libraryHeader % (server, port)
+	for artifact in libraries:
+		content += tableRow % artifact
+
 	return content
 
-def genReport(reportid, contents):
+def genReport(reportid, reportComponents):
 	''' Generate a report with the specified report id
 		given a list of of url, artificats '''
 	report = pageHeader % (reportid, reportid)
 
-	for (adminurl, artifacts) in contents:
+	for (adminurl, artifacts) in reportComponents:
 		(protocol, server, port) = adminurl.split(':')
 		server = server.lstrip('/')
 		body = genBody(server, port, artifacts)

@@ -48,8 +48,8 @@ def _getLibJars():
 					components = filename[:-4].split('-')
 					name = '-'.join(components[:-1])
 					version = components[-1]
-					libJars.append((name, version, 'LIBRARY', subdir))
-					#print name, version, 'LIBRARY', subdir
+					libJars.append((name, version, 'JarFile', subdir))
+					#print name, version, 'JarFile', subdir
 		except OSError:
 			pass
 	libJars.sort()
@@ -59,18 +59,20 @@ def _getLibJars():
 def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev5S'):
 	global appStateRuntime
 
+	artifactList=[]
+	libraryList=[]
+	result = (artifactList, libraryList)
+
 	try:
 		connect(user, passwd, adminurl, timeout=200000)
 	except Exception, e:
 		print 'Connection to', adminurl, 'failed'
 		print e
-		return None
+		return result
 
 	try:
 		appStateRuntime = getMBean('domainRuntime:AppRuntimeStateRuntime').getAppRuntimeStateRuntime()
 		serverConfig()
-
-		artifactList=[]
 
 		deployments = _getNames('AppDeployments')
 		deployments.sort()
@@ -78,22 +80,34 @@ def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev
 		for item in deployments:
 			artifactList.append(_getWLdetails('AppDeployments', item))
 
+	except Exception, e:
+		print 'Getting artifacts from', adminurl, 'failed'
+		print e
+		pass
+
+	try:
+		artifactList.extend(_getLibJars())
+
+	except Exception, e:
+		print 'Getting jars from', adminurl, 'failed'
+		print e
+		pass
+
+	try:
 		libraries = _getNames('Libraries')
 		libraries.sort()
 		#print 'libraries', libraries
 		for item in libraries:
-			artifactList.append(_getWLdetails('Libraries', item))
-
-		artifactList.extend(_getLibJars())
+			libraryList.append(_getWLdetails('Libraries', item))
 
 	except Exception, e:
-		print 'Getting artifacts from', adminurl, 'failed'
+		print 'Getting libraries from', adminurl, 'failed'
 		print e
-		return None
+		pass
 
 	disconnect()
-	#print artifactList
-	return artifactList
+	#print result
+	return result
 
 
 def _testGetArtifacts():
@@ -116,10 +130,14 @@ def _testGetArtifacts():
 		artifacts = getArtifacts(adminurl, user, passwd)
 
 	if artifacts:
-		for artifact in artifacts:
-			print artifact
+		applications, libraries = artifacts
+		for artifact in applications:
+			print 'Application:', artifact
+		for artifact in libraries:
+			print 'Library:', artifact
 
 if __name__ == "main":
 	_testGetArtifacts()
+
 
 # EOF
