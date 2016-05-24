@@ -57,10 +57,11 @@ def genBody(server, port, artifacts):
 		content += tableRow % artifact
 	content += tableFooter
 
-	content += libraryHeader
-	for artifact in libraries:
-		content += tableRow % artifact
-	content += tableFooter
+	if libraries:
+		content += libraryHeader
+		for artifact in libraries:
+			content += tableRow % artifact
+		content += tableFooter
 
 	return content
 
