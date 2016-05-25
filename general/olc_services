@@ -18,7 +18,7 @@ USERPREFIX=${CPG_HOSTNAME%%-*}
 #### Function definitions
 
 startEPAgent() {
-	if $(ps -fu apm | grep java >/dev/null); then
+	if $(ps -fu apm | grep [j]ava >/dev/null); then
 		echo Introscope EPAgent is already running
 	else
 		echo Introscope EPAgent is NOT running
