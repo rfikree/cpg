@@ -1,6 +1,6 @@
 # cpg.profile
 
-VERSION='$Rev: $'
+VERSION='$Revision$'
 VERSION=$(echo ${VERSION} | tr - '$')
 
 if [[ $0 =~ bash ]]; then
