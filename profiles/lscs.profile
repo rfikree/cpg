@@ -1,13 +1,13 @@
 # cpg.profile
 
 VERSION='$Revision$'
-VERSION=$(echo ${VERSION} | tr - '$')
+VERSION=$(echo ${VERSION} | awk '{print $2}')
 
 if [[ $0 =~ bash ]]; then
 	echo
 	echo '------------------------------------------------------------'
 	echo '                   Welcome to CPG Server'
-	echo "       Global lscl.profile (${VERSION}) for ${LOGNAME} ..."
+	echo "       Global lscl.profile (rev: ${VERSION}) for ${LOGNAME} ..."
 	echo '------------------------------------------------------------'
 	echo
 fi
