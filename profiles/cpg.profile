@@ -97,10 +97,12 @@ case $LOB in
 	3)  PROJECT_NAME=WS;;
 	5)  PROJECT_NAME=CPC-SOA
 		MW_DIR=fmw50
+		WL_DIR=Oracle_SOA1
 		JAVA_VERSION=jdk1.7.0_85
 		;;
 	6)  PROJECT_NAME=PULSE
 		MW_DIR=fmw60
+		WL_DIR=Oracle_SOA1
 		JAVA_VERSION=jdk1.7.0_85
 		;;
 	*)  ;;
@@ -286,6 +288,12 @@ memuse() {
 		(  ${memory[2]} +  ${memory[3]} ) ))%
 }
 
+swapuse() {
+	local swap=($(/usr/sbin/swap -l | tr -d -c '0123456789 '))
+	echo Swap utilization: $(( ( ${swap[3]} - ${swap[2]} ) / 2048 ))k
+}
+
+
 if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
 	use() {
 		case "${1}" in
@@ -334,6 +342,7 @@ if [[ $0 =~ bash ]]; then
 	echo "   CLASSPATH = ${CLASSPATH}"
 	echo
 	echo "      MEMORY = $(memuse | cut -d\  -f3)"
+	echo "        SWAP = $(swapuse | cut -d\  -f3)"
 	echo
 	echo '------------------------------------------------------------'
 	echo
