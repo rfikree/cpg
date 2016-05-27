@@ -26,7 +26,7 @@ def validatePath(directory):
 	for f in listdir(directory):
 		entry = join(directory, f)
 		#print 'Entry:', entry
-		if isfile(entry) and entry.endswith('.xml'):
+		if isfile(entry) and entry.endswith('ml'):
 			validateFile(entry)
 
 
