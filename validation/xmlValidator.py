@@ -27,8 +27,8 @@ def validatePath(directory):
 		entry = join(directory, f)
 		if isfile(entry) and entry.endswith('ml'):
 			validateFile(entry)
-		elif options.verbose and isdir(entry):
-			print directory
+		elif options.recurse and isdir(entry):
+			validatePath(entry)
 
 
 def main():
@@ -36,9 +36,15 @@ def main():
 	usage = "usage: %prog [options] filename|directory ..."
 
 	parser = OptionParser(usage=usage)
+	parser.add_option("-n", "--norecurse",
+					  action="store_false", dest="recurse",
+					  help="don't recurse into directories")
 	parser.add_option("-q", "--quiet",
 					  action="store_false", dest="verbose", default=False,
 					  help="don't print valid files or requested directories")
+	parser.add_option("-r", "--recurse",
+					  action="store_true", dest="recurse", default=False,
+					  help="recurse into directories")
 	parser.add_option("-v", "--verbose",
 					  action="store_true", dest="verbose",
 					  help="print valid files and requested directories")
