@@ -17,12 +17,12 @@ def validateFile(filename):
 			print filename, 'is valid'
 	except xml.parsers.expat.ExpatError as e:
 		msg = str(e)
-		print filename, msg
-#		if 'invalid token' in msg:
-#			pass
+		if 'invalid token' in msg:
+			pass
 #		elif 'junk after document element' in msg:
 #			pass
-#		else:
+		else:
+			print filename, msg
 
 
 def validatePath(directory):
@@ -71,5 +71,6 @@ if __name__  == '__main__':
 		main()
 	except KeyboardInterrupt:
 		print 'User canceled scan'
+		pass
 
 # EOF
