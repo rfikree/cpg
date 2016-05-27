@@ -283,7 +283,7 @@ fi
 export PS1
 
 memuse() {
-	memory=($(/usr/sbin/swap -s | tr -d -c '0123456789 '))
+	local memory=($(/usr/sbin/swap -s | tr -d -c '0123456789 '))
 	echo Memory utilization: $(( ${memory[2]} * 100 / \
 		(  ${memory[2]} +  ${memory[3]} ) ))%
 }
