@@ -17,12 +17,12 @@ def validateFile(filename):
 			print filename, 'is valid'
 	except xml.parsers.expat.ExpatError as e:
 		msg = str(e)
-		if 'invalid token' in msg:
-			pass
-		elif 'junk after document element' in msg:
-			pass
-		else:
-			print filename, msg
+		print filename, msg
+#		if 'invalid token' in msg:
+#			pass
+#		elif 'junk after document element' in msg:
+#			pass
+#		else:
 
 
 def validatePath(directory):
@@ -31,7 +31,7 @@ def validatePath(directory):
 
 	for f in listdir(directory):
 		entry = join(directory, f)
-		if isfile(entry) and entry.endswith('ml'):
+		if isfile(entry) and (entry.endswith('.xml') or entry.endswith('.xhtml')):
 			validateFile(entry)
 		elif options.recurse and isdir(entry):
 			validatePath(entry)
