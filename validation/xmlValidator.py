@@ -132,16 +132,21 @@ def validateXML(filename):
 		print filename, msg
 
 
+def validateFile(fname):
+	if isfile(fname) and (fname.endswith('.xml') or fname.endswith('.xhtml')):
+		validateXML(fname)
+	elif isfile(fname) and (fname.endswith('.html') or fname.endswith('.html')):
+		validateHTML(fname)
+
+
 def validatePath(directory):
 	if options.verbose:
 		print 'Scanning directory', directory
 
 	for f in listdir(directory):
 		entry = join(directory, f)
-		if isfile(entry) and (entry.endswith('.xml') or entry.endswith('.xhtml')):
+		if validateFile(entry):
 			validateXML(entry)
-		elif isfile(entry) and (entry.endswith('.html') or entry.endswith('.html')):
-			validateHTML(entry)
 		elif options.recurse and isdir(entry):
 			validatePath(entry)
 
@@ -171,7 +176,7 @@ def main():
 
 	for source in args:
 		if isfile(source):
-			validateXML(source)
+			validateFile(source)
 		elif isdir(source):
 			validatePath(source)
 		else:
