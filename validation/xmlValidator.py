@@ -59,7 +59,9 @@ class SimpleHTMLValidator(HTMLParser):
 		self.filename = filename
 		try:
 			self.feed(codecs.open(filename, encoding='utf-8').read())
-		except Exception as e:
+		except OSError as e:
+			raise HTMLParseError('Exception ' + type(e).__name__ + ' ' + str(e) , self.getpos())
+		except ValueError as e:
 			raise HTMLParseError('Exception ' + type(e).__name__ + ' ' + str(e) , self.getpos())
 
 		while self.openTags and self.openTags[-1] in closeOptionalTags:
