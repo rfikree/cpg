@@ -70,7 +70,7 @@ class SimpleHTMLValidator(HTMLParser):
 	def handle_endtag(self, tag):
 		if not self.openTags:
 			raise HTMLParseError('Extra close tag ' + tag, self.getpos())
-		while True:
+		while self.openTags:
 			openTag = self.openTags.pop()
 			if openTag not in closeOptionalTag or tag == openTag:
 				break;
