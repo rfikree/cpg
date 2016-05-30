@@ -70,9 +70,8 @@ class SimpleHTMLValidator(HTMLParser):
 	def handle_endtag(self, tag):
 		while self.openTags:
 			openTag = self.openTags.pop()
-			if openTag in closeOptionalTag:
-			self.showWarning('Singleton tag' + tag + ' closed', self.getpos())
-
+			if openTag in singletonTags:
+				self.showWarning('Singleton tag ' + tag + ' closed', self.getpos())
 			if tag == openTag or openTag not in closeOptionalTags:
 				break;
 		if not self.openTags:
