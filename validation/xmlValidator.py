@@ -58,7 +58,11 @@ class SimpleHTMLValidator(HTMLParser):
 	def parse(self, filename):
 		self.filename = filename
 		try:
-			self.feed(codecs.open(filename, encoding='utf-8').read())
+			try:
+				self.feed(codecs.open(filename, encoding='utf-8').read())
+			except UnicodeDecodeError:
+				print filename, 'is not UTF-8 encoded, trying cp1252'
+				self.feed(codecs.open(filename, encoding='cp1252').read())
 		except OSError as e:
 			raise HTMLParseError('Exception ' + type(e).__name__ + ' ' + str(e) , self.getpos())
 		except ValueError as e:
