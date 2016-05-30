@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-'''  Validate XML in files and directory trees
+'''  Validate XML in files and/or directory trees
 '''
-
 
 import xml.dom.minidom
 from os import listdir
@@ -9,8 +8,100 @@ from os.path import isfile, isdir, join
 from optparse import OptionParser
 import sys
 
+from HTMLParser import HTMLParser, HTMLParseError
 
-def validateFile(filename):
+singletonTags = (
+	'area',
+	'base',
+	'br',
+	'col',
+	'command',
+	'embed',
+	'hr',
+	'img',
+	'input',
+	'link',
+	'meta',
+	'param',
+	'source',
+	'frame',
+	)
+
+closeOptionalTag = (
+	'body',
+	'colgroup',
+	'dd',
+	'dt',
+	'head',
+	'html',
+	'li',
+	'optgroup',
+	'option',
+	'p',
+	'tbody',
+	'td',
+	'tfoot',
+	'th',
+	'thead',
+	'tr',
+	)
+
+
+
+class SimpleHTMLValidator(HTMLParser):
+	def __init__(self):
+		HTMLParser.__init__(self)
+		self.openTags = []
+
+	def parse(self, filename):
+		self.filename = filename
+		self.feed(open(filename).read())
+		while self.openTags and self.openTags[-1] in closeOptionalTag:
+			openTag = self.openTags.pop()
+		if self.openTags:
+			raise HTMLParseError('Unclosed tags: ' + ', '.join(openTags), self.getpos())
+			openTags = []
+		self.close()
+
+	def handle_starttag(self, tag, attrs):
+		if tag not in singletonTags:
+			self.openTags.append(tag)
+
+	def handle_endtag(self, tag):
+		if not self.openTags:
+			raise HTMLParseError('Extra close tag ' + tag, self.getpos())
+		while True:
+			openTag = self.openTags.pop()
+			if openTag not in closeOptionalTag or tag == openTag:
+				break;
+		if tag != openTag:
+			raise HTMLParseError(tag + ' closes ' + openTag, self.getpos())
+
+	def handle_startendtag(self, tag, attrs):
+		if tag not in singletonTags:
+			self.handle_starttag(tag, attrs)
+			self.handle_endtag(tag)
+		else:
+			raise HTMLParseError('Singleton tag ' + tag + ' closed', self.getpos())
+
+	def showWarning(msg, position=None):
+		if not position:
+			position = self.getpos()
+		print self.filename, 'WARNING:', msg, position
+
+
+def validateHTML(filename):
+	try:
+		parser =  SimpleHTMLValidator()
+		parser.parse(filename)
+		if options.verbose:
+			print filename, 'is valid'
+	except HTMLParseError as e:
+		msg = str(e)
+		print filename, msg
+
+
+def validateXML(filename):
 	try:
 		xml.dom.minidom.parse(filename)
 		if options.verbose:
@@ -26,8 +117,10 @@ def validatePath(directory):
 
 	for f in listdir(directory):
 		entry = join(directory, f)
+		if isfile(entry) and entry.endswith('html'):
+			validateHTML(entry)
 		if isfile(entry) and (entry.endswith('.xml') or entry.endswith('.xhtml')):
-			validateFile(entry)
+			validateXML(entry)
 		elif options.recurse and isdir(entry):
 			validatePath(entry)
 
@@ -54,7 +147,7 @@ def main():
 
 	for source in args:
 		if isfile(source):
-			validateFile(source)
+			validateXML(source)
 		elif isdir(source):
 			validatePath(source)
 		else:
