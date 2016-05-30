@@ -59,7 +59,7 @@ class SimpleHTMLValidator(HTMLParser):
 		while self.openTags and self.openTags[-1] in closeOptionalTag:
 			openTag = self.openTags.pop()
 		if self.openTags:
-			raise HTMLParseError('Unclosed tags: ' + ', '.join(openTags), self.getpos())
+			raise HTMLParseError('Unclosed tags: ' + ', '.join(self.openTags), self.getpos())
 			openTags = []
 		self.close()
 
@@ -82,12 +82,18 @@ class SimpleHTMLValidator(HTMLParser):
 			self.handle_starttag(tag, attrs)
 			self.handle_endtag(tag)
 		else:
-			raise HTMLParseError('Singleton tag ' + tag + ' closed', self.getpos())
+			self.showWarning('Singleton tag ' + tag + ' closed', self.getpos())
 
-	def showWarning(msg, position=None):
+	def showWarning(self, msg, position=None):
 		if not position:
 			position = self.getpos()
-		print self.filename, 'WARNING:', msg, position
+		(lineno, offset) = position
+		if self.lineno is not None:
+			msg = msg + ", at line %d" % lineno
+		if self.offset is not None:
+			msg = msg + ", column %d" % (offset + 1)
+
+		print self.filename, 'WARNING:', msg
 
 
 def validateHTML(filename):
@@ -117,10 +123,10 @@ def validatePath(directory):
 
 	for f in listdir(directory):
 		entry = join(directory, f)
-		if isfile(entry) and entry.endswith('html'):
-			validateHTML(entry)
 		if isfile(entry) and (entry.endswith('.xml') or entry.endswith('.xhtml')):
 			validateXML(entry)
+		elif isfile(entry) and (entry.endswith('.html') or entry.endswith('.html')):
+			validateHTML(entry)
 		elif options.recurse and isdir(entry):
 			validatePath(entry)
 
