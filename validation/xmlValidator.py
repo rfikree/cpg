@@ -53,14 +53,14 @@ class SimpleHTMLValidator(HTMLParser):
 	def __init__(self):
 		HTMLParser.__init__(self)
 		self.openTags = []
-		self.warnigns = False
+		self.warnings = False
 
 	def parse(self, filename):
 		self.filename = filename
 		try:
 			self.feed(codecs.open(filename, encoding='utf-8').read())
 		except Exception as e:
-			raise HTMLParseError('Exception ' + type(e) + ' ' + str(e) , self.getpos())
+			raise HTMLParseError('Exception ' + type(e).__name__ + ' ' + str(e) , self.getpos())
 
 		while self.openTags and self.openTags[-1] in closeOptionalTags:
 			openTag = self.openTags.pop()
@@ -93,22 +93,25 @@ class SimpleHTMLValidator(HTMLParser):
 		else:
 			self.showWarning('Singleton tag ' + tag + ' closed', self.getpos())
 
-	def showWarning(self, msg, position=None):
-		if not position:
-			position = self.getpos()
-		(lineno, offset) = position
-		if self.lineno is not None:
-			msg = msg + ", at line %d" % lineno
-		if self.offset is not None:
-			msg = msg + ", column %d" % (offset + 1)
+	def setWarnings(self, value):
+		self.warnings = value
 
-		print self.filename, 'WARNING:', msg
+	def showWarning(self, msg, position=None):
+		if self.warnings:
+			if not position:
+				position = self.getpos()
+			(lineno, offset) = position
+			if self.lineno is not None:
+				msg = msg + ", at line %d" % lineno
+			if self.offset is not None:
+				msg = msg + ", column %d" % (offset + 1)
+			print self.filename, 'WARNING:', msg
 
 
 def validateHTML(filename):
 	try:
 		parser =  SimpleHTMLValidator()
-		parser.setWarnings = options.warnings
+		parser.setWarnings(options.warnings)
 		parser.parse(filename)
 		if options.verbose:
 			print filename, 'is valid'
