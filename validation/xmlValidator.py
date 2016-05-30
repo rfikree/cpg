@@ -7,6 +7,7 @@ from os import listdir
 from os.path import isfile, isdir, join
 from optparse import OptionParser
 import sys
+import codecs
 
 from HTMLParser import HTMLParser, HTMLParseError
 
@@ -52,10 +53,15 @@ class SimpleHTMLValidator(HTMLParser):
 	def __init__(self):
 		HTMLParser.__init__(self)
 		self.openTags = []
+		self.warnigns = False
 
 	def parse(self, filename):
 		self.filename = filename
-		self.feed(open(filename).read())
+		try:
+			self.feed(codecs.open(filename, encoding='utf-8').read())
+		except Exception as e:
+			raise HTMLParseError('Exception ' + type(e) + ' ' + str(e) , self.getpos())
+
 		while self.openTags and self.openTags[-1] in closeOptionalTags:
 			openTag = self.openTags.pop()
 		if self.openTags:
@@ -102,6 +108,7 @@ class SimpleHTMLValidator(HTMLParser):
 def validateHTML(filename):
 	try:
 		parser =  SimpleHTMLValidator()
+		parser.setWarnings = options.warnings
 		parser.parse(filename)
 		if options.verbose:
 			print filename, 'is valid'
@@ -151,6 +158,9 @@ def main():
 	parser.add_option("-v", "--verbose",
 					  action="store_true", dest="verbose",
 					  help="print valid files and requested directories")
+	parser.add_option("-w", "--warings",
+					  action="store_true", dest="warnings", default=False,
+					  help="show warning messages")
 
 	(options, args) = parser.parse_args()
 
