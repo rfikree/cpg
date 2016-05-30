@@ -61,7 +61,8 @@ class SimpleHTMLValidator(HTMLParser):
 			try:
 				self.feed(codecs.open(filename, encoding='utf-8').read())
 			except UnicodeDecodeError:
-				print filename, 'is not UTF-8 encoded, trying cp1252'
+				if self.warnings:
+					print filename, 'Warning: encoding is not UTF-8 -trying cp1252'
 				self.feed(codecs.open(filename, encoding='cp1252').read())
 		except OSError as e:
 			raise HTMLParseError('Exception ' + type(e).__name__ + ' ' + str(e) , self.getpos())
@@ -90,7 +91,7 @@ class SimpleHTMLValidator(HTMLParser):
 			if tag == openTag or openTag not in closeOptionalTags:
 				break
 		if tag != openTag:
-			raise HTMLParseError(tag + ' closes ' + openTag, self.getpos())
+			raise HTMLParseError(tag + ' tag closes ' + openTag, self.getpos())
 
 	def handle_startendtag(self, tag, attrs):
 		if tag not in singletonTags:
