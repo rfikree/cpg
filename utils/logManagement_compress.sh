@@ -168,13 +168,14 @@ case "${LOGNAME:0:3}" in
 esac
 
 STACK="a${PROJECT}${ENVIRONMENT}${STACK_NUM}"
-CPO_VAR="/cpg/cpo_var/$STACK"
+CPG_VAR=/cpg/cpo_var/${STACK}
+CPG_APPS=/cpg/cpo_apps/${STACK}
 
-if [ ! -d ${CPO_VAR} ]; then
-	echo "Can not locate working directory ${CPO_VAR}"
+if [ ! -d ${CPG_VAR} ]; then
+	echo "Can not locate working directory ${CPG_VAR}"
 	exit 99
 fi
-cd ${CPO_VAR} &>/dev/null
+cd ${CPG_VAR} &>/dev/null
 
 
 if [ ${COMPRESS_DAYS} -lt ${MIN_DAYS} ]; then
@@ -188,20 +189,27 @@ fi
 
 #### Move logs to history directories
 
+# Server logs for inactive servers (contents and over 1 days old)
+for server in ${STACK}*/servers/history/a*; do
+	server=${server##*/}
+	server_var=${CPG_VAR}/${server%-*}/servers/${server}
+	server_apps=${CPG_APPS}/${server%-*}/servers/${server}
+	server_lok=${server_apps}/tmp/${server}.lok
+
+	if [ ! -f ${server_lok} ]; then
+		for file in $(find ${server_var}*.log \
+			${server_var}.out -mtime +1 -size +1 2>/dev/null); do
+				mv -i ${file} ${file}00999
+		done
+	else
+		echo ${server} appears to be running
+	fi
+done
+
 # Recently rotated logs
 # Use two digits for log files to skip rotated GC logs
 for file in ${STACK}*/*/*.log*[0-9][0-9]* ${STACK}*/servers/*.out*[0-9]* \
 		${STACK}*/*/*20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*; do
-	if [ -f ${file} ]; then
-		lockfile ${file} || continue
-		archiveFile ${file}
-		unlockfile ${file}
-	fi
-done
-
-# Server logs for inactive servers (contents and over 2 days old)
-for file in $(find ${STACK}*/servers/*[1-9].log ${STACK}*/servers/*.out \
-		-mtime +2 -size +1); do
 	if [ -f ${file} ]; then
 		lockfile ${file} || continue
 		archiveFile ${file}
