@@ -291,7 +291,7 @@ memuse() {
 swapuse() {
 	swap -l | \
 	awk '$NF ~ /^[0-9]+$/ { blocks = blocks + $(NF-1); free = free + $NF; }
-		END { print "Swap utilization:", int((blocks-free+1024)/2048) "m" }'
+		END { print "Swap utilization:", int((blocks-free+1024)/2048) "MB" }'
 }
 
 
