@@ -291,7 +291,7 @@ memuse() {
 swapuse() {
 	swap -l | \
 	awk '$NF ~ /^[0-9]+$/ { blocks = blocks + $(NF-1); free = free + $NF; }
-		END { print "Swap utilization:", int((blocks-free+1024)/2048) "MB" }'
+		END { print "Swap utilization:", int((blocks-free+1024)/2048), "MB" }'
 }
 
 
@@ -343,7 +343,7 @@ if [[ $0 =~ bash ]]; then
 	echo "   CLASSPATH = ${CLASSPATH}"
 	echo
 	echo "      MEMORY = $(memuse | cut -d\  -f3)"
-	echo "        SWAP = $(swapuse | cut -d\  -f3)"
+	echo "        SWAP = $(swapuse | cut -d\  -f3-)"
 	echo
 	echo '------------------------------------------------------------'
 	echo
