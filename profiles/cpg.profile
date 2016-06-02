@@ -289,8 +289,9 @@ memuse() {
 }
 
 swapuse() {
-	local swap=($(/usr/sbin/swap -l | tr -d -c '0123456789 '))
-	echo Swap utilization: $(( ( ${swap[3]} - ${swap[2]} ) / 2048 ))k
+	swap -l | \
+	awk '$NF ~ /^[0-9]+$/ { blocks = blocks + $(NF-1); free = free + $NF; }
+		END { print "Swap utilization:", int((blocks-free+1024)/2048) "m" }'
 }
 
 
