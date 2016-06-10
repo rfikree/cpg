@@ -61,6 +61,7 @@ archiveFile() {
 	subDir=${subDir%_${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]*}
 	subDir=${subDir%AdminServer*}
 	subDir=${subDir%$hostname*}
+	subDir=${subDir%-[a-z][a-z]*}
 	if [ -z "${subDir}" ]; then
 		suffix=${file#${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]}
 		suffix=${suffix#AdminServer}
@@ -83,7 +84,7 @@ renameFile() {
 		local prefix=${1%.log*}
 		prefix=${prefix%.out*}
 		if [[ ${prefix} = ${prefix/20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/} ]]; then
-			# Timestamp is modification date less 1 hours
+			# Timestamp is modification date less 1 hours 15 minutes
 			# This is to work around DST time shifts
 			local mtime=$(perl -MPOSIX -e '$mt = (stat $ARGV[0])[9] - 3900; \
 				print POSIX::strftime "%Y-%m-%d\n", localtime($mt)', ${1})
@@ -197,8 +198,8 @@ for server in ${STACK}*/servers/history/a*; do
 	server_lok=${server_apps}/tmp/${server}.lok
 
 	if [ ! -f ${server_lok} ]; then
-		for file in $(find ${server_var}*.log \
-			${server_var}.out -mtime +1 -size +1 2>/dev/null); do
+		for file in $(find ${server_var}*.log ${server_var}.out \
+			! -name \*gc* -mtime +1 -size +1 2>/dev/null); do
 				mv -i ${file} ${file}00999
 		done
 	else
