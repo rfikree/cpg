@@ -11,13 +11,28 @@ import re
 
 exceptionRe = re.compile('^((Caused By: )?\S+Exception:|\s+at\s)')
 
-lineRe1 = re.compile('(\w+) (ERROR|WARN) \[\[\w+\].*\] (\S+)')
-lineRe2 = re.compile('<(Debug|Notice|Info|Warning|Error)>\s<([^>]+)>')
+lineRe1 = re.compile('(\w*-?\w+) (ERROR|WARN):? \[\[\w+\].*\] (\S+)')
+lineRe2 = re.compile('<(Debug|Notice|Info|Warning|Error)>\s<(.*?)>.*<(.*)>')
 
-exceptionRe = re.compile(
-	'^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\s+at\scom\.cpc\..*?\(([^)]+))?',
-	re.DOTALL)
+rePatterns = [
+	'(\w*-?\w+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*)\(([^)]+)?',
+	'<(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
+	'<(Notice)>.*?/(\S+).*(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
+	'(\w*-?\w+) (ERROR|WARN):? \[\[\w+\].*\] (\S+).*(\S*)>',
+]
 
+exceptionRegexs = []
+for pattern in rePatterns:
+	exceptionRegexs.append(re.compile(pattern,re.DOTALL + re.MULTILINE))
+
+exceptionRe1 = re.compile('(\w*-?\w+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*)\(([^)]+)?',
+	re.DOTALL + re.MULTILINE)
+exceptionRe2 = re.compile('<(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
+	re.DOTALL + re.MULTILINE )
+#	'^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\s+at\scom\.cpc\..*?\(([^)]+))?',
+
+atRe = re.compile('\s+at ([^(]+)')
+errorRe = re.compile('<(Error)>.*path=/(\S+)')
 
 def usage():
 	print """
@@ -52,9 +67,11 @@ def processLine(line, stats):
 
 	match = lineRe2.search(line)
 	if match is not None:
-		key = ' '.join(match.groups())
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(line))
+		if match.group(1) not in ('Info', 'Notice', 'Warning'):
+			key = ' '.join(match.groups())
+			count, size = stats.get(key, (0, 0))
+			stats[key] = (count + 1, size + len(line))
+			#print match.group(1), line
 		return
 
 	print exceptionLineNo, 'processLine:', line
@@ -63,32 +80,75 @@ def processLine(line, stats):
 def processException(lines, stats):
 	''' parse an exception gathering stats
 	'''
-	match = exceptionRe.search(lines)
+	key = ''
+	allLines= ''.join(lines)
+#	match = exceptionRe1.search(allLines)
+#	if match is not None:
+#		match = exceptionRe2.search(allLines)
+
+	for regex in exceptionRegexs:
+		match = regex.search(allLines)
+		if match is not None:
+			break
+
 	if match is not None:
 		#print 'b:', match.groups()
-		key = ''
 		for group in match.groups():
 			if group is not None:
-				key = key + group + ' '
-		key = key.strip()
+				key += group + ' '
+		key = key.rstrip()
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
-		#print key, '-', stats[key]
-	elif lines.startswith("Couldn't get price of SKUs") \
-	or   lines.startswith("  Status Message Code: NoRateFoundPSID"):
+
+	elif lines[1].startswith("Couldn't get price of SKUs") \
+	or   lines[1].startswith("  Status Message Code: NoRateFoundPSID"):
 		key = "Couldn't get price of SKU(s)"
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
-	elif lines.startswith('Error Code: '):
-		key = (' ').join(lines.split(None, 4)[:4])
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-	else:
-		key = "Unhandled case:" + lines.split(None, 2)[0]
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-		print exceptionLineNo, 'Unmatched Case:', lines,
 
+	elif lines[1].startswith('java.lang.IllegalStateException'):
+		key = errorRe.findall(lines[0])
+		print key
+		key.append(lines[1].rstrip())
+		key = (' ').join(key)
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+
+	elif lines[1].startswith('Error code:'):
+		key = (' ').join(lines[1].split(None, 4)[:4])
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+
+	elif lines[1].startswith('org.springframework.'):
+		key = ' '.join(('springframework', lines[1].split(': ')[1]))
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+
+	elif len(lines) > 2 and  lines[2].startswith('java.lang'):
+		key = lines[2].rstrip() + ' '
+		key += atRe.findall(lines[3])[0]
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+
+
+
+#	else:
+#		match = exceptionRe2.search(allLines)
+#		if match:
+#			print ### Matched re2
+#			print ''.join(lines[:5])
+#			for group in match.groups():
+#				if group is not None:
+#					key += group + ' '
+#				key = key.strip()
+#			count, size = stats.get(key, (0, 0))
+#			stats[key] = (count + 1, size + len(lines))
+	else:
+		key = "Unhandled case:" + lines[1]
+		count, size = stats.get(key, (0, 0))
+		stats[key] = (count + 1, size + len(lines))
+		print exceptionLineNo, 'Unmatched Case:', allLines
+		print
 
 def processFiles(fileNames, stats):
 	''' Process the lines in the files gathering summary data.
@@ -97,6 +157,7 @@ def processFiles(fileNames, stats):
 	global exceptionMatch
 	global exceptionLineNo
 	exceptionMatch = []
+	exceptionLineNo = -2
 
 	for line in fileinput.input(fileNames):
 
@@ -104,15 +165,16 @@ def processFiles(fileNames, stats):
 			if exceptionMatch:
 				processException(''.join(exceptionMatch), stats)
 				exceptionMatch = []
+				exceptionLineNo = -1
 
-		if not line.startswith('##'):
+		if not(line.startswith('##') and line.rstrip().endswith('>')):
 			if not exceptionMatch:
 				exceptionLineNo = fileinput.filelineno()
 			exceptionMatch.append(line)
 			continue
 
 		if exceptionMatch:
-			processException(''.join(exceptionMatch), stats)
+			processException(exceptionMatch, stats)
 			exceptionMatch = []
 
 		processLine(line, stats)
