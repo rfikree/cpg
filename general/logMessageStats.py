@@ -3,9 +3,8 @@
 """ LogMessageStats summarizes log file reporting message counts and
 the logfile space utilized by the log file. """
 
+from optparse import OptionParser
 import fileinput
-import getopt
-import argparser
 import sys
 import re
 
@@ -116,7 +115,7 @@ def processFiles(fileNames, stats):
 			processException(''.join(exceptionMatch), stats)
 			exceptionMatch = []
 
-		processLine(line, stats):
+		processLine(line, stats)
 
 	fileinput.close()
 
@@ -139,15 +138,23 @@ def reportStats(stats):
 	print
 
 def main():
-	stats = dict()
 
-	parser = argparse.ArgumentParser()
-	args = parser.parse_args()
+	usage= '''
+usage: %prog [options] file [file...]
+
+Sumarizes one or more log files reporting counts and size (bytes):
+ - log messages
+ - stack dumps by cpc classes
+'''
+
+	parser = OptionParser(usage=usage)
+	(options, args) = parser.parse_args()
 
 	if args:
+		stats = dict()
 		processFiles(args, stats)
 	else:
-		print "FATAL: no files provided"
+		print "FATAL: no files specified"
 		parser.print_help()
 
 
