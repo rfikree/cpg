@@ -3,13 +3,13 @@
 """ LogMessageStats summarizes log file reporting message counts and
 the logfile space utilized by the log file. """
 
-
+import fileinput
 import getopt
-import os
+import argparser
 import sys
 import re
 
-exceptionMatch = ''
+
 exceptionRe = re.compile('^((Caused By: )?\S+Exception:|\s+at\s)')
 
 lineRe1 = re.compile('(\w+) (ERROR|WARN) \[\[\w+\].*\] (\S+)')
@@ -58,7 +58,8 @@ def processLine(line, stats):
 		stats[key] = (count + 1, size + len(line))
 		return
 
-	print 'processLine:', line,
+	print exceptionLineNo, 'processLine:', line
+
 
 def processException(lines, stats):
 	''' parse an exception gathering stats
@@ -87,29 +88,39 @@ def processException(lines, stats):
 		key = "Unhandled case:" + lines.split(None, 2)[0]
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
-		print 'Unmatched Case:', lines,
+		print exceptionLineNo, 'Unmatched Case:', lines,
 
-def processFile(fileName, stats):
-	''' Process the lines in a file gathering summary data.
+
+def processFiles(fileNames, stats):
+	''' Process the lines in the files gathering summary data.
 		Gathers multiple message lines for summarization.
 	'''
 	global exceptionMatch
+	global exceptionLineNo
+	exceptionMatch = []
 
-	for line in openLogFile(fileName):
-		#print 'Z', line,
+	for line in fileinput.input(fileNames):
+
+		if fileinput.isfirstline():
+			if exceptionMatch:
+				processException(''.join(exceptionMatch), stats)
+				exceptionMatch = []
 
 		if not line.startswith('##'):
-			exceptionMatch = exceptionMatch + line
+			if not exceptionMatch:
+				exceptionLineNo = fileinput.filelineno()
+			exceptionMatch.append(line)
 			continue
 
-		if len(exceptionMatch):
-			processException(exceptionMatch, stats)
-			exceptionMatch = ''
+		if exceptionMatch:
+			processException(''.join(exceptionMatch), stats)
+			exceptionMatch = []
 
-		processLine(line, stats)
+		processLine(line, stats):
+
+	fileinput.close()
 
 def reportStats(stats):
-	#print stats
 
 	details = []
 	for item in stats:
@@ -130,25 +141,15 @@ def reportStats(stats):
 def main():
 	stats = dict()
 
+	parser = argparse.ArgumentParser()
+	args = parser.parse_args()
 
-	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'f:hl:p:u:v',
-			['file=', 'help', 'logfile=', 'password=', 'user=', 'verify'])
-	except getopt.GetoptError, err:
-		# print help information and exit:
-		print str(err) # will print something like 'option -a not recognized
-		usage()
+	if args:
+		processFiles(args, stats)
+	else:
+		print "FATAL: no files provided"
+		parser.print_help()
 
-	for o, a in opts:
-		if o in ('-h', '--help'):
-			usage()
-
-
-	if len(args) == 0:
-		usage()
-
-	for fileName in args:
-		processFile(fileName, stats)
 
 	reportStats(stats)
 
