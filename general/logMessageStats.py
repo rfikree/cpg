@@ -24,14 +24,15 @@ exceptionPatterns = [
 	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+).*?^uri :\[(\S*?)\]',
 	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+)',
 	r'^\S+ <[^\n]*> <\S+ \S+ \S+ INFO',
+	r'^\S+ <[^\n]*? (INFO).*?(^\S*)',
+	r'^\S+ <(Error)>.*?path:/(\S+).*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
+	r'^\S+ <(Error).*?(^\S+).*?\s+at (weblogic\..*?\(([^)]+))',
 	r'^\S+ <Notice> <[^\n]*DefaultTimeBasedFileNamingAndTriggeringPolicy',
-	r'^\S+ <Notice> .*?svc=rateshop, result=OK, operation=getDistRate',
 	r'^\S+ <(Notice)> [^\n]*?(In|Out)bound Message',
-	r'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
 	r'^\S+ <(Notice)>.*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
 	r'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
 	r'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
-	r'^\S+ <(Error).*(^\S+).*?\s+at (weblogic\..*?\(([^)]+))',
+	r'^\S+ <Notice> <[^\n]*\{svc=\w+, result=OK,',
 	r'^\S+ <Info> <JDBC> ',
 ]
 
@@ -84,12 +85,11 @@ def processException(lines, stats):
 		key = ' '.join(match.groups())
 
 		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
+		stats[key] = (count + 1, size + len(allLines))
 
 	else:
 		print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
 			'Unmatched Case:', allLines
-		print >> sys.stderr
 
 
 def processFiles(fileNames, stats):
