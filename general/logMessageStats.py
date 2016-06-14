@@ -15,7 +15,7 @@ linePatterns = [
 ]
 
 exceptionPatterns = [
-	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)?',
+	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)',
 	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN) \[\[\w+\].*?\] (\S+).*(\S*)>',
 	r'^\S+ <[^\n]*> <\S+ \S+ (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)',
 	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+)',
@@ -36,28 +36,6 @@ for pattern in exceptionPatterns:
 	exceptionRegexes.append(re.compile(pattern,re.DOTALL + re.MULTILINE))
 
 
-
-def usage():
-	print """
-Usage: %s [OPTIONS] file [file...]
-
-Sumarizes one or more log files reporting counts and size (bytes):
- - log messages
- - stack dumps by cpc classes
-
-Options:
-  -h, --help       Print this usage message
-""" % ( sys.argv[0], )
-	sys.exit(2)
-
-def openLogFile(fileName):
-	''' open a log file even if it is compressed
-	'''
-	if fileName.endswith('.gz'):
-		return gzip.open(fileName, 'r')
-	else:
-		return open(fileName, 'r')
-
 def processLine(line, stats):
 	''' parse a line gathering stats
 	'''
@@ -71,9 +49,8 @@ def processLine(line, stats):
 			key = ' '.join(match.groups())
 			count, size = stats.get(key, (0, 0))
 			stats[key] = (count + 1, size + len(line))
-			#print match.group(1), line
 	else:
-		print messageLineNo, 'processLine:', line
+		print >> sys.stderr, messageLineNo, 'processLine:', line
 
 
 def processException(lines, stats):
@@ -92,24 +69,17 @@ def processException(lines, stats):
 
 	if match is not None:
 		if not match.groups():
-			print 'XXX', lines[0]
 			return
 
-		try:
-			key = ' '.join(match.groups())
-		except:
-			print match.groups()
-			for group in match.groups():
-				if group is not None:
-					key += group + ' '
-			key = key.rstrip()
+		key = ' '.join(match.groups())
 
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 
 	else:
-		print messageLineNo, 'Unmatched Case:', allLines
-		print
+		print >> sys.stderr, messageLineNo, 'Unmatched Case:', allLines
+		print >> sys.stderr
+
 
 def processFiles(fileNames, stats):
 	''' Process the lines in the files gathering summary data.
@@ -145,6 +115,7 @@ def processFiles(fileNames, stats):
 		exceptionLines = []
 
 	fileinput.close()
+
 
 def reportStats(stats):
 
