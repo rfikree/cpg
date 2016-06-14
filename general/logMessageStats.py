@@ -14,17 +14,25 @@ linePatterns = [
 	'<(Debug|Notice|Info|Warning|Error)>\s<(.*?)>.*<(.*)>',
 ]
 
+# Patterns with no match groups will be ignored; use ?(...) for non-grouping
+# Patterns with optional match groups will crash the program.
 exceptionPatterns = [
-	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)',
-	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN) \[\[\w+\].*?\] (\S+).*(\S*)>',
-	r'^\S+ <[^\n]*> <\S+ \S+ (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)',
-	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+)',
+	r'^\S+ <[^\n]*> <\S+ \S+ ([^<]\S+) (ERROR|WARN).*?(^\S+).*? at (com\.?(cpc|pur)\S*?)\(([^)]+)',
+	r'^\S+ <[^\n]*> <\S+ \S+ ([^<]\S+) (ERROR|WARN) \[\[\w+\].*?\] (\S+).*(\S*)>',
+	r'^\S+ <[^\n]*> <\S+ \S+ ([^<]\S+) (ERROR|WARN).*?(^\S+)',
+	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+).*? at (com\.?(cpc|pur)\S*?)\(([^)]+)',
+	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+).*?^uri :\[(\S*?)\]',
+	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+)',
 	r'^\S+ <[^\n]*> <\S+ \S+ \S+ INFO',
-	'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))',
-	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))',
+	'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
+	'^\S+ <(Notice)>.*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
 	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
-	'^\S+ <(Error).*(^\S+).*?\s+at\s(weblogic\..*?\(([^)]+))',
-	'<Notice.*?svc=rateshop, result=OK, operation=getDistRate',
+	'^\S+ <(Notice)> [^\n]*?(In|Out)bound Message',
+	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
+	'^\S+ <(Error).*(^\S+).*?\s+at (weblogic\..*?\(([^)]+))',
+	'^\S+ <Notice> .*?svc=rateshop, result=OK, operation=getDistRate',
+	'^\S+ <Notice> <[^\n]*DefaultTimeBasedFileNamingAndTriggeringPolicy',
+	'^\S+ <Info> <JDBC> ',
 ]
 
 
@@ -51,7 +59,8 @@ def processLine(line, stats):
 			count, size = stats.get(key, (0, 0))
 			stats[key] = (count + 1, size + len(line))
 	else:
-		print >> sys.stderr, messageLineNo, 'processLine:', line
+		print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
+			'processLine:', line
 
 
 def processException(lines, stats):
@@ -78,7 +87,8 @@ def processException(lines, stats):
 		stats[key] = (count + 1, size + len(lines))
 
 	else:
-		print >> sys.stderr, messageLineNo, 'Unmatched Case:', allLines
+		print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
+			'Unmatched Case:', allLines
 		print >> sys.stderr
 
 
@@ -87,12 +97,14 @@ def processFiles(fileNames, stats):
 		Gathers multiple message lines for summarization.
 	'''
 	global exceptionLines
+	global fileName
 	global messageLineNo
 	exceptionLines = []
 
 	for line in fileinput.input(fileNames, openhook=fileinput.hook_compressed):
 
 		if fileinput.isfirstline():
+			fileName = fileinput.filename()
 			if exceptionLines:
 				processException(''.join(exceptionLines), stats)
 				exceptionLines = []
@@ -106,7 +118,6 @@ def processFiles(fileNames, stats):
 				messageLineNo = fileinput.filelineno()
 			exceptionLines.append(line)
 			continue
-
 
 		messageLineNo = fileinput.filelineno()
 		processLine(line, stats)
@@ -127,7 +138,6 @@ def reportStats(stats):
 
 	details.sort(reverse=True)
 
-	print
 	print
 	print '     Count    Log Bytes  Message Summary'
 	print '==========  ===========  ==============================================='
