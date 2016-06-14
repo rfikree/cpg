@@ -17,22 +17,22 @@ linePatterns = [
 # Patterns with no match groups will be ignored; use ?(...) for non-grouping
 # Patterns with optional match groups will crash the program.
 exceptionPatterns = [
-	r'^\S+ <[^\n]*> <\S+ \S+ ([^<]\S+) (ERROR|WARN).*?(^\S+).*? at (com\.?(cpc|pur)\S*?)\(([^)]+)',
-	r'^\S+ <[^\n]*> <\S+ \S+ ([^<]\S+) (ERROR|WARN) \[\[\w+\].*?\] (\S+).*(\S*)>',
-	r'^\S+ <[^\n]*> <\S+ \S+ ([^<]\S+) (ERROR|WARN).*?(^\S+)',
+	r'^\S+ <[^\n]*> <\S+ \S+ ([^<0-9]\S+) (ERROR|WARN).*?(^\S+).*? at (com\.?(cpc|pur)\S*?)\(([^)]+)',
+	r'^\S+ <[^\n]*> <\S+ \S+ ([^<0-9]\S+) (ERROR|WARN) \[\[\w+\].*?\] (\S+).*?(\S*)>',
+	r'^\S+ <[^\n]*> <\S+ \S+ ([^<0-9]\S+) (ERROR|WARN).*?(^\S+)',
 	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+).*? at (com\.?(cpc|pur)\S*?)\(([^)]+)',
 	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+).*?^uri :\[(\S*?)\]',
 	r'^\S+ <[^\n]*> (ERROR|WARN).*?(^\S+)',
 	r'^\S+ <[^\n]*> <\S+ \S+ \S+ INFO',
-	'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
-	'^\S+ <(Notice)>.*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
-	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
-	'^\S+ <(Notice)> [^\n]*?(In|Out)bound Message',
-	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
-	'^\S+ <(Error).*(^\S+).*?\s+at (weblogic\..*?\(([^)]+))',
-	'^\S+ <Notice> .*?svc=rateshop, result=OK, operation=getDistRate',
-	'^\S+ <Notice> <[^\n]*DefaultTimeBasedFileNamingAndTriggeringPolicy',
-	'^\S+ <Info> <JDBC> ',
+	r'^\S+ <Notice> <[^\n]*DefaultTimeBasedFileNamingAndTriggeringPolicy',
+	r'^\S+ <Notice> .*?svc=rateshop, result=OK, operation=getDistRate',
+	r'^\S+ <(Notice)> [^\n]*?(In|Out)bound Message',
+	r'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
+	r'^\S+ <(Notice)>.*?(^\S+).*? at (com\.?(cpc|pur)\..*?\(([^)]+))',
+	r'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
+	r'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
+	r'^\S+ <(Error).*(^\S+).*?\s+at (weblogic\..*?\(([^)]+))',
+	r'^\S+ <Info> <JDBC> ',
 ]
 
 
