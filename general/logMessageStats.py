@@ -21,8 +21,9 @@ exceptionPatterns = [
 	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+)',
 	r'^\S+ <[^\n]*> <\S+ \S+ \S+ INFO',
 	'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))',
-	'^\S+ <(Notice)>.*?/(\S+).*(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
-	'^\S+ <(Error).*(^\S+).*?\s+at\s(weblogic\..*?\(([^)]+))?',
+	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))',
+	'^\S+ <(Notice)>.*?/(\S+).*?(^\S+)',
+	'^\S+ <(Error).*(^\S+).*?\s+at\s(weblogic\..*?\(([^)]+))',
 	'<Notice.*?svc=rateshop, result=OK, operation=getDistRate',
 ]
 
