@@ -9,30 +9,33 @@ import sys
 import re
 
 
-exceptionRe = re.compile('^((Caused By: )?\S+Exception:|\s+at\s)')
-
-lineRe1 = re.compile('(\w*-?\w+) (ERROR|WARN):? \[\[\w+\].*\] (\S+)')
-lineRe2 = re.compile('<(Debug|Notice|Info|Warning|Error)>\s<(.*?)>.*<(.*)>')
-
-rePatterns = [
-	'(\w*-?\w+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*)\(([^)]+)?',
-	'<(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
-	'<(Notice)>.*?/(\S+).*(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
-	'(\w*-?\w+) (ERROR|WARN):? \[\[\w+\].*\] (\S+).*(\S*)>',
+linePatterns = [
+	'(\w*-?\w+) (ERROR|WARN):? \[\[\w+\].*\] (\S+)',
+	'<(Debug|Notice|Info|Warning|Error)>\s<(.*?)>.*<(.*)>',
 ]
 
-exceptionRegexs = []
-for pattern in rePatterns:
-	exceptionRegexs.append(re.compile(pattern,re.DOTALL + re.MULTILINE))
+exceptionPatterns = [
+	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)?',
+	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN) \[\[\w+\].*?\] (\S+).*(\S*)>',
+	r'^\S+ <[^\n]*> <\S+ \S+ (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*?)\(([^)]+)',
+	r'^\S+ <[^\n]*> <\S+ \S+ (\S+) (ERROR|WARN).*?(^\S+)',
+	r'^\S+ <[^\n]*> <\S+ \S+ \S+ INFO',
+	'^\S+ <(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))',
+	'^\S+ <(Notice)>.*?/(\S+).*(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
+	'^\S+ <(Error).*(^\S+).*?\s+at\s(weblogic\..*?\(([^)]+))?',
+	'<Notice.*?svc=rateshop, result=OK, operation=getDistRate',
+]
 
-exceptionRe1 = re.compile('(\w*-?\w+) (ERROR|WARN).*?(^\S+).*?\s+at\s(com\.cpc\S*)\(([^)]+)?',
-	re.DOTALL + re.MULTILINE)
-exceptionRe2 = re.compile('<(Error)>.*path:/(\S+).*?(^\S+).*?\s+at\s(com\.cpc\..*?\(([^)]+))?',
-	re.DOTALL + re.MULTILINE )
-#	'^(\S+?):(?:.*?\s+at\s.*?\(([^)]+))?(?:.*?\s+at\scom\.cpc\..*?\(([^)]+))?',
 
-atRe = re.compile('\s+at ([^(]+)')
-errorRe = re.compile('<(Error)>.*path=/(\S+)')
+lineRegexes = []
+for pattern in linePatterns:
+	lineRegexes.append(re.compile(pattern))
+
+exceptionRegexes = []
+for pattern in exceptionPatterns:
+	exceptionRegexes.append(re.compile(pattern,re.DOTALL + re.MULTILINE))
+
+
 
 def usage():
 	print """
@@ -58,23 +61,19 @@ def openLogFile(fileName):
 def processLine(line, stats):
 	''' parse a line gathering stats
 	'''
-	match = lineRe1.search(line)
-	if match is not None:
-		key = ' '.join(match.groups())
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(line))
-		return
+	for regex in lineRegexes:
+		match = regex.search(line)
+		if match is not None:
+			break
 
-	match = lineRe2.search(line)
 	if match is not None:
 		if match.group(1) not in ('Info', 'Notice', 'Warning'):
 			key = ' '.join(match.groups())
 			count, size = stats.get(key, (0, 0))
 			stats[key] = (count + 1, size + len(line))
 			#print match.group(1), line
-		return
-
-	print exceptionLineNo, 'processLine:', line
+	else:
+		print messageLineNo, 'processLine:', line
 
 
 def processException(lines, stats):
@@ -86,98 +85,64 @@ def processException(lines, stats):
 #	if match is not None:
 #		match = exceptionRe2.search(allLines)
 
-	for regex in exceptionRegexs:
+	for regex in exceptionRegexes:
 		match = regex.search(allLines)
 		if match is not None:
 			break
 
 	if match is not None:
-		#print 'b:', match.groups()
-		for group in match.groups():
-			if group is not None:
-				key += group + ' '
-		key = key.rstrip()
+		if not match.groups():
+			print 'XXX', lines[0]
+			return
+
+		try:
+			key = ' '.join(match.groups())
+		except:
+			print match.groups()
+			for group in match.groups():
+				if group is not None:
+					key += group + ' '
+			key = key.rstrip()
+
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(lines))
 
-	elif lines[1].startswith("Couldn't get price of SKUs") \
-	or   lines[1].startswith("  Status Message Code: NoRateFoundPSID"):
-		key = "Couldn't get price of SKU(s)"
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-
-	elif lines[1].startswith('java.lang.IllegalStateException'):
-		key = errorRe.findall(lines[0])
-		print key
-		key.append(lines[1].rstrip())
-		key = (' ').join(key)
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-
-	elif lines[1].startswith('Error code:'):
-		key = (' ').join(lines[1].split(None, 4)[:4])
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-
-	elif lines[1].startswith('org.springframework.'):
-		key = ' '.join(('springframework', lines[1].split(': ')[1]))
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-
-	elif len(lines) > 2 and  lines[2].startswith('java.lang'):
-		key = lines[2].rstrip() + ' '
-		key += atRe.findall(lines[3])[0]
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-
-
-
-#	else:
-#		match = exceptionRe2.search(allLines)
-#		if match:
-#			print ### Matched re2
-#			print ''.join(lines[:5])
-#			for group in match.groups():
-#				if group is not None:
-#					key += group + ' '
-#				key = key.strip()
-#			count, size = stats.get(key, (0, 0))
-#			stats[key] = (count + 1, size + len(lines))
 	else:
-		key = "Unhandled case:" + lines[1]
-		count, size = stats.get(key, (0, 0))
-		stats[key] = (count + 1, size + len(lines))
-		print exceptionLineNo, 'Unmatched Case:', allLines
+		print messageLineNo, 'Unmatched Case:', allLines
 		print
 
 def processFiles(fileNames, stats):
 	''' Process the lines in the files gathering summary data.
 		Gathers multiple message lines for summarization.
 	'''
-	global exceptionMatch
-	global exceptionLineNo
-	exceptionMatch = []
-	exceptionLineNo = -2
+	global exceptionLines
+	global messageLineNo
+	exceptionLines = []
 
-	for line in fileinput.input(fileNames):
+	for line in fileinput.input(fileNames, openhook=fileinput.hook_compressed):
 
 		if fileinput.isfirstline():
-			if exceptionMatch:
-				processException(''.join(exceptionMatch), stats)
-				exceptionMatch = []
-				exceptionLineNo = -1
+			if exceptionLines:
+				processException(''.join(exceptionLines), stats)
+				exceptionLines = []
+
+		if line.startswith('##') and exceptionLines:
+			processException(exceptionLines, stats)
+			exceptionLines = []
 
 		if not(line.startswith('##') and line.rstrip().endswith('>')):
-			if not exceptionMatch:
-				exceptionLineNo = fileinput.filelineno()
-			exceptionMatch.append(line)
+			if not exceptionLines:
+				messageLineNo = fileinput.filelineno()
+			exceptionLines.append(line)
 			continue
 
-		if exceptionMatch:
-			processException(exceptionMatch, stats)
-			exceptionMatch = []
 
+		messageLineNo = fileinput.filelineno()
 		processLine(line, stats)
+
+	if exceptionLines:
+		processException(exceptionLines, stats)
+		exceptionLines = []
 
 	fileinput.close()
 
