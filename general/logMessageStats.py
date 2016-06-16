@@ -41,7 +41,7 @@ linePatterns = [
 	'^\S+ <Notice> <(StdErr)> .+? <(line \d+:\d+ no viable .+?)>',
 
 	# Unhandled exceptions
-	'^\S+ <Notice> <StdErr> <.+? <BEA-000000> <at ',
+	'^\S+ <Notice> <(StdErr)> <.+? <(BEA-000000)> <(at) ',
 	'^\S+ <Notice> <(StdErr)> <.+? <(BEA-000000)> <(\S+)>',
 	'^\S+ <Notice> <(Std\w\w\w)> <.+? <((?!at )[^>]+)>\s*$',
 
