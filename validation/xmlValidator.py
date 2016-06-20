@@ -173,7 +173,7 @@ def main():
 	parser.add_option("-v", "--verbose",
 					  action="store_true", dest="verbose",
 					  help="print valid files and requested directories")
-	parser.add_option("-w", "--warings",
+	parser.add_option("-w", "--warnings",
 					  action="store_true", dest="warnings", default=False,
 					  help="show warning messages")
 
