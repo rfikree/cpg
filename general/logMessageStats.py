@@ -9,35 +9,42 @@ import sys
 import re
 
 
+missedLinePattern = ' (ERROR|WARN|INFO|DEBUG|SEVERE|FATAL)'
+missedLineRegex = re.compile(missedLinePattern)
+stdIOLinePattern = '^[^>]+> <Notice> (<Std\w+>) .+ <([^>]+)>'
+stdIOLineRegex = re.compile(stdIOLinePattern)
+
+
 linePatterns = [
 	# WebLogic Notices - Ignored
 	'^\S+ <Notice> <Std\w\w\w> .+? <LoggingService>',
 
 	# Stdout messages - filterd by domain
-	'^\S+ <Notice> <(Stdout)> <\S+> <a.+? ([a-z]\S+) (ERROR) \[\[\w+\].+?\] (MissingProperty.+)>',
-	'^\S+ <Notice> <(Stdout)> <\S+> <a1\w+-c1.+? ([a-z]\S+) (ERROR|WARN|INFO) \[(?:\[\w+\])?.+?\] (\S+)',
-	'^\S+ <Notice> <(Stdout)> <\S+> <a.+? (ERROR|WARN|INFO|DEBUG) \[(?:\[\w+\])?.+?\] (\S+)',
+	'^\S+ <Notice> <(Stdout)> <\S+> <.+? ([a-z]\S+) (ERROR) \[\[\w+\].+?\] (MissingProperty.+)>',
+	'^\S+ <Notice> <(Stdout)> <\S+> <.+? ([a-z]\S+) (ERROR|WARN|INFO) \[(?:\[\w+\])?.+?\] (\w+\.\w+.\S+)',
+	'^\S+ <Notice> <(Stdout)> <\S+> <.+? ([a-z]\S+) (ERROR|WARN|INFO) (\w+\.\w+.\S+)',
 	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w3\dd1-c1.+? <(Drawing white:\w+)>',
 	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? {(svc=\w+, result=\w+, operation=\w+),',
 	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? (xmlns:env="http://schemas.xmlsoap.org/soap/envelope/")',
 
 	# Stdout messages
-	#'^\S+ <Notice> <Stdout> .+? Fetching customer profile for CPCID',
-	'^\S+ <Notice> <(Stdout)> <.+? (WARN)  \[XSSFilter\] (.+?)>',
+	'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN|INFO|DEBUG) +\[(?:\[\w+\])?.+?\] (\w+\.\w+.\S+)',
+	'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN|INFO|DEBUG) +\[(?:\[\w+\])?[^X].+?\] (\w+(?: [^[]\S+){,3})',
+	'^\S+ <Notice> <(Stdout)> <.+? \[\[\w+\].+?\] (ERROR|INFO |DEBUG) (\w+\.\w+.\S+)',
+	'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN ) (\[XSSFilter\] .+?)[,>]',
+	'^\S+ <Notice> <(Stdout)> <.+? (WARN)  (\[IndexedDiskCache\]) .+? *(\w+ \w+)>',
 	'^\S+ <Notice> <(Stdout)> <.+? (WARN)  \[\w+\] (\w+(?:[. ]\w+){,3})',
-	'^\S+ <Notice> <(Stdout)> <.+? \[\[\w+\].+?\] (ERROR|INFO |DEBUG) (\S+)',
-	#'^\S+ <Notice> <(Stdout)> (ERROR) \S+ (\S+) .+?(File not found:.+?)>',
-	'^\S+ <Notice> <(Stdout)> .+? ([a-z]\S+) (ERROR|WARN):? (?:\[\[\w+\].+\] )?(\S.+?)(?: ?[-:\n(\?])',
+	#'^\S+ <Notice> <(Stdout)> .+? ([a-z]\S+) (ERROR|WARN):? (?:\[\[\w+\].+\] )?(\S.+?)(?: ?[-:\n(\?])',
+	#'^\S+ <Notice> <Stdout> .+? Fetching customer profile for CPCID',
 	#'^\S+ <Notice> <(Stdout)> .+? (c.c.n.u.t.c.TermsOfUseController \w+ \w+)',
+	#'^\S+ <Notice> <(Stdout)> (ERROR) \S+ (\S+) .+?(File not found:.+?)>',
 	#'^\S+ <Notice> <(Stdout)> .+? <\S+ (ERROR|WARN) +\[\S+?\] (.+?)(?: ?[-:>]|code|name)',
 
 	# StdErr ouput
 	'^\S+ <Notice> <(StdErr)> .+? (\[IntroscopeAgent.\w+\] \w+ \w+ \w+ \w+)',
-	'^\S+ <Notice> <(StdErr)> .+? <(line \d+:\d+ no viable .+?)>',
 	'^\S+ <Notice> <(StdErr)> .+? <Exception in thread "Thread-\d+" (.+?)>',
 
-	# Unhandled exceptions
-	'^\S+ <Notice> <(StdErr)> <.+? <(BEA-000000)> <(at )',
+	# Unhandled exceptions = ignored
 	'^\S+ <Notice> <Std\w+> .+? <log4j: ',
 
 	# WebLogic Error Message
@@ -48,12 +55,13 @@ linePatterns = [
 	'^\S+ <(Warning)> <(HTTP)> .+? (class loader configuration ignored)',
 	'^\S+ <(Warning)> <(JNDI)> .+? (non-versioned global resource "\w+")',
 
+	# WebLogic Info messages - normally ignored
+	#'^\S+ <(Info)> <(Common)> .+? <(Created "\d+" resources for pool "\w+")',
+	#'^\S+ <(Info)> <(JDBC)> .+? (pool ".+?") has been (closed)',
 
 	# WebLogic Info messages
 	'^\S+ <(Info)> <(Common)> .+? <(Reached maximum capacity of pool "\w+")',
 	'^\S+ <(Info)> <(Cluster)> .+? <(Lost \d+ unicast message\(s\))',
-	#'^\S+ <(Info)> <(Common)> .+? <(Created "\d+" resources for pool "\w+")',
-	#'^\S+ <(Info)> <(JDBC)> .+? (pool ".+?") has been (closed)',
 	'^\S+ <(Info)> <(WorkManager)> .+? M(maximum thread constraint ClusterMessaging is reached)',
 	'^[^>]+> <Info> ',
 	'^[^>]+> <Notice> <(?:Cluster|Log Management|Security|Server|WebLogicServer)>',
@@ -63,11 +71,13 @@ linePatterns = [
 	'^\S+ <(Warning)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(.+?: \w+)',
 	'^[^>]+> <(Warning)> <(Management)> .+> <(.+)>',
 
-	# Debug Messages
-	'^\S+ <(\w)> <(\w)> .+? (DEBUG)',
 
+	# Unmatched patterns: - Matching messages will be written to StdErr file.
+	#'^\S+ <Notice> <(StdErr)> <.+? <(BEA-000000)> <(at )',
+	#'^\S+ <Notice> <(StdErr)> .+? <(line \d+:\d+ no viable .+?)>',
 	#'^[^>]+> <Notice> <(Std\w+)> <.+ <[^<]+)>',
 ]
+
 
 # Patterns with no match groups will be ignored; use (?:...) for non-capture
 # Patterns with optional match groups will crash the program.
@@ -78,7 +88,7 @@ exceptionPatterns = [
 	r'^\S+ <Notice> <(StdErr)> <.+? (FATAL): .+?  Exception is: (.+?)$',
 	r'^\S+ <Notice> <(StdErr)> <.+ ([^<0-9]\S+) +(INFO) +\[\[\w+\].+?\] (\S+)',
 	r'^\S+ <Notice> <(StdErr)> <.+? (SEVERE): .\w+ (.+?)>$',
-	r'^\S+ <Notice> <(StdErr)> (?ms).+?com\.sun\.xml\..+?$\s(SEVERE): \w+: (.+?)$',
+	r'^\S+ <Notice> <(StdErr)> (?ms).+?com\.sun\.xml\..+?$\s(SEVERE): \w+: (.+?)>',
 	r"^\S+ <Notice> <(StdErr)> (?ms).+?^(INFO|WARNING): .+? '(\w.+?)['@]",
 	r"^\S+ <Notice> <(StdErr)> (?ms).+?(^WARNING): .+? serviceName='(.+?)'",
 	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s?(INFO)',
@@ -142,6 +152,8 @@ exceptionPatterns = [
 	r'^\s*(<.+?>)',
 ]
 
+
+
 lineRegexes = []
 for pattern in linePatterns:
 	try:
@@ -173,14 +185,24 @@ def processLine(line, stats):
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(line))
 
-		#if 'Stdout WARN XSSFilter' in key:
+		#if 'Stdout WARN Region' in key:
 		#	print 'WAT key', key
 		#	print 'WAT pattern', regex.pattern
 		#	print line
 
 	else:
-		print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
-			'processLine:', line
+		missed = missedLineRegex.search(line)
+		stdIO = stdIOLineRegex.search(line)
+		if stdIO is not None and not missed:
+			if stdIO.group(2).startswith('at '):
+				message = ('%s     %s') % stdIO.groups()
+			else:
+				message = ('%s %s') % stdIO.groups()
+			print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
+				message
+		else:
+			print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
+				'Unhandled:', line
 
 
 def processException(lines, stats):
@@ -204,16 +226,15 @@ def processException(lines, stats):
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(allLines))
 
-		#if key.startswith('Error') and 'HTsTP' in key:
+		#if 'StdErr SEVERE SOAP' in key:
 		#	print 'WAT key', key
 		#	print 'WAT pattern', regex.pattern
+		#	print  ' ** '.join(match.groups())
 		#	print allLines
-		#print 'WAT key', key
-		#print 'WAT pattern', regex.pattern
 
 	else:
 		print >> sys.stderr, ':'.join((fileName, str(messageLineNo))), \
-			'Unmatched Case:', allLines
+			'Unmatched:', allLines
 
 
 def processFiles(fileNames, stats):
