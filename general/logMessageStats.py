@@ -16,33 +16,42 @@ stdIOLineRegex = re.compile(stdIOLinePattern)
 
 
 linePatterns = [
-	# WebLogic Notices - Ignored
-	'^\S+ <Notice> <Std\w\w\w> .+? <LoggingService>',
+	# WebLog logging messages
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> .+<LoggingService>",
 
-	# Stdout messages - filterd by domain
-	'^\S+ <Notice> <(Stdout)> <\S+> <.+? ([a-z]\S+) (ERROR) \[\[\w+\].+?\] (MissingProperty.+)>',
-	'^\S+ <Notice> <(Stdout)> <\S+> <.+? ([a-z]\S+) (ERROR|WARN|INFO) \[(?:\[\w+\])?.+?\] (\w+\.\w+.\S+)',
-	'^\S+ <Notice> <(Stdout)> <\S+> <.+? ([a-z]\S+) (ERROR|WARN|INFO) (\w+\.\w+.\S+)',
-	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w3\dd1-c1.+? <(Drawing white:\w+)>',
+	# Stdout messages - By format
+	# Date Applicagtion Level Thread Message (CPO)
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+	# Date  Level Thread Message
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\S+ (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+	# Date  Level ?? Message
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\S+ (ERROR|WARN|INFO) +\[\S+\] ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+	# Date Thread Level Message
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\S+ \[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+
+	# Date Applicagtion Level Message (CPO WebServices)
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\d{4}\S{6} \S+ ([a-z]\S+) (ERROR|WARN|INFO) ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+
+	# Cross site filtering
+	'^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S+ (ERROR|WARN ) (\[XSSFilter\] .+?)[,>]',
+
+	# DEBUG Messages
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S+ \[\[\w+\].+?\] (DEBUG) +(\S+)",
+
+	# RWS Logging
 	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? {(svc=\w+, result=\w+, operation=\w+),',
 	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? (xmlns:env="http://schemas.xmlsoap.org/soap/envelope/")',
 
-	# Stdout messages
-	'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN|INFO|DEBUG) +\[(?:\[\w+\])?.+?\] (\w+\.\w+.\S+)',
-	'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN|INFO|DEBUG) +\[(?:\[\w+\])?[^X].+?\] (\w+(?: [^[]\S+){,3})',
-	'^\S+ <Notice> <(Stdout)> <.+? \[\[\w+\].+?\] (ERROR|INFO |DEBUG) (\w+\.\w+.\S+)',
-	'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN ) (\[XSSFilter\] .+?)[,>]',
-	'^\S+ <Notice> <(Stdout)> <.+? (WARN)  (\[IndexedDiskCache\]) .+? *(\w+ \w+)>',
-	'^\S+ <Notice> <(Stdout)> <.+? (WARN)  \[\w+\] (\w+(?:[. ]\w+){,3})',
-	#'^\S+ <Notice> <(Stdout)> .+? ([a-z]\S+) (ERROR|WARN):? (?:\[\[\w+\].+\] )?(\S.+?)(?: ?[-:\n(\?])',
-	#'^\S+ <Notice> <Stdout> .+? Fetching customer profile for CPCID',
-	#'^\S+ <Notice> <(Stdout)> .+? (c.c.n.u.t.c.TermsOfUseController \w+ \w+)',
-	#'^\S+ <Notice> <(Stdout)> (ERROR) \S+ (\S+) .+?(File not found:.+?)>',
-	#'^\S+ <Notice> <(Stdout)> .+? <\S+ (ERROR|WARN) +\[\S+?\] (.+?)(?: ?[-:>]|code|name)',
+	# CMSSS Web Service
+	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w3\dd1-c1.+? <(Drawing white:\w+)>',
 
 	# StdErr ouput
+	# Thread Level Message
+	"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <\[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+	# Other messags
 	'^\S+ <Notice> <(StdErr)> .+? (\[IntroscopeAgent.\w+\] \w+ \w+ \w+ \w+)',
 	'^\S+ <Notice> <(StdErr)> .+? <Exception in thread "Thread-\d+" (.+?)>',
+	'^\S+ <Notice> <(StdErr)> .+? <(line \d+:\d+ no viable .+?)>',
 
 	# Unhandled exceptions = ignored
 	'^\S+ <Notice> <Std\w+> .+? <log4j: ',
@@ -66,15 +75,13 @@ linePatterns = [
 	'^[^>]+> <Info> ',
 	'^[^>]+> <Notice> <(?:Cluster|Log Management|Security|Server|WebLogicServer)>',
 
-	# WebLogic Warnings
+	# WebLogic Warnings                               |
 	'^\S+ <(Warning)> <(Socket)> .+? <(Closing socket as no data read)',
 	'^\S+ <(Warning)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(.+?: \w+)',
 	'^[^>]+> <(Warning)> <(Management)> .+> <(.+)>',
 
-
 	# Unmatched patterns: - Matching messages will be written to StdErr file.
 	#'^\S+ <Notice> <(StdErr)> <.+? <(BEA-000000)> <(at )',
-	#'^\S+ <Notice> <(StdErr)> .+? <(line \d+:\d+ no viable .+?)>',
 	#'^[^>]+> <Notice> <(Std\w+)> <.+ <[^<]+)>',
 ]
 
@@ -92,7 +99,7 @@ exceptionPatterns = [
 	r"^\S+ <Notice> <(StdErr)> (?ms).+?^(INFO|WARNING): .+? '(\w.+?)['@]",
 	r"^\S+ <Notice> <(StdErr)> (?ms).+?(^WARNING): .+? serviceName='(.+?)'",
 	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s?(INFO)',
-	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s(SEVERE|ERROR|WARN).+?(^\S+):.+?at ((:?com\.cpc|cpdt)\.\S+)',
+	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s(SEVERE|ERROR|WARN).+?(^\S+):.+?at ((?:com\.cpc|cpdt)\.\S+)',
 	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s(SEVERE|ERROR|WARN):\s*?$.+?^(\S+.+?)$',
 	r'^\S+ <Notice> <(StdErr)> <.+ (\w+ of missing type cpdt\.\w+\.rules\.)',
 
@@ -138,6 +145,9 @@ exceptionPatterns = [
 	r'^\S+ <Notice> <Security> .+? Using default',
 	r'^\S+ <Notice> <StdErr> .+? INFO: Registering Spring bean,',
 
+	# Error / Critical
+	r'^\S+ <(Error|Critical)> <(\S+)>',
+
 	# Info messages - Ignored
 	r'^\S+ <Info>',
 	#r'^\S+ <Info> <(JDBC)> .+? pool ".+?" connected',
@@ -172,6 +182,7 @@ for pattern in exceptionPatterns:
 def processLine(line, stats):
 	''' parse a line gathering stats
 	'''
+	return
 	for regex in lineRegexes:
 		match = regex.search(line)
 		if match is not None:
@@ -180,12 +191,17 @@ def processLine(line, stats):
 	if match is not None:
 		if not match.groups():
 			return
-
-		key = ' '.join(match.groups())
+		try:
+			key = ' '.join(match.groups())
+		except:
+			print 'Key Failure:', str(match.groups())
+			print regex.pattern
+			print line
+			return
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(line))
 
-		#if 'Stdout WARN Region' in key:
+		#if 'Stdout WARN XSS' in key:
 		#	print 'WAT key', key
 		#	print 'WAT pattern', regex.pattern
 		#	print line
@@ -208,6 +224,7 @@ def processLine(line, stats):
 def processException(lines, stats):
 	''' parse an exception gathering stats
 	'''
+	#return
 	key = ''
 	allLines= ''.join(lines)
 	if len(allLines) == 250:
