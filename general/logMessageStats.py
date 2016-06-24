@@ -20,7 +20,7 @@ stdIOLineRegex = re.compile(stdIOLinePattern)
 
 linePatterns = [
 	# WebLog logging messages
-	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> .+<LoggingService>",
+	"^\S+ <Notice> <Stdout> .+?BEA-000000> .+<LoggingService>",
 
 	# Stdout messages - By format
 	# Date Application Level Thread Message (CPO)
