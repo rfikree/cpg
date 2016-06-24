@@ -15,21 +15,23 @@ stdIOLinePattern = '^[^>]+> <Notice> (<Std\w+>) .+ <([^>]+)>'
 stdIOLineRegex = re.compile(stdIOLinePattern)
 
 
+# Patterns with no match groups will be ignored; ue (?:...) for non-capture
+# Patterns with optional match groups will crash the program.
+
 linePatterns = [
 	# WebLog logging messages
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> .+<LoggingService>",
 
 	# Stdout messages - By format
-	# Date Applicagtion Level Thread Message (CPO)
+	# Date Application Level Thread Message (CPO)
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
-	# Date  Level Thread Message
+	# Date Level Thread Message
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\S+ (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
-	# Date  Level ?? Message
+	# Date Level ?? Message
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\S+ (ERROR|WARN|INFO) +\[\S+\] ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
 	# Date Thread Level Message
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\S+ \[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
-
-	# Date Applicagtion Level Message (CPO WebServices)
+	# Date Application Level Message (CPO WebServices)
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\d{4}\S{6} \S+ ([a-z]\S+) (ERROR|WARN|INFO) ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
 
 	# Cross site filtering
@@ -42,12 +44,13 @@ linePatterns = [
 	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? {(svc=\w+, result=\w+, operation=\w+),',
 	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? (xmlns:env="http://schemas.xmlsoap.org/soap/envelope/")',
 
-	# CMSSS Web Service
-	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w3\dd1-c1.+? <(Drawing white:\w+)>',
+	# CMSS Web Service
+	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w{3}d1-c1.+? <(Drawing white:\w+)',
 
 	# StdErr ouput
 	# Thread Level Message
 	"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <\[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+
 	# Other messags
 	'^\S+ <Notice> <(StdErr)> .+? (\[IntroscopeAgent.\w+\] \w+ \w+ \w+ \w+)',
 	'^\S+ <Notice> <(StdErr)> .+? <Exception in thread "Thread-\d+" (.+?)>',
@@ -60,9 +63,10 @@ linePatterns = [
 	'^\S+ <(Alert)> <(WebLogicServer)> .+> <(\S+)>',
 	'^\S+ <(Error)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(Failed to lookup customer profile)',
 	'^\S+ <(Error)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(.+?: \w+)',
-	'^\S+ <(Error)> <(HTTP)> .+? <(Malformed Request ".+?")',
+	'^\S+ <(Error)> <(HTTP)> Unmatched:.+? <(Malformed Request ".+?")',
 	'^\S+ <(Warning)> <(HTTP)> .+? (class loader configuration ignored)',
 	'^\S+ <(Warning)> <(JNDI)> .+? (non-versioned global resource "\w+")',
+	"^\S+ <(Error|Critical)> <(\S+)> .+<(\S+(?: -)?(?: [^-0-9@:;,>=' [\n]+){,4}).+?>",
 
 	# WebLogic Info messages - normally ignored
 	#'^\S+ <(Info)> <(Common)> .+? <(Created "\d+" resources for pool "\w+")',
@@ -86,80 +90,95 @@ linePatterns = [
 ]
 
 
-# Patterns with no match groups will be ignored; use (?:...) for non-capture
-# Patterns with optional match groups will crash the program.
+# Match multiline first to get usable details.  Then match single line message
 exceptionPatterns = [
-	# Captured StdErr Messages
-	r'^\S+ <Notice> <(StdErr)> <.+? (com\.hazelcast\..*)',
-	r'^\S+ <Notice> <(StdErr)> <.+? (INFO) (\S+ - (?:In|Out)\S+ \S+)',
-	r'^\S+ <Notice> <(StdErr)> <.+? (FATAL): .+?  Exception is: (.+?)$',
-	r'^\S+ <Notice> <(StdErr)> <.+ ([^<0-9]\S+) +(INFO) +\[\[\w+\].+?\] (\S+)',
-	r'^\S+ <Notice> <(StdErr)> <.+? (SEVERE): .\w+ (.+?)>$',
-	r'^\S+ <Notice> <(StdErr)> (?ms).+?com\.sun\.xml\..+?$\s(SEVERE): \w+: (.+?)>',
-	r"^\S+ <Notice> <(StdErr)> (?ms).+?^(INFO|WARNING): .+? '(\w.+?)['@]",
-	r"^\S+ <Notice> <(StdErr)> (?ms).+?(^WARNING): .+? serviceName='(.+?)'",
-	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s?(INFO)',
-	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s(SEVERE|ERROR|WARN).+?(^\S+):.+?at ((?:com\.cpc|cpdt)\.\S+)',
-	r'^\S+ <Notice> <(StdErr)> (?ms)<.+?$\s(SEVERE|ERROR|WARN):\s*?$.+?^(\S+.+?)$',
-	r'^\S+ <Notice> <(StdErr)> <.+ (\w+ of missing type cpdt\.\w+\.rules\.)',
+	#### Stdout
+	# Date Application Level Thread Message (CPO)
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) \[\[\w+\].+?\] (?ms)(\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)",
+	r"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
 
-	# ui-cpo ERROR ...
-	r'^\S+ <Notice> <Stdout> <.+ ([^<0-9]\S+) (ERROR|WARN) (?ms).+?(^\S+):.+?at (com\.(?:cpc|pur)\S+)',
-	r'^\S+ <Notice> <Stdout> <.+ ([^<0-9]\S+) (ERROR) \[\[\w+\].+?\] (\S+)',
-	r'^\S+ <Notice> <Stdout> <.+ ([^<0-9]\S+) (ERROR) (?ms).+?(^\S.+?)[-\n(\?]',
+	# Date Level Thread Message
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR|WARN|INFO) \[\[\w+\].+?\] (?ms)(\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)",
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR) \[\[\w+\].+?\] (\S+).+msg=PreparedStatementCallback; (.+)",
+	r"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
 
-	# Captured StdOut Messages
-	r'^\S+ <Notice> <(Stdout)> <.+? {(svc=\w+, result=OK, operation=\w+),',
-	r'^\S+ <Notice> <(Stdout)> <.+? (INFO) \[\[\w+\].+?\] (\S+ (?:In|Out).+)',
-	r'^\S+ <Notice> <(Stdout)> <.+? (ERROR) .* (bad SQL grammar.+?\])',
-	r'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN|INFO) +\[\[\w+\].+?\] (\S+)',
-	r'^\S+ <Notice> <Stdout> <.+? c\.q\.l\.co(?:re)?\.rolling\.',
-	r'^\S+ <Notice> <(Stdout)> .+?(FATAL).+?(\w+).+ (\S+: [^:]+)',
-	r'^\S+ <Notice> <(Stdout)> <\S+> <a3\w3\dd1-c1.+? <(Drawing white:\w+)',
+	# Date Level ?? Message
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR|WARN|INFO) +\[\S+\] (?ms)(\S+).+?at ((?:com\.(?:cpc|pur|int)|cpdt\.)\S+)",
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR|WARN|INFO) \[RuntimeRenderingManager\] (?ms)(.+?)$.+?uri :\[(\S+?)\]",
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR) \[\S+\] (\S+).+?PreparedStatementCallback; (.+)",
+	r"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR|WARN|INFO) +\[\S+\] ([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
 
+	# Date Thread Level Message
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ \[\[\w+\].+?\] (ERROR|WARN|INFO|DEBUG) (?ms)(\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)",
+	#r"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ \[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
 
-	# Multiline matches ...
-	r'^\S+ <Notice> <(Stdout)> <.+? (ERROR) (?ms).*?(^\w\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)',
-	r'^\S+ <Notice> <(Stdout)> <.+? (ERROR) \S+ \S+ (site not (?ms)valid:).+?^uri :\[(\S+?)\]',
-	r'^\S+ <Notice> <(Std...)> <.+? (?ms).+(PreparedStatementCallback); SQL \[(.+?)\]; (.+?)>?$',
+	# Date Application Level Message (CPO WebServices)
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\d{4}\S{6} \S+ ([a-z]\S+) (ERROR|WARN|INFO) (?ms)(\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)",
+	#r"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\d{4}\S{6} \S+ ([a-z]\S+) (ERROR|WARN|INFO) ([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
 
-	# Last ditch notice handlers
-	r'^\S+ <Notice> <(Stdout)> <.+? \[\[\w+\].+?\] (ERROR|INFO |DEBUG) (\S+)',
-	r'^\S+ <Notice> <(Stdout)> <.+? (ERROR) (?ms).+?^ExceptionMessage{.+?(^\w\S.+?)[-:\n(\?]',
-	r'^\S+ <Notice> <(Stdout)> <.+? (ERROR|WARN|INFO) (?ms).+?(^\w\S.+?)[-:\n(\?]',
-	r'^\S+ <Notice> <(StdErr)> <.+? <(Nested (?ms)exception:).+?^(\w[^:]+)',
+	# Remaining Stdout messages
+	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? {(svc=\w+, result=\w+, operation=\w+),',
+	'^\S+ <Notice> <(Stdout)> <\S+> <a1\w{3}d1-c4.+?<BEA-000000> <\[.+?\]\[(FATAL)\]\S+?\]\[(.+)',
+	'^\S+ <Notice> <Stdout> <.+? c\.q\.l\.co(?:re)?\.rolling\.',
+	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w{3}d1-c1.+? <(Drawing white:\w+)',
 
-	# Error messages reported by WebLogic
-	r'^\S+ <(Error)> <(HTTP)> .+?path:/(\S+) (?ms).+?(^\S+?)\s.+?at .+?at (com\.(?:cp|pur)\S+)',
-	r'^\S+ <(Error)> <(HTTP)> (?ms).+?(^\S+).+?at (weblogic\.\S+)',
-	r'^\S+ <(Error)> <(Kernel)> (?ms).+?(^\S+).+?at (weblogic\.\S+)',
-	r'^\S+ <(Error)> <(Kernel)> (?ms).+?(^\S+).+?at (weblogic\.\S+)',
-	r'^\S+ <(Error)> <(WebLogicServer)> .+? <\[(STUCK)\] (?ms).+?(^\w.+?)[-:\n(\?]',
-	r'^\S+ <(Error)> <(WebLogicServer)> .+? <\[(STUCK)\] (?ms).+?(com\.(?:cp|pur)\S+)',
-	r'^\S+ <(Error)> <ServletContext-/(.+?)> (?ms).+?(^\S+).+?at (weblogic\.\S+)',
-	r'^\S+ <(Error)> <ServletContext-/(cpotools)> .+?path:/(\S+) (?ms).+?(^\S+).+?at (com\.(?:cp|pur)\S+)',
-	r'^\S+ <(Warning)> <(JDBC)> .+? <(Forcibly releasing) inactive/harvested (connection) ".+?" .+? (".+?")',
+	#'^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+)
+
+	#### StdErr
+	# Thread Level Message
+	r"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <\[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
+
+	# Package loader
+	r"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <\[(PackageClassLoader)\S+\] +([^> \n]+(?: -)?(?: [^-0-9@:;>= [\n]+){3})",
+
+	# Spring Loader
+	r"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <.+[AP]M (\w+\.\S+) (?ms).+?$\s^(INFO): ([^> \n]+(?: -)?(?: [^-0-9@:;,>=' [\n]+){,4})",
+
+	# SAAJ SOAP Format
+	"\S+ <Notice> <(StdErr)> .+?BEA-000000> <.+[AP]M (com\.sun\.\S+) (?ms).+?$.+?^(SEVERE):? (\S+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
+
+	# LDAP Pool
+	"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <.+[AP]M (org\.springframework\.ldap\S+)(?ms) .+?$\s^(WARNING):.+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)$",
+
+	# Logback
+	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\d\S+ \|-(INFO) in (\w+\.[^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
+
+	# Hazelcast - Last as declare multiline match before we match hazelcast
+	"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <.+[AP]M (?ms)(com\.hazelcast\.\S+)$\s^(WARNING|INFO): (?:.+?]){3} (.+?):",
+	#
+	r"^\S+ <Notice> <(StdErr)> .+? <Caused by: ([^> \n]+(?: -)?(?: [^-0-9@:;,>=' [\n]+){,4})",
+	r"^\S+ <Notice> <(StdErr)> .+? <(\w+\.[^> \n]+(?: -)?(?: [^-0-9@:;,>=' [\n]+){,4})",
+	"^\S+ <Notice> <(StdErr)> .+? <(Some product derivations are being skipped)",
+
+	#### WebLogic
+	# Waring / Error / Critial messages
+	'^\S+ <(Error)> <(HTTP)> .+?path:/(\S+) (?ms).+?(^\S+?)\s.+?at .+?at (com\.(?:cp|pur)\S+)',
+	'^\S+ <(Error)> <(HTTP)> (?ms).+?(^\S+).+?at (weblogic\.\S+)',
+	'^\S+ <(Error)> <(Kernel)> (?ms).+?(^\S+).+at (weblogic\.\S+)',
+	'^\S+ <(Error)> <(WebLogicServer)> .+? <\[(STUCK)\] (?ms).+?(com\.(?:cp|pur)\S+)',
+	r'^\S+ <(Error)> <(WebLogicServer)> .+? <\[(STUCK)\] (?ms).+?(^\w.+?)[-:.\n\(\?]',
+	'^\S+ <(Error)> <(ServletContext-/.+?)> (?ms).+?(^\S+).+?at (weblogic\.\S+)',
+	'^\S+ <(Error)> <(ServletContext-/cpotools)> .+?path:/(\S+) (?ms).+?(^\S+).+?at (com\.(?:cp|pur)\S+)',
+	'^\S+ <(Warning)> <(JDBC)> .+? <(Forcibly releasing) inactive/harvested (connection) ".+?" .+? (".+?")',
+	r"^\S+ <(Error|Critical)> <(\S+)> .+<(\S+(?: -)?(?: [^-0-9@:;,>=' [\n]+){,4})",
 
 	# Startup notices
-	r'^\S+ <Notice> <Security> .+? Loading trusted certificates',
-	r'^\S+ <Notice> <Security> .+? Using default',
-	r'^\S+ <Notice> <StdErr> .+? INFO: Registering Spring bean,',
-
-	# Error / Critical
-	r'^\S+ <(Error|Critical)> <(\S+)>',
+	'^\S+ <Notice> <Security> .+? Loading trusted certificates',
+	'^\S+ <Notice> <Security> .+? Using default',
+	'^\S+ <Notice> <StdErr> .+? INFO: Registering Spring bean,',
 
 	# Info messages - Ignored
-	r'^\S+ <Info>',
-	#r'^\S+ <Info> <(JDBC)> .+? pool ".+?" connected',
-	#r'^\S+ <Info> <Management> .+? Java system properties',
-	#r'^\S+ <Info> <Management> .+? Server state changed',
-	#r'^\S+ <Info> <RJVM> .+? Network Configuration',
-	#r'^\S+ <Info> <WebLogicServer> .+? WebLogic Server ".+?" version:',
-	#r'^\S+ <Info> <WorkManager> .+? Initializing self-tuning thread pool',
-	r'^[^>]+> <(?:Info|Notice)> <(?:Management|WebLogicServer)>',
+	'^\S+ <Info>',
+	#'^\S+ <Info> <(JDBC)> .+? pool ".+?" connected',
+	#'^\S+ <Info> <Management> .+? Java system properties',
+	#'^\S+ <Info> <Management> .+? Server state changed',
+	#'^\S+ <Info> <RJVM> .+? Network Configuration',
+	#'^\S+ <Info> <WebLogicServer> .+? WebLogic Server ".+?" version:',
+	#'^\S+ <Info> <WorkManager> .+? Initializing self-tuning thread pool',
+	'^[^>]+> <(?:Info|Notice)> <(?:Management|WebLogicServer)>',
 
 	# Stray XML
-	r'^\s*(<.+?>)',
+	'^\s*(<.+?>)',
 ]
 
 
@@ -169,20 +188,20 @@ for pattern in linePatterns:
 	try:
 		lineRegexes.append(re.compile(pattern))
 	except Exception:
-		print 'invalid:', pattern
+		print >> sys.stderr, 'Invalid regex:', pattern
 
 exceptionRegexes = []
 for pattern in exceptionPatterns:
 	try:
 		exceptionRegexes.append(re.compile(pattern))
 	except Exception:
-		print 'invalid:', pattern
+		print >> sys.stderr, 'Invalid regex:', pattern
 
 
 def processLine(line, stats):
 	''' parse a line gathering stats
 	'''
-	return
+	#return
 	for regex in lineRegexes:
 		match = regex.search(line)
 		if match is not None:
@@ -243,7 +262,8 @@ def processException(lines, stats):
 		count, size = stats.get(key, (0, 0))
 		stats[key] = (count + 1, size + len(allLines))
 
-		#if 'StdErr SEVERE SOAP' in key:
+		#if '\n' in key:
+		#if 'StdErr' == key:
 		#	print 'WAT key', key
 		#	print 'WAT pattern', regex.pattern
 		#	print  ' ** '.join(match.groups())
