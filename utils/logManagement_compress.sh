@@ -61,7 +61,6 @@ archiveFile() {
 	subDir=${subDir%_${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]*}
 	subDir=${subDir%AdminServer*}
 	subDir=${subDir%$hostname*}
-	subDir=${subDir%-[a-z][a-z]*}
 	if [ -z "${subDir}" ]; then
 		suffix=${file#${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]}
 		suffix=${suffix#AdminServer}
@@ -102,12 +101,6 @@ renameFile() {
 			fi
 			echo  ${1} $(basename ${newName})
 			mv -i ${1} ${newName}
-			loc			# Temporary fix to handle duplicated SSO lines
-			if [[ ${newName} =~ /a1p1.d1-c1m.ms0._20 ]]; then
-				nice uniq ${newName} ${newName}.uniq
-				touch -mr ${newName} ${newName}.uniq
-				mv ${newName}.uniq ${newName}
-			fi
 		fi
 	else
 		echo "Filename \"${1}\" is not a file"
@@ -202,8 +195,8 @@ for server in ${STACK}*/servers/history/a*; do
 			! -name \*gc* -mtime +1 -size +1 2>/dev/null); do
 				mv -i ${file} ${file}00999
 		done
-	else
-		echo ${server} appears to be running
+	#else
+		#echo ${server} appears to be running
 	fi
 done
 
