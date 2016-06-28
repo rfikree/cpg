@@ -61,7 +61,7 @@ archiveFile() {
 	subDir=${subDir%_${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]*}
 	subDir=${subDir%AdminServer*}
 	subDir=${subDir%$hostname*}
-	subDir=${subDir%_[BU][IL]}
+	subDir=${subDir%_??}
 	if [ -z "${subDir}" ]; then
 		suffix=${file#${STACK}d[1-9][-_]c[1-9]m[0-9]ms0[0-9]}
 		suffix=${suffix#AdminServer}
