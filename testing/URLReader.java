@@ -9,9 +9,9 @@ public class URLReader {
 
 		if (  args.length > 0 ) {
 			URL = args[0];
+		} else {
+			System.out.println("URL: " + URL);
 		}
-		System.out.println("URL: " + URL);
-
 
 		try {
 			myURL = new URL(URL);
@@ -19,7 +19,6 @@ public class URLReader {
 		catch (MalformedURLException e) {
 			System.out.println("Malformed URL: " + URL);
 			e.printStackTrace();
-
 		}
 
 		try {
