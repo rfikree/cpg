@@ -43,59 +43,13 @@ linePatterns = [
 	# Date Application Level Message (CPO WebServices)
 	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\d{4}\S{6} \S+ ([a-z]\S+) (ERROR|WARN|INFO) ([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
 
-	# Cross site filtering
-	'^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S+ (ERROR|WARN ) (\[XSSFilter\] .+?)[,>]',
-
-	# DEBUG Messages
-	"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S+ \[\[\w+\].+?\] (DEBUG) +(\S+)",
-
-	# RWS Logging
-	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? {(svc=\w+, result=\w+, operation=\w+),',
-	'^\S+ <Notice> <(Stdout)> <\S+> <a[23]\w+-c2.+? (xmlns:env="http://schemas.xmlsoap.org/soap/envelope/")',
-
-	# CMSS Web Service
-	'^\S+ <Notice> <(Stdout)> <\S+> <a3\w{3}d1-c1.+? <(Drawing white:\w+)',
-
-	# StdErr ouput
-	# Thread Level Message
-	"^\S+ <Notice> <(StdErr)> .+?BEA-000000> <\[\[\w+\].+?\] (ERROR|WARN|INFO) +([^> ]+(?: -)?(?: [^-0-9@:;>=' []+){,4})",
-
-	# Other messags
-	'^\S+ <Notice> <(StdErr)> .+? (\[IntroscopeAgent.\w+\] \w+ \w+ \w+ \w+)',
-	'^\S+ <Notice> <(StdErr)> .+? <Exception in thread "Thread-\d+" (.+?)>',
-	'^\S+ <Notice> <(StdErr)> .+? <(line \d+:\d+ no viable .+?)>',
-
-	# Unhandled exceptions = ignored
-	'^\S+ <Notice> <Std\w+> .+? <log4j: ',
-
-	# WebLogic Error Message
-	'^\S+ <(Alert)> <(WebLogicServer)> .+> <(\S+)>',
-	'^\S+ <(Error)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(Failed to lookup customer profile)',
-	'^\S+ <(Error)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(.+?: \w+)',
-	'^\S+ <(Error)> <(HTTP)> Unmatched:.+? <(Malformed Request ".+?")',
-	'^\S+ <(Warning)> <(HTTP)> .+? (class loader configuration ignored)',
-	'^\S+ <(Warning)> <(JNDI)> .+? (non-versioned global resource "\w+")',
-	"^\S+ <(Error|Critical)> <(\S+)> .+<(\S+(?: -)?(?: [^-0-9@:;,>=' [\n]+){,4}).+?>",
-
-	# WebLogic Info messages - normally ignored
-	#'^\S+ <(Info)> <(Common)> .+? <(Created "\d+" resources for pool "\w+")',
-	#'^\S+ <(Info)> <(JDBC)> .+? (pool ".+?") has been (closed)',
-
 	# WebLogic Info messages
-	'^\S+ <(Info)> <(Common)> .+? <(Reached maximum capacity of pool "\w+")',
-	'^\S+ <(Info)> <(Cluster)> .+? <(Lost \d+ unicast message\(s\))',
-	'^\S+ <(Info)> <(WorkManager)> .+? M(maximum thread constraint ClusterMessaging is reached)',
+	#^\S+ <(Info)> <(Common)> .+? <(Reached maximum capacity of pool "\w+")',
+	#^\S+ <(Info)> <(Cluster)> .+? <(Lost \d+ unicast message\(s\))',
+	#^\S+ <(Info)> <(WorkManager)> .+? M(maximum thread constraint ClusterMessaging is reached)',
 	'^[^>]+> <Info> ',
 	'^[^>]+> <Notice> <(?:Cluster|Log Management|Security|Server|WebLogicServer)>',
 
-	# WebLogic Warnings                               |
-	'^\S+ <(Warning)> <(Socket)> .+? <(Closing socket as no data read)',
-	'^\S+ <(Warning)> <(CpgIdentityJAASAsserterLogger)> .+ <BEA-000000> <(.+?: \w+)',
-	'^[^>]+> <(Warning)> <(Management)> .+> <(.+)>',
-
-	# Unmatched patterns: - Matching messages will be written to StdErr file.
-	#'^\S+ <Notice> <(StdErr)> <.+? <(BEA-000000)> <(at )',
-	#'^[^>]+> <Notice> <(Std\w+)> <.+ <[^<]+)>',
 ]
 
 
