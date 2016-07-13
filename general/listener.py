@@ -2,7 +2,8 @@
 # This is listener.py file 			-*- tab-width:4 -*-
 
 # It is a minimal http listener for port testing
-# It will respond with its message on the first blank line it encounters
+# It will respond with its message and
+#	read until a blank line, a timeout or the connection is closed
 # This makes it suitable for testing with telnet as well as wget.
 # It handles only one response at a time
 
@@ -15,15 +16,17 @@ from socket import error as socket_error
 
 class listener:
 
-	def __init__(self, sock=None):
+	def __init__(self, sock=None, timeout=5):
+		socket.setdefaulttimeout(timeout)
+
 		if sock is None:
 			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.sock = sock
 
-
-	def simpleServer(self, address=socket.gethostname(), port=12345, cert=None, key=None, oneTime=False):
+	def simpleServer(self, address=socket.gethostname(), port=12345,
+									cert=None, key=None, oneTime=False):
 		message = "\r\n" + \
 				  "Server: " + address + ":" + str(port) + "\r\n" + \
 				  "\r\n"
@@ -38,17 +41,23 @@ class listener:
 		try:
 			self.bind(address, port)
 		except socket_error, sock_err:
-			# Treat bind error as success, logging condition
+			# Treat bind error as failure, logging condition
 			print 'Failed to bind to', address, port
 			print sock_err
-			sys.exit(0)
+			sys.exit(1)
 
-		self.sock.listen(5)
+		self.sock.listen(2)
 
 		while True:
-			# Establish connection with client.
 			try:
-				connsocket, addr = self.sock.accept()
+				connsocket = self.acceptRequest(self.sock)
+				if connsocket:
+					if cert:
+						connsocket = self.tlsWrap(connsocket, cert, key)
+					self.serveResponse(connsocket, message)
+					connsocket.shutdown(socket.SHUT_RDWR)
+					connsocket.close()				# Close the connectionclass mysocket:
+					print "Connection closed"
 			except socket_error, sock_err:
 				# Ignore socket errors - occurs on LDAP servers under load
 				print 'socket_error occured at', \
@@ -56,47 +65,51 @@ class listener:
 				print sock_err
 				continue
 
-			print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S "),
-			print 'Got connection from', addr
+			if oneTime:
+				break
 
-			if cert:
-				try:
-					if key:
-						newsocket = ssl.wrap_socket(connsocket,
-							server_side=True,
-							certfile=cert, keyfile=key,
-							ssl_version=ssl.PROTOCOL_SSLv23)
-					else:
-						newsocket = ssl.wrap_socket(connsocket,
-							server_side=True,
-							certfile=cert,
-							ssl_version=ssl.PROTOCOL_SSLv23)
-					connsocket = newsocket
-				except ssl.SSLError:
-					print "SSL Handshake failed. Using unsecure connections"
-
-			conn = connsocket.makefile()
-			if self.read(conn):
-				self.reply(conn, message)
-				if oneTime:
-					break
-			#else:
-			#	print "Disconnected  reading"
-
-			connsocket.shutdown(socket.SHUT_RDWR)
-			connsocket.close()				# Close the connectionclass mysocket:
-			print "Connection closed"
 		self.sock.close()
 
 	def bind(self, host, port):
 		self.sock.bind((host, port))
 
+	def acceptRequest(self, sock):
+		# Establish connection with client.
+		connsocket, addr = sock.accept()
+		print datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S "),
+		print 'Got connection from', addr
+		return connsocket
+
+	def wrapConnection(self, connsocket, cert, key):
+		try:
+			if key:
+				connsocket = ssl.wrap_socket(connsocket,
+					server_side=True,
+					certfile=cert, keyfile=key,
+					ssl_version=ssl.PROTOCOL_SSLv23)
+			else:
+				connsocket = ssl.wrap_socket(connsocket,
+					server_side=True,
+					certfile=cert,
+					ssl_version=ssl.PROTOCOL_SSLv23)
+		except ssl.SSLError:
+			print "SSL Handshake failed. Using unsecure connections"
+		return connsocket
+
+	def serveResponse(self, connsocket, message):
+		conn = connsocket.makefile()
+		self.reply(conn, message)
+		self.read(conn)
+
 	def read(self, conn):
 		while True:
-			line = conn.readline()
-			print "Read: " + line,
-			if len(line) <= 2:		# Found CR-LF or EOF
-				return len(line)
+			try:
+				line = conn.readline()
+				print "Read: " + line,
+				if len(line) <= 2:		# Found CR, LF or EOF
+					return len(line)
+			except socket_error, sock_err:
+				break
 
 	def reply(self, conn, message):
 		print "Sending reply"
@@ -163,7 +176,11 @@ def main():
 		print "Starting server for https://" + address + ":" + str(port)
 
 	s = listener()
-	s.simpleServer(address, port, cert, key, oneTime)
+	try:
+		s.simpleServer(address, port, cert, key, oneTime)
+	except KeyboardInterrupt:
+		print 'KeyboardInterrupt received'
+		pass
 	print "Done"
 
 if __name__ == "__main__":
