@@ -63,7 +63,7 @@ esac
 #   WL_USERS - WebLogic users for this host
 
 case ${CPG_HOSTNAME##*-} in
-	appadm|bdt|blcpou|uicpo|ws)
+	appadm|bdt|blcpo|uicpo|ws)
 		if [[ ${WL_PREFIX} != dev ]]; then
 			EXTRA_USERS='apm'
 		fi
