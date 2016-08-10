@@ -20,7 +20,7 @@ WL_USERS=
 #### Function definitions
 
 getWebLogicUsers() {
-	wl_USERS=$(getent passwd | grep ^${WL_PREFIX}${1:-[0-9]}[0-9]: |
+	WL_USERS=$(getent passwd | grep ^${WL_PREFIX}${1:-[0-9]}[0-9]: |
 						cut -d: -f1 | sort )
 
 }
@@ -38,7 +38,7 @@ validateAccess() {
 }
 
 validateUsers() {
-	for user in ${LS_USERS} ${WL_USERS}; do
+	for user in ${EXTRA_USERS} ${LS_USERS} ${WL_USERS}; do
 		validateAccess ${user}
 	done
 }
@@ -101,12 +101,14 @@ esac
 
 # Update credentials - prompting for password if required
 sudo -v
+echo
 
 # Perform the validations
 validateUsers
+echo
 
 # List access
 sudo -l
-
+echo
 
 # EOF
