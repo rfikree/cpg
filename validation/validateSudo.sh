@@ -47,7 +47,7 @@ validateUsers() {
 #### Mainline
 
 # Verify user prefix is valid
-case ${USERPREFIX:-''} in
+case ${WL-PREFIX:-''} in
 	dev|stg|prd)
 		# OK - do nothing
 		;;
