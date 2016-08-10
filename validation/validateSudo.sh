@@ -11,6 +11,7 @@ export CPG_HOSTNAME=$(egrep -i "^$(hostname)," \
 
 LS_SUFFIX=${CPG_HOSTNAME:0:1}
 WL_PREFIX=${CPG_HOSTNAME%%-*}
+WL_EXCLUSIONS='prd(13|35)'
 
 EXTRA_USERS=
 LS_USERS=
@@ -21,12 +22,12 @@ WL_USERS=
 
 getWebLogicUsers() {
 	WL_USERS=$(getent passwd | grep ^${WL_PREFIX}${1:-[0-9]}[0-9]: |
-						cut -d: -f1 | sort )
+				cut -d: -f1 | grep -v "${WL_EXCLUSIONS}" | sort)
 
 }
 getLSusers(){
 	LS_USERS=$(getent passwd | grep ^s00[0-9]${LS_SUFFIX}: |
-						cut -d: -f1 | sort )
+						cut -d: -f1 | sort)
 	LS_USERS="interwvn lscsadm ${LS_USERS}"
 }
 
