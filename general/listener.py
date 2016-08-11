@@ -58,11 +58,13 @@ class listener:
 					connsocket.shutdown(socket.SHUT_RDWR)
 					connsocket.close()				# Close the connectionclass mysocket:
 					print "Connection closed"
-			except socket_error, sock_err:
+			except socket_error as sock_err:
 				# Ignore socket errors - occurs on LDAP servers under load
-				print 'socket_error occured at', \
-					datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ")
-				print sock_err
+				# Don't log timeouts
+				if str(sock_err) != 'timed out':
+					print 'socket_error occured at', \
+						datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ")
+					print sock_err
 				continue
 
 			if oneTime:
