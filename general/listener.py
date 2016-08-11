@@ -62,7 +62,7 @@ class listener:
 				# Ignore socket errors - occurs on LDAP servers under load
 				# Don't log timeouts
 				if str(sock_err) != 'timed out':
-					print 'socket_error occured at', \
+					print 'socket_error occurred at', \
 						datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S ")
 					print sock_err
 				continue
