@@ -11,12 +11,14 @@
 import socket
 import datetime
 import getopt, sys
+import re
 from socket import error as socket_error
 
 
 class listener:
 
-	def __init__(self, sock=None, timeout=5):
+	def __init__(self, statusMessage="200 OK", sock=None, timeout=5):
+		self.statusMessage = "HTTP/1.0 " + statusMessage + "\r\n"
 		socket.setdefaulttimeout(timeout)
 
 		if sock is None:
@@ -115,7 +117,7 @@ class listener:
 
 	def reply(self, conn, message):
 		print "Sending reply"
-		conn.write( "HTTP/1.0 200 OK\r\n" )
+		conn.write( self.statusMessage )
 		conn.write( "Connection: close\r\n" )
 		conn.write( "Content-Type: text/plain\r\n" )
 		conn.write( "Content-Length: " + str(len(message)) + "\r\n" )
@@ -134,15 +136,73 @@ def usage():
 	print "    --address (-a) - set the host address to listen on (default hostname)"
 	print "    --port (-p) - set the port to listen on (default 12345)"
 	print "    --oneTime (-o) - exit after responding to a request"
+	print "    --status (-s) - HTML status to return"
 	print
 	print "    --cert (-c) - Optional, SSL certificate file (can include key before certificate"
 	print "    --key (-k) - Optional, SSL key file (omit if key is provided by cert file)"
 	print
 
+def getStatusMessage(status, default='200'):
+	statusMessages = {
+		'100': 'Continue',
+		'101': 'Switching Protocols',
+		'200': 'OK',
+		'201': 'Created',
+		'202': 'Accepted',
+		'205': 'Reset Content',
+		'206': 'Partial Content',
+		'400': 'Bad Request',
+		'401': 'Unauthorized',
+		'402': 'Payment Required',
+		'403': 'Forbidden',
+		'404': 'Not Found',
+		'405': 'Method Not Allowed',
+		'406': 'Not Acceptable',
+		'407': 'Proxy Authentication Required',
+		'408': 'Request Timeout',
+		'409': 'Conflict',
+		'410': 'Gone',
+		'411': 'Length Required',
+		'412': 'Precondition Failed',
+		'413': 'Payload Too Large',
+		'414': 'URi Too Long',
+		'415': 'Unsupported Media Type',
+		'416': 'Range Not Satisfiable',
+		'417': 'Expectation Failed',
+		'418': "I'm a teapot",
+		'421': 'Misdirected Request',
+		'426': 'Upgrade Required',
+		'428': 'Precondition Required',
+		'429': 'Too Many Requests',
+		'431': 'Request Header Fields Too Large',
+		'451': 'Unavailable for Legal Reasons',
+		'500': 'Internal Server Error',
+		'501': 'Not Implemented',
+		'502': 'Bad Gateway',
+		'503': 'Service Unavailable',
+		'504': 'Gateway Timeout',
+		'505': 'HTTP Versions Not Supported',
+		'506': 'Variant Also Negotiates',
+		'510': 'Not Extended',
+		'511': 'Network Authentication Required',
+		'103': 'Checkpoint',
+		'420': 'Method Failure',
+		'499': 'Request has been forbidden by antivirus',
+		'509': 'Bandwidth Limit Exceeded',
+		'530': 'Site is frozen',
+		'210': 'Paused',
+	}
+
+	if not status in statusMessages:
+		print status, 'not found - using', default
+		status = default
+
+	return ' '.join((status, statusMessages[status]))
+
 def main():
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "ha:p:c:k:o",
-								["help", "address=", "port=", "cert=", "key="])
+		opts, args = getopt.getopt(sys.argv[1:], "ha:p:c:k:os:",
+					["help", "address=", "port=", "cert=", "key=", "status="])
 	except getopt.GetoptError, err:
 		# print help information and exit:
 		print str(err) # will print something like "option -a not recognized"
@@ -154,6 +214,7 @@ def main():
 	cert = None
 	key = None
 	oneTime = False
+	statusMessage = getStatusMessage('200')
 
 	for o, a in opts:
 		if o in ("-h", "--help"):
@@ -169,6 +230,8 @@ def main():
 			key = a
 		elif o in ("-o", "--oneTime"):
 			oneTime = True
+		elif o in ("-s", "--status"):
+			statusMessage = getStatusMessage(a, '418')
 		else:
 			assert False, "unhandled option"
 
@@ -177,7 +240,7 @@ def main():
 	else:
 		print "Starting server for https://" + address + ":" + str(port)
 
-	s = listener()
+	s = listener(statusMessage)
 	try:
 		s.simpleServer(address, port, cert, key, oneTime)
 	except KeyboardInterrupt:
