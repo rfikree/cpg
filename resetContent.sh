@@ -11,17 +11,13 @@ fi
 
 cat <<EOF
 
-The content cache on all CPCP Production LSCS servers will be flushed.
+The content cache on all CPC Production LSDS servers will be flushed.
 
-Has the process been followed?
+Has the VPO content process been followed?
 
-Please open an incident listing which content has not refreshed as expected.
-This should include details on the process followed including a list of
-deployments done to deploy the content.  There MUST be at lease two deployments:
-- one for the compoents; and
-- one for the pages containing the components.
+See: http://cpowiki.cpggpc.ca/wiki/index.php/Recycling_OLC_Servers
 
-If you don't have evidence of these deployments please cancel this script
+If you don't have an appropriate instance please cancel this script
 in the next 30 seconds.
 
 Ctrl-C to cancel
