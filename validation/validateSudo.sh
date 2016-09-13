@@ -22,7 +22,7 @@ WL_USERS=
 
 getWebLogicUsers() {
 	WL_USERS=$(getent passwd | grep ^${WL_PREFIX}${1:-[0-9]}[0-9]: |
-				cut -d: -f1 | grep -v "${WL_EXCLUSIONS}" | sort)
+				cut -d: -f1 | egrep -v "${WL_EXCLUSIONS}" | sort)
 
 }
 getLSusers(){
