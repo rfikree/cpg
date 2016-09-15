@@ -13,11 +13,11 @@ cat <<EOF
 
 The content cache on all CPC Production LSDS servers will be flushed.
 
-Has the VPO content process been followed?
+Has the VPO content update process been followed?
 
 See: http://cpowiki.cpggpc.ca/wiki/index.php/Recycling_OLC_Servers
 
-If you don't have an appropriate instance please cancel this script
+If you don't have an appropriate incident please cancel this script
 in the next 30 seconds.
 
 Ctrl-C to cancel
