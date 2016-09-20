@@ -83,14 +83,15 @@ doStartups() {
 
 doBackground() {
 	if [[ $(id) =~ root ]]; then
-		logfile=/tmp/${SCRIPT}.$$
+		logfile=/tmp/${SCRIPT_NAME}.$$
+		/bin/tty &> ${logfile}.term
 		${SCRIPT} background &> ${logfile} &
 	else
 		${SCRIPT} background
 	fi
 }
 
-waitForResources{} {
+waitForResources() {
 	echo ${CPG_HOSTNAME} ${USERPREFIX} $(/bin/tty)
 	for resource in ${DIRS}; do
 		while ! df ${resource}; do
