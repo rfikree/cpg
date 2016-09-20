@@ -2,7 +2,11 @@
 #set -x
 
 # Config parameters
+SCRIPT=${0}
 SCRIPT_NAME=$(basename ${0})
+
+# Required dirs
+DIRS="/cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var"
 
 INTROSCOPE_DIR=/cpg/3rdParty/installs/introscope/9.7.1.0
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
@@ -12,7 +16,6 @@ export CPG_HOSTNAME=$(egrep -i "^$(hostname)," \
 	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
 
 USERPREFIX=${CPG_HOSTNAME%%-*}
-
 
 
 #### Function definitions
@@ -78,6 +81,24 @@ doStartups() {
 	fi
 }
 
+doBackground() {
+	if [[ $(id) =~ root ]]; then
+		logfile=/tmp/${SCRIPT}.$$
+		${SCRIPT} background &> ${logfile} &
+	else
+		${SCRIPT} background
+	fi
+}
+
+waitForResources{} {
+	echo ${CPG_HOSTNAME} ${USERPREFIX} $(/bin/tty)
+	for resource in ${DIRS}; do
+		while ! df ${resource}; do
+			sleep 5
+		done
+	done
+}
+
 removeScript() {
 	rm -f /etc/init.d/${SCRIPT_NAME}
 	rm -f /etc/rc?.d/[SK][0-9][0-9]${SCRIPT_NAME}
@@ -86,6 +107,7 @@ removeScript() {
 installScript() {
 	cp ${0} /etc/init.d/${SCRIPT_NAME}
 	for x in 3; do
+		rm -f /etc/rc${x}.d/S99${SCRIPT_NAME}
 		ln /etc/init.d/${SCRIPT_NAME} /etc/rc${x}.d/S99${SCRIPT_NAME}
 	done
 }
@@ -168,6 +190,10 @@ esac
 
 case ${1} in
 	start)
+		doBackground
+		;;
+	background)
+		waitForResources
 		doStartups
 		;;
 	status)
