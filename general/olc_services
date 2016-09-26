@@ -2,8 +2,8 @@
 #set -x
 
 # Config parameters
-SCRIPT=${0}
-SCRIPT_NAME=$(basename ${0})
+SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
+SCRIPT_NAME=$(basename ${SCRIPT})
 
 # Required dirs
 DIRS="/cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var"
@@ -65,26 +65,30 @@ doStartups() {
 
 	# Start node managers
 	if [[ -n ${NODEMANAGERS} && -n ${DOMAIN} ]]; then
-		for SCRIPT in /cpg/cpo_apps/${NODEMANAGERS}???/a????${DOMAIN}/bin/startNodeManager.sh; do
-			runWebLogicScript ${SCRIPT} 'NodeManager' ''
+		for RUN_SCRIPT in /cpg/cpo_apps/${NODEMANAGERS}???/a????${DOMAIN}/bin/startNodeManager.sh; do
+			runWebLogicScript ${RUN_SCRIPT} 'NodeManager' ''
 		done
 	fi
 
 	# Start WebLogic admin servers - SOA servers start differently s
 	if [[ -n ${ADMINSERVERS} && -n ${DOMAIN} ]]; then
-		for SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
-			runWebLogicScript ${SCRIPT} 'WebLogic AdminServer' '& disown'
+		for RUN_SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
+			runWebLogicScript ${RUN_SCRIPT} 'WebLogic AdminServer' '& disown'
 		done
 		#for SCRIPT in /cpg/cpo_apps/a[56]???/a????${DOMAIN}/bin/startWebLogic.sh; do
-			#runWebLogicScript ${SCRIPT} 'WebLogic AdminServer'
+			#runWebLogicScript ${RUN_SCRIPT} 'WebLogic AdminServer'
 		#done
 	fi
 }
 
 doBackground() {
 	if [[ $(id) =~ root ]]; then
-		logfile=/tmp/${SCRIPT_NAME}.$$
-		/bin/tty &> ${logfile}.term
+		logfile=/var/tmp/${SCRIPT_NAME}.$$
+		/bin/tty &> ${logfile}.state
+		echo >>  ${logfile}.state
+		env >>  ${logfile}.state
+		echo >>  ${logfile}.state
+		set >>  ${logfile}.state
 		${SCRIPT} background &> ${logfile} &
 	else
 		${SCRIPT} background

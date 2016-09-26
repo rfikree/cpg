@@ -3,7 +3,8 @@
 
 
 # Directory script is being run from
-SCRIPT_DIR=$(cd $(dirname $1) >/dev/null; echo ${PWD})
+SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
+SCRIPT_DIR=$(dirname ${SCRIPT})
 
 
 # Jython configuration files

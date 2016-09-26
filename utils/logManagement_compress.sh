@@ -1,7 +1,8 @@
 #!/bin/bash
 
-SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
-SCRIPT_NAME=$(basename $0)
+SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
+SCRIPT_DIR=$(dirname ${SCRIPT})
+SCRIPT_NAME=$(basename ${SCRIPT})
 STACK_NUM=${LOGNAME:3:2}
 PROJECT=${LOGNAME:3:1}
 
@@ -140,7 +141,7 @@ compressFile() {
 
 #### Mainline
 
-echo "Executing $SCRIPT_NAME for $LOGNAME."
+echo "Executing ${SCRIPT_NAME} for ${LOGNAME}."
 
 case "${LOGNAME:0:3}" in
 	prd )

@@ -1,6 +1,8 @@
 #!/bin/bash
-SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
-SCRIPT_NAME=`basename $0`
+
+SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
+SCRIPT_DIR=$(dirname ${SCRIPT})
+SCRIPT_NAME=$(basename ${SCRIPT})
 OS_USERNAME=`id | cut -d'(' -f2 | cut -d')' -f1`
 STACK_NUM=${OS_USERNAME:3:5}
 PROJECT=${OS_USERNAME:3:1}
@@ -24,7 +26,7 @@ if [[ -z $DELETE_DAYS || $DELETE_DAYS != ${DELETE_DAYS//[^0-9]} ]];then
 fi
 
 
-echo "Executing $SCRIPT_NAME for $OS_USERNAME"
+echo "Executing ${SCRIPT_NAME} for ${OS_USERNAME}"
 
 case "${OS_USERNAME:0:3}" in
 	prd )
