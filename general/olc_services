@@ -6,7 +6,7 @@ SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
 SCRIPT_NAME=$(basename ${SCRIPT})
 
 # Required dirs
-DIRS="/cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var"
+DIRS="/cpg/3rdParty /cpg/cpo_apps /cpg/cpo_var"
 
 INTROSCOPE_DIR=/cpg/3rdParty/installs/introscope/9.7.1.0
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
