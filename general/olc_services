@@ -1,6 +1,11 @@
 #! /usr/bin/bash
 #set -x
 
+# Ensure workable PATH
+SAVE_PATH=${PATH}
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+
 # Config parameters
 SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
 SCRIPT_NAME=$(basename ${SCRIPT})
@@ -110,10 +115,13 @@ removeScript() {
 }
 
 installScript() {
+	if [ ${0} == /etc/init.d/${SCRIPT_NAME} ]; then
+		echo FATAL: Cannot install from /etc/init.d
+	fi
 	cp ${0} /etc/init.d/${SCRIPT_NAME}
+	chmod 755 /etc/init.d/${SCRIPT_NAME}
 	for x in 3; do
-		rm -f /etc/rc${x}.d/S99${SCRIPT_NAME}
-		ln /etc/init.d/${SCRIPT_NAME} /etc/rc${x}.d/S99${SCRIPT_NAME}
+		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${x}.d/S99${SCRIPT_NAME}
 	done
 }
 
