@@ -10,6 +10,7 @@ export PATH
 SCRIPT=`python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0}`
 SCRIPT_NAME=`basename ${SCRIPT}`
 HOSTNAME=`hostname`
+IP_ADDR=`getent hosts ${HOSTNAME} | awk '{print $1}'`
 
 # Required dirs
 DIRS="/cpg/3rdParty /cpg/cpo_apps /cpg/cpo_var"
@@ -78,7 +79,7 @@ pauseWebLogic() {
 		url_path=/health/healthcheck.htm
 	fi
 
-	for host in `netstat -a | grep "${HOSTNAME}[.]${stack}[1-9]0[1-9] .* LISTEN" | \
+	for host in `netstat -a | grep "${IP_ADDR}[.]${stack}[1-9]0[1-9] .* LISTEN" | \
 			cut -f1 -d\ | tr '.' ':'| sort`; do
 		java URLReader http://${host}${url_path}
 		${SKIP} unset SKIP_SLEEP
