@@ -1,14 +1,16 @@
-#! /usr/bin/bash
+#!/bin/sh
 #set -x
 
 # Ensure workable PATH
 SAVE_PATH=${PATH}
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin
-
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
 
 # Config parameters
-SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
-SCRIPT_NAME=$(basename ${SCRIPT})
+SCRIPT=`python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0}`
+SCRIPT_NAME=`basename ${SCRIPT}`
+HOSTNAME=`hostname`
+IP_ADDR=`getent hosts ${HOSTNAME} | awk '{print $1}'`
 
 # Required dirs
 DIRS="/cpg/3rdParty /cpg/cpo_apps /cpg/cpo_var"
@@ -17,20 +19,35 @@ INTROSCOPE_DIR=/cpg/3rdParty/installs/introscope/9.7.1.0
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-export CPG_HOSTNAME=$(egrep -i "^$(hostname)," \
-	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
+CPG_HOSTNAME=`egrep -i "^${HOSTNAME}," \
+	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2`
+export CPG_HOSTNAME
 
-USERPREFIX=${CPG_HOSTNAME%%-*}
+USERPREFIX=`echo ${CPG_HOSTNAME} | cut -d- -f1`
 
+for JAVA_HOME in  /cpg/3rdParty/installs/java/jdk1.7.0_*; do
+	continue;
+done
+CLASSPATH=/cpg/3rdParty/scripts/cpg/testing
+export JAVA_HOME CLASSPATH
 
 #### Function definitions
 
 startEPAgent() {
-	if $(ps -fu apm | grep [j]ava >/dev/null); then
+	if `ps -fu apm | grep [j]ava >/dev/null`; then
 		echo Introscope EPAgent is already running
 	else
 		echo Introscope EPAgent is NOT running
 		$SKIP su - apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh start"
+	fi
+}
+
+stopEPAgent() {
+	if `ps -fu apm | grep [j]ava >/dev/null`; then
+		echo Introscope EPAgent is running
+		$SKIP su - apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh stop"
+	else
+		echo Introscope EPAgent is NOT running
 	fi
 }
 
@@ -44,39 +61,68 @@ runWebLogicScript() {
 		exit 1
 	fi
 
-	wlDomain=${cmdScript%/bin*}
-	wlDomain=${wlDomain##*/}
-	wlPort=${wlDomain:3:2}${wlDomain:6:1}00
+	wlDomain=`echo ${cmdScript} | awk -F/ '{print $5}'`
+	wlPort=`echo $wlDomain | awk '{print substr($1,4,2) substr($1,7,1) "00"}'`
 
-	if $(netstat -an | grep "$wlPort.*LISTEN" >/dev/null); then
+	if `netstat -an | grep "$wlPort.*LISTEN" >/dev/null`; then
 		echo ${wlDomain}: ${cmdName} is already running
 	else
 		echo ${wlDomain}: ${cmdName} is NOT running
-		wlUser=${USERPREFIX}${wlDomain:3:2}
+		wlUser=${USERPREFIX}`echo ${wlDomain} | awk '{print substr($1,4,2)}'`
 		$SKIP su - ${wlUser} -c "${cmdScript} ${cmdOptions}"
 	fi
 }
 
-doStartups() {
-	# Silently ignore commands if not running as root
-	if [[ ! $(id) =~ uid=0\(root\) ]]; then
-		SKIP='true ||'
+pauseWebLogic() {
+	domain=$1
+	stack=`echo ${domain} | awk '{print substr($1,4,2)}'`
+	url_path='/health/setState.jsp?state=paused'
+	SKIP_SLEEP='true ||'
+
+	# Show status instead of pausing server if skipping
+	if [ -n ${SKIP:-''} ]; then
+		url_path=/health/healthcheck.htm
 	fi
 
+	for host in `netstat -a | \
+			nawk "/${HOSTNAME}[.].*${stack}[1-9]0[1-9] .* LISTEN/\
+			{gsub(/\.${stack}/,\":${stack}\",\\\$1); print \\\$1}"`; do
+		$JAVA_HOME/bin/java URLReader http://${host}${url_path}
+		${SKIP} unset SKIP_SLEEP
+	done
+}
+
+stopWebLogic() {
+	domain=$1
+	domainUser=${USERPREFIX}`echo ${domain} | awk '{print substr($1,4,2)}'`
+	action=kill
+
+	# Show process instead of killing process if skipping
+	if [ -n ${SKIP:-''} ]; then
+		action='ps -fp'
+	fi
+
+	for pid in `ps -fu ${domainUser} | awk '/java / {print $2}'`; do
+		${action} ${pid} | tail -1
+	done
+}
+
+
+doStartups() {
 	# Start Introscope EP Agent - doesn't run in dev
-	if [[ -n ${EPAGENT} && ${USERPREFIX} != dev ]]; then
+	if [ -n ${EPAGENT:-''} -a ${USERPREFIX:-''} != dev ]; then
 		startEPAgent
 	fi
 
 	# Start node managers
-	if [[ -n ${NODEMANAGERS} && -n ${DOMAIN} ]]; then
+	if [ -n ${NODEMANAGERS:-''} -a -n ${DOMAIN:-''} ]; then
 		for RUN_SCRIPT in /cpg/cpo_apps/${NODEMANAGERS}???/a????${DOMAIN}/bin/startNodeManager.sh; do
 			runWebLogicScript ${RUN_SCRIPT} 'NodeManager' ''
 		done
 	fi
 
-	# Start WebLogic admin servers - SOA servers start differently s
-	if [[ -n ${ADMINSERVERS} && -n ${DOMAIN} ]]; then
+	# Start WebLogic admin servers - SOA servers start differently
+	if [ -n ${ADMINSERVERS:-''} -a -n ${DOMAIN:-''} ]; then
 		for RUN_SCRIPT in /cpg/cpo_apps/a[1-3]???/a????${DOMAIN}/bin/startWebLogic.sh; do
 			runWebLogicScript ${RUN_SCRIPT} 'WebLogic AdminServer' '& disown'
 		done
@@ -86,8 +132,35 @@ doStartups() {
 	fi
 }
 
+doShutdowns() {
+	# Start Introscope EP Agent - doesn't run in dev
+	if [ -n ${EPAGENT:-''} -a ${USERPREFIX:-''} != dev ]; then
+		$SKIP stopEPAgent
+	fi
+
+	# Stop WebLogic admin servers
+	if [ -n ${ADMINSERVERS:-''} -a -n ${DOMAIN:-''} ]; then
+		for DOMAIN_DIR in /cpg/cpo_apps/a[1-6]???; do
+			stopWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+		done
+	fi
+
+	# Stop WebLogic managed servers and node managers
+	if [ -n ${NODEMANAGERS:-''} -a -n ${DOMAIN:-''} ]; then
+		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
+			pauseWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+		done
+
+		$SKIP $SKIP_SLEEP sleep 45
+
+		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
+			stopWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+		done
+	fi
+}
+
 doBackground() {
-	if [[ $(id) =~ root ]]; then
+	if `id | grep uid=0 > /dev/null`; then
 		logfile=/var/tmp/${SCRIPT_NAME}.$$
 		/bin/tty &> ${logfile}.state
 		echo >>  ${logfile}.state
@@ -101,7 +174,7 @@ doBackground() {
 }
 
 waitForResources() {
-	echo ${CPG_HOSTNAME} ${USERPREFIX} $(/bin/tty)
+	echo ${CPG_HOSTNAME} ${USERPREFIX} `/bin/tty`
 	for resource in ${DIRS}; do
 		while ! df ${resource}; do
 			sleep 5
@@ -116,12 +189,18 @@ removeScript() {
 
 installScript() {
 	if [ ${0} == /etc/init.d/${SCRIPT_NAME} ]; then
-		echo FATAL: Cannot install from /etc/init.d
+		echo FATAL: Cannot install from ${0}
 	fi
-	cp ${0} /etc/init.d/${SCRIPT_NAME}
+	if [ -h ${0} ]; then
+		echo FATAL: Cannot install from ${0}
+	fi
+	cp ${0} /etc/init.d/
 	chmod 755 /etc/init.d/${SCRIPT_NAME}
-	for x in 3; do
-		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${x}.d/S99${SCRIPT_NAME}
+	for level in 3; do
+		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${level}.d/S99${SCRIPT_NAME}
+	done
+	for level in 0 1 2 S; do
+PP		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${level}.d/K00${SCRIPT_NAME}
 	done
 }
 
@@ -199,6 +278,11 @@ case ${CPG_HOSTNAME:-''} in
 		;;
 esac
 
+# Ignore commands if not running as root
+if `id | grep -v uid=0 > /dev/null`; then
+	SKIP='echo'
+fi
+
 # Perform selected action
 
 case ${1} in
@@ -214,7 +298,8 @@ case ${1} in
 		SKIP='true ||'
 		doStartups
 		;;
-	stop)	# noop
+	stop)
+		doShutdowns
 		;;
 	install)
 		installScript
