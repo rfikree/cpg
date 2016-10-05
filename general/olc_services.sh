@@ -25,6 +25,10 @@ export CPG_HOSTNAME
 
 USERPREFIX=`echo ${CPG_HOSTNAME} | cut -d- -f1`
 
+for JAVA_HOME in  /cpg/3rdParty/installs/java/jdk1.7.0_*; do
+	continue;
+done
+export JAVA_HOME
 
 #### Function definitions
 
@@ -81,8 +85,8 @@ pauseWebLogic() {
 
 	for host in `netstat -a | \
 			nawk "/${HOSTNAME}[.].*${stack}[1-9]0[1-9] .* LISTEN/\
-			{gsub(/\.${stack}/,\":${stack}\",\$1); print \$1}"`; do
-		java URLReader http://${host}${url_path}
+			{gsub(/\.${stack}/,\":${stack}\","\\\$1); print \\\$1}"`; do
+		$JAVA_HOME/bin/java URLReader http://${host}${url_path}
 		${SKIP} unset SKIP_SLEEP
 	done
 }
