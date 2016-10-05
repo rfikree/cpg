@@ -76,7 +76,7 @@ runWebLogicScript() {
 pauseWebLogic() {
 	domain=$1
 	stack=`echo ${domain} | awk '{print substr($1,4,2)}'`
-	url_path=/health/setState.jsp=paused
+	url_path='/health/setState.jsp?state=paused'
 	SKIP_SLEEP='true ||'
 
 	# Show status instead of pausing server if skipping
