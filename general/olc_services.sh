@@ -272,7 +272,7 @@ case ${CPG_HOSTNAME:-''} in
 esac
 
 # Ignore commands if not running as root
-if `id | grep uid=0 > /dev/null`; then
+if `id | grep -v uid=0 > /dev/null`; then
 	SKIP='echo'
 fi
 
