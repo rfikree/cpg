@@ -3,8 +3,8 @@
 
 # Ensure workable PATH
 SAVE_PATH=${PATH}
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin
-
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
 
 # Config parameters
 SCRIPT=`python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0}`
@@ -20,8 +20,9 @@ PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 export CPG_HOSTNAME=`egrep -i "^${HOSTNAME}," \
 	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2`
+export CPG_HOSTNAME
 
-USERPREFIX=${CPG_HOSTNAME%%-*}
+USERPREFIX=`echo ${CPG_HOSTNAME} | cut -d- -f1`
 
 
 #### Function definitions
@@ -45,18 +46,17 @@ stopEPAgent() {
 }
 
 runWebLogicScript() {
-	local cmdScript=${1}
-	local cmdName=${2}
-	local cmdOptions=${3}
+	cmdScript=${1}
+	cmdName=${2}
+	cmdOptions=${3}
 
 	if [ ! -x $cmdScript ]; then
 		echo Unable to exectute ${cmdScript}
 		exit 1
 	fi
 
-	local wlDomain=${cmdScript%/bin*}
-	local wlDomain=${wlDomain##*/}
-	local wlPort=${wlDomain:3:2}${wlDomain:6:1}00
+	wlDomain=`echo ${cmdScript} | awk -F/ '{print $4}`
+	wlPort=${wlDomain:3:2}${wlDomain:6:1}00
 
 	if `netstat -an | grep "$wlPort.*LISTEN" >/dev/null`; then
 		echo ${wlDomain}: ${cmdName} is already running
@@ -68,9 +68,9 @@ runWebLogicScript() {
 }
 
 pauseWebLogic() {
-	local domain=$1
-	local stack=${domain:3}
-	local url_path=/health/setState.jsp=paused
+	domain=$1
+	stack=${domain:3}
+	url_path=/health/setState.jsp=paused
 	SKIP_SLEEP='true ||'
 
 	# Show status instead of pausing server if skipping
@@ -79,16 +79,16 @@ pauseWebLogic() {
 	fi
 
 	for host in `netstat -a | grep "${HOSTNAME}[.]${stack}[1-9]0[1-9] .* LISTEN" | \
-			cut -f1 -d\ | tr '.' ':'| sort`do
+			cut -f1 -d\ | tr '.' ':'| sort`; do
 		java URLReader http://${host}${url_path}
 		${SKIP} unset SKIP_SLEEP
 	done
 }
 
 stopWebLogic() {
-	local domain=$1
-	local domainUser=${USERPREFIX}${domain:3}
-	local action=kill
+	domain=$1
+	domainUser=${USERPREFIX}${domain:3}
+	action=kill
 
 	# Show process instead of killing process if skipping
 	if [ -n ${SKIP:-''} ]; then
@@ -134,20 +134,20 @@ doShutdowns() {
 	# Stop WebLogic admin servers
 	if [ -n ${ADMINSERVERS:-''} -a -n ${DOMAIN:-''} ]; then
 		for DOMAIN_DIR in /cpg/cpo_apps/a[1-6]???; do
-			shutdownWebLogic ${DOMAIN_DIR##*/}
+			shutdownWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
 		done
 	fi
 
 	# Stop WebLogic managed servers and node managers
 	if [ -n ${NODEMANAGERS:-''} -a -n ${DOMAIN:-''} ]; then
 		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
-			pauseWebLogic ${DOMAIN_DIR##*/}
+			pauseWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
 		done
 
 		$SKIP $SKIP_SLEEP sleep 45
 
 		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
-			shutdownWebLogic ${DOMAIN_DIR##*/}
+			shutdownWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
 		done
 	fi
 }
