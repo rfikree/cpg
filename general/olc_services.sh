@@ -18,7 +18,7 @@ INTROSCOPE_DIR=/cpg/3rdParty/installs/introscope/9.7.1.0
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-export CPG_HOSTNAME=`egrep -i "^${HOSTNAME}," \
+CPG_HOSTNAME=`egrep -i "^${HOSTNAME}," \
 	${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2`
 export CPG_HOSTNAME
 
