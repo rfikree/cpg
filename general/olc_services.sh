@@ -55,21 +55,21 @@ runWebLogicScript() {
 		exit 1
 	fi
 
-	wlDomain=`echo ${cmdScript} | awk -F/ '{print $4}'`
-	wlPort=${wlDomain:3:2}${wlDomain:6:1}00
+	wlDomain=`echo ${cmdScript} | awk -F/ '{print $5}'`
+	wlPort=`echo $wlDomain | awk '{print substr($1,4,2) substr($1,7,1) "00"}'`
 
 	if `netstat -an | grep "$wlPort.*LISTEN" >/dev/null`; then
 		echo ${wlDomain}: ${cmdName} is already running
 	else
 		echo ${wlDomain}: ${cmdName} is NOT running
-		wlUser=${USERPREFIX}${wlDomain:3:2}
+		wlUser=${USERPREFIX}`echo ${wlDomain} | awk '{print substr($1,4,2)}'`
 		$SKIP su - ${wlUser} -c "${cmdScript} ${cmdOptions}"
 	fi
 }
 
 pauseWebLogic() {
 	domain=$1
-	stack=${domain:3}
+	stack=`echo ${domain} | awk '{print substr($1,4,2)}'`
 	url_path=/health/setState.jsp=paused
 	SKIP_SLEEP='true ||'
 
@@ -87,7 +87,7 @@ pauseWebLogic() {
 
 stopWebLogic() {
 	domain=$1
-	domainUser=${USERPREFIX}${domain:3}
+	domainUser=${USERPREFIX}`echo ${domain} | awk '{print substr($1,4,2)}'`
 	action=kill
 
 	# Show process instead of killing process if skipping
