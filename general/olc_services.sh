@@ -79,8 +79,9 @@ pauseWebLogic() {
 		url_path=/health/healthcheck.htm
 	fi
 
-	for host in `netstat -a | grep "${IP_ADDR}[.]${stack}[1-9]0[1-9] .* LISTEN" | \
-			cut -f1 -d\ | tr '.' ':'| sort`; do
+	for host in `netstat -a | \
+			nawk "/${HOSTNAME}[.].*${stack}[1-9]0[1-9] .* LISTEN/\
+			{gsub(/\.${stack}/,\":${stack}\",\$1); print \$1}"`; do
 		java URLReader http://${host}${url_path}
 		${SKIP} unset SKIP_SLEEP
 	done
