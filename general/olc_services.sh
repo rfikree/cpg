@@ -134,7 +134,7 @@ doShutdowns() {
 	# Stop WebLogic admin servers
 	if [ -n ${ADMINSERVERS:-''} -a -n ${DOMAIN:-''} ]; then
 		for DOMAIN_DIR in /cpg/cpo_apps/a[1-6]???; do
-			shutdownWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+			stopWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
 		done
 	fi
 
@@ -147,7 +147,7 @@ doShutdowns() {
 		$SKIP $SKIP_SLEEP sleep 45
 
 		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
-			shutdownWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+			stopWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
 		done
 	fi
 }
