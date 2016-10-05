@@ -44,7 +44,7 @@ startEPAgent() {
 
 stopEPAgent() {
 	if `ps -fu apm | grep [j]ava >/dev/null`; then
-		echo Introscope EPAgent is already running
+		echo Introscope EPAgent is running
 		$SKIP su - apm -c "${INTROSCOPE_DIR}/${EPAGENT}/bin/EPACtrl.sh stop"
 	else
 		echo Introscope EPAgent is NOT running
