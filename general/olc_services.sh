@@ -55,7 +55,7 @@ runWebLogicScript() {
 		exit 1
 	fi
 
-	wlDomain=`echo ${cmdScript} | awk -F/ '{print $4}`
+	wlDomain=`echo ${cmdScript} | awk -F/ '{print $4}'`
 	wlPort=${wlDomain:3:2}${wlDomain:6:1}00
 
 	if `netstat -an | grep "$wlPort.*LISTEN" >/dev/null`; then
