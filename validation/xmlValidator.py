@@ -138,9 +138,9 @@ def validateXML(filename):
 
 
 def validateFile(fname):
-	if isfile(fname) and (fname.endswith('.xml') or fname.endswith('.xhtml')):
+	if fname.split('.')[-1] in ('xml', 'xsl', 'xhtml'):
 		validateXML(fname)
-	elif isfile(fname) and (fname.endswith('.html') or fname.endswith('.html')):
+	elif fname.endswith('.html'):
 		validateHTML(fname)
 
 
