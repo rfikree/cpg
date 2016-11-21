@@ -7,7 +7,7 @@
 umask 022
 
 # Zip file
-ZIP_FILE=${HOME}/$(hostname).zip
+ZIP_FILE=/tmp/$(hostname).zip
 
 # Files to inclued
 INCLUDE_FILES="
@@ -71,7 +71,7 @@ fi
 
 if [[ -n ${host} ]]; then
 	echo Uploading to ${1}${1:+@}${host}:Solaris
-	scp -P2022 ${ZIP_FILE}  ${1}${1:+@}${host}:Solaris
+	scp -P2022 ${ZIP_FILE}  ${1}${1:+@}${host}:Solaris && rm ${ZIP_FILE}
 fi
 
 echo Done
