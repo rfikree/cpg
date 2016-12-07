@@ -38,6 +38,7 @@ public class URLReader {
 			while ((inputLine = in.readLine()) != null)
 				System.out.println(inputLine);
 			in.close();
+			System.out.println(); // Ensure new line at end of content
 		}
 		catch ( IOException e ) {
 			System.out.println("Failed reading URL: " + URL);
