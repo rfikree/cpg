@@ -17,7 +17,7 @@ public class URLReader {
 			myURL = new URL(URL);
 		}
 		catch (MalformedURLException e) {
-			System.out.println("Malformed URL: " + URL);
+			System.err.println("Malformed URL: " + URL);
 			e.printStackTrace();
 		}
 
@@ -25,7 +25,7 @@ public class URLReader {
 			urlConn = myURL.openConnection();
 		}
 		catch ( IOException e ) {
-			System.out.println("Failed to open URL: " + URL);
+			System.err.println("Failed to open URL: " + URL);
 			e.printStackTrace();
 		}
 
@@ -41,7 +41,7 @@ public class URLReader {
 			System.out.println(); // Ensure new line at end of content
 		}
 		catch ( IOException e ) {
-			System.out.println("Failed reading URL: " + URL);
+			System.err.println("Failed reading URL: " + URL);
 			e.printStackTrace();
 		}
 	}
