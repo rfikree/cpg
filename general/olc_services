@@ -87,7 +87,7 @@ pauseWebLogic() {
 	for host in `netstat -a | \
 			nawk "/${HOSTNAME}[.].*${stack}[1-9]0[1-9] .* LISTEN/\
 			{gsub(/\.${stack}/,\":${stack}\",\\\$1); print \\\$1}"`; do
-		$JAVA_HOME/bin/java URLReader http://${host}${url_path}
+		$JAVA_HOME/bin/java URLReader http://${host}${url_path} 2 > /dev/null
 		${SKIP} unset SKIP_SLEEP
 	done
 }
@@ -161,13 +161,7 @@ doShutdowns() {
 
 doBackground() {
 	if `id | grep uid=0 > /dev/null`; then
-		logfile=/var/tmp/${SCRIPT_NAME}.$$
-		/bin/tty &> ${logfile}.state
-		echo >>  ${logfile}.state
-		env >>  ${logfile}.state
-		echo >>  ${logfile}.state
-		set >>  ${logfile}.state
-		${SCRIPT} background &> ${logfile} &
+		${SCRIPT} background &
 	else
 		${SCRIPT} background
 	fi
