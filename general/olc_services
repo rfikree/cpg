@@ -168,7 +168,6 @@ doBackground() {
 }
 
 waitForResources() {
-	echo ${CPG_HOSTNAME} ${USERPREFIX} `/bin/tty`
 	for resource in ${DIRS}; do
 		while true; do
 			df ${resource} > /dev/null 2>&1
