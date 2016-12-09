@@ -183,7 +183,7 @@ removeScript() {
 }
 
 installScript() {
-	if [ ${0} == /etc/init.d/${SCRIPT_NAME} ]; then
+	if [ ${0} = /etc/init.d/${SCRIPT_NAME} ]; then
 		echo FATAL: Cannot install from ${0}
 	fi
 	if [ -h ${0} ]; then
@@ -195,7 +195,7 @@ installScript() {
 		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${level}.d/S99${SCRIPT_NAME}
 	done
 	for level in 0 1 2 S; do
-PP		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${level}.d/K00${SCRIPT_NAME}
+		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${level}.d/K00${SCRIPT_NAME}
 	done
 }
 
