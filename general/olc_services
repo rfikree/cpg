@@ -25,7 +25,7 @@ export CPG_HOSTNAME
 
 USERPREFIX=`echo ${CPG_HOSTNAME} | cut -d- -f1`
 
-for JAVA_HOME in  /cpg/3rdParty/installs/java/jdk1.7.0_*; do
+for JAVA_HOME in /cpg/3rdParty/installs/java/jdk1.7.0_*; do
 	continue;
 done
 CLASSPATH=/cpg/3rdParty/scripts/cpg/testing
@@ -73,11 +73,12 @@ runWebLogicScript() {
 	fi
 }
 
-pauseWebLogic() {
+setState() {
 	domain=$1
+	state=$2
+
 	stack=`echo ${domain} | awk '{print substr($1,4,2)}'`
-	url_path='/health/setState.jsp?state=paused'
-	SKIP_SLEEP='true ||'
+	url_path="/health/setState.jsp?state=${state}"
 
 	# Show status instead of pausing server if skipping
 	if [ -n ${SKIP:-''} ]; then
@@ -88,7 +89,6 @@ pauseWebLogic() {
 			nawk "/${HOSTNAME}[.].*${stack}[1-9]0[1-9] .* LISTEN/\
 			{gsub(/\.${stack}/,\":${stack}\",\\\$1); print \\\$1}"`; do
 		$JAVA_HOME/bin/java URLReader http://${host}${url_path} 2 > /dev/null
-		${SKIP} unset SKIP_SLEEP
 	done
 }
 
@@ -148,10 +148,10 @@ doShutdowns() {
 	# Stop WebLogic managed servers and node managers
 	if [ -n ${NODEMANAGERS:-''} -a -n ${DOMAIN:-''} ]; then
 		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
-			pauseWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+			setState paused `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
 		done
 
-		$SKIP $SKIP_SLEEP sleep 45
+		$SKIP sleep 45
 
 		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
 			stopWebLogic `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
@@ -197,6 +197,17 @@ installScript() {
 	for level in 0 1 2 S; do
 		ln -s -f /etc/init.d/${SCRIPT_NAME} /etc/rc${level}.d/K00${SCRIPT_NAME}
 	done
+}
+
+setHealthState() {
+	status=$1
+
+	# Set health State for WebLogic application servers 
+	if [ -n ${NODEMANAGERS:-''} -a -n ${DOMAIN:-''} ]; then
+		for DOMAIN_DIR in /cpg/cpo_apps/${NODEMANAGERS}???; do
+			setState $status `echo ${DOMAIN_DIR} | awk -F/ '{print $NF}'`
+		done
+	fi
 }
 
 
@@ -282,7 +293,7 @@ fi
 
 case ${1} in
 	start)
-		doBackground
+		doBackground < /dev/null
 		;;
 	background)
 		waitForResources
@@ -302,10 +313,17 @@ case ${1} in
 	remove)
 		removeScript
 		;;
+	activate)
+		setHealthState active
+		;;
+	pause)
+		setHealthState paused
+		;;
 	*)
 		echo
-		echo "usage: $0 start|status|stop|install|remove"
+		echo "usage: $0 start|status|stop|install|remove|activate|pause"
 		echo
+		echo "  activate/pause: set health state of application servers"
 		;;
 esac
 
