@@ -11,7 +11,7 @@ ZIP_FILE=/tmp/$(hostname).zip
 
 # Files to inclued
 INCLUDE_FILES="
-/etc/auto_homke
+/etc/auto_home
 /etc/auto_master
 /etc/bootparams
 /etc/coreadm.conf
