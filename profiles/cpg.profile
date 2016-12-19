@@ -69,10 +69,10 @@ export ENVIRONMENT STACKUSER
 
 #### Default values - may be overriden; DSS project overrides these
 
-JAVA_VERSION=jdk1.7.0_80
+JAVA_VERSION=jdk1.7.0_121
 JAVA_VENDOR=Sun
 
-MW_DIR=Middleware_Home
+MW_DIR=Middleware_Home1
 WL_DIR=wlserver_10.3
 
 ##### Overrides by userid
@@ -162,12 +162,13 @@ unset domain domains
 #================================================
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
-
 JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
 WL_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}/${WL_DIR}
 
-eval $(egrep '^(jdk|bea)Path *=' \
-	${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
+if [ -f {d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
+	eval $(egrep '^(jdk|bea)Path *=' \
+		${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
+fi
 
 if [[ "${JAVA_HOME}" != "${jdkPath}" \
 && -f "${jdkPath:-/XXX}/bin/java" ]]; then
