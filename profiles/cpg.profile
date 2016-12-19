@@ -165,7 +165,7 @@ unset domain domains
 JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
 WL_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}/${WL_DIR}
 
-if [ -f {d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
+if [ -f ${d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
 	eval $(egrep '^(jdk|bea)Path *=' \
 		${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
