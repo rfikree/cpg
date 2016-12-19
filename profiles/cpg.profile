@@ -163,7 +163,11 @@ unset domain domains
 #================================================
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
-if [[ "${JAVA_HOME}" != "jdkPath" \
+
+eval (egrep '^(jdk|bea)Path *=' \
+	${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
+
+if [[ "${JAVA_HOME}" != "${jdkPath}" \
 && -f "${jdkPath:-/XXX}/bin/java" ]]; then
 	case $(uname -s) in
 	SunOS)
