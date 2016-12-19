@@ -70,6 +70,8 @@ export ENVIRONMENT STACKUSER
 #### Default values - may be overriden; DSS project overrides these
 
 JAVA_VERSION=jdk1.7.0_80
+JAVA_VENDOR=Sun
+
 MW_DIR=Middleware_Home
 WL_DIR=wlserver_10.3
 
@@ -127,20 +129,14 @@ VAR_STACK=/cpg/cpo_var/${STACK}
 CONTENT_DIR=/cpg/content
 
 INSTALL_DIR=/cpg/3rdParty/installs
-
-JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
-JAVA_VENDOR=Sun
-
-WL_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}/${WL_DIR}
-
 SQLPLUS_HOME=${INSTALL_DIR}/Oracle/instantclient_12_1
 
 SAPJCO_HOME=${INSTALL_DIR}/SAP/sapjco-sun_64-2.1.10
 SAPSEC_HOME=${INSTALL_DIR}/SAP/sap-security-utils
 
-export APP_STACK VAR_STACK CONTENT_DIR INSTALL_DIR JAVA_HOME JAVA_VENDOR
-export WL_HOME SQLPLUS_HOME SAPJCO_HOME SAPSEC_HOME
-unset JAVA_VERSION MW_DIR
+export APP_STACK VAR_STACK CONTENT_DIR INSTALL_DIR JAVA_VENDOR
+export SQLPLUS_HOME SAPJCO_HOME SAPSEC_HOME
+
 
 
 #================================================
@@ -190,7 +186,11 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 	WL_HOME=${ROOT_PREFIX}${beaPath}/${WL_DIR}
 fi
 
-unset WL_DIR
+JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
+WL_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}/${WL_DIR}
+
+export JAVA_HOME WL_HOME
+unset JAVA_VERSION MW_DIR
 
 
 #================================================
