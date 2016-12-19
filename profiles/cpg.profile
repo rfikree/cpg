@@ -75,7 +75,6 @@ JAVA_VENDOR=Sun
 MW_DIR=Middleware_Home
 WL_DIR=wlserver_10.3
 
-
 ##### Overrides by userid
 # Should be able to use new versions for these in most cases
 
@@ -164,6 +163,9 @@ unset domain domains
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
 
+JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
+WL_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}/${WL_DIR}
+
 eval $(egrep '^(jdk|bea)Path *=' \
 	${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 
@@ -190,11 +192,8 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 	WL_HOME=${ROOT_PREFIX}${beaPath}/${WL_DIR}
 fi
 
-JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
-WL_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}/${WL_DIR}
-
 export JAVA_HOME WL_HOME
-unset JAVA_VERSION MW_DIR
+unset JAVA_VERSION MW_DIR WL_DIR
 
 
 #================================================
