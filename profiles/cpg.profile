@@ -99,12 +99,10 @@ case $LOB in
 	5)  PROJECT_NAME=CPC-SOA
 		MW_DIR=fmw50
 		WL_DIR=Oracle_SOA1
-		JAVA_VERSION=jdk1.7.0_85
 		;;
 	6)  PROJECT_NAME=PULSE
 		MW_DIR=fmw60
 		WL_DIR=Oracle_SOA1
-		JAVA_VERSION=jdk1.7.0_85
 		;;
 	*)  ;;
 esac
