@@ -98,11 +98,11 @@ case $LOB in
 	3)  PROJECT_NAME=WS;;
 	5)  PROJECT_NAME=CPC-SOA
 		MW_DIR=fmw50
-		WL_DIR=Oracle_SOA1
+		WL_DIR=wlserver_10.3
 		;;
 	6)  PROJECT_NAME=PULSE
 		MW_DIR=fmw60
-		WL_DIR=Oracle_SOA1
+		WL_DIR=wlserver_10.3
 		;;
 	*)  ;;
 esac
