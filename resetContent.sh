@@ -1,6 +1,7 @@
 #! /bin/bash
 
 URL_PATH='/web/iw/admin/JCS.jsp?action=clearAllRegions'
+export CLASSPATH=/cpg/3rdParty/scripts/cpg/testing
 
 if [[ ${CPG_HOSTNAME} != prd-cpodeploy ]]; then
 	echo
