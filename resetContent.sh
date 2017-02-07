@@ -30,8 +30,11 @@ EOF
 sleep 30
 
 for host in prd-a-uicpo prd-b-uicpo prd-c-uicpo; do
-	for port in 10301 10302 11301 11302; do
-		java URLReader http://${host}.cpggpc.ca:${port}${URL_PATH}
+	for stack in 10 11; do
+		for ms in {1..6}; do
+			port=${stack}30${ms}
+			java URLReader http://${host}.cpggpc.ca:${port}${URL_PATH}
+		done
 	done
 done
 
