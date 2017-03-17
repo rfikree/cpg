@@ -78,7 +78,7 @@ def parseURI(uri):
 		returning a key (URL pattern)
 	'''
 	allUpperCase = re.compile('[-A-Z0-9._@]+$')
-	fileExt = re.compile('[^.]+\.\w+$')
+	fileExt = re.compile('[^.]+\.(?!page)\w+$')
 	urlChanged = False
 
 	#print( 'parseLine', timeTaken, uri )
@@ -111,17 +111,19 @@ def reportData(data, output, hits, rptTime):
 		Data dictionary contains an array of hits for the key
 	'''
 	print ('%8s%7s%6s%7s%6s%6s%7s  %s' % (
-		'Count', 'Mean', 'SDev', 'Min', 'Med', '90%', 'Max', 'URL Pattern'),
+		'Count', 'Mean', 'SDev', '10%', 'Med', '90%', '95%', 'URL Pattern'),
 		file=output)
+#		'Count', 'Mean', 'SDev', 'Min', 'Med', '95%', 'Max', 'URL Pattern'),
 	for key in sorted(data.iterkeys()):
 		if  len(data[key]) > hits or rptTime:
-			(count, mean, stdDev,minTime,  median, p90, maxTime) = \
+			(count, mean, stdDev, minTime, p5, p10, median, p90, p95, maxTime) = \
 				genStats(data[key])
 		if len(data[key]) > hits \
 		or (rptTime and maxTime > rptTime) :
 			print ('%8d%7.2f%6.2f%7.2f%6.2f%6.2f%7.2f  %s' % (
-				count,  mean, stdDev, minTime, median, p90, maxTime, key),
+				count,  mean, stdDev, p10, median, p90, p95, key),
 				file=output)
+#				count,  mean, stdDev, minTime, median, p95, maxTime, key),
 
 def genStats(timeData):
 	''' Generate statistics from a series of time values
@@ -137,10 +139,16 @@ def genStats(timeData):
 	#print( 'genStats', sortedData )
 	minTime = sortedData[0]
 	maxTime = sortedData[-1]
-	median = sortedData[count/2]
+	if (count % 2 = 0):
+		median = sortedData[count/2]
+	else:
+		median = (sortedData[count/2] + sortedData[count)/2 + 1]) / 2
+	p5 = sortedData[count/20]
+	p10 = sortedData[count/10]
 	p90 = sortedData[-count/10]
-
-	return (count, mean, stdDev, minTime, median, p90, maxTime)
+	p95 = sortedData[-count/20]
+	
+	return (count, mean, stdDev, minTime, p5, p10, median, p90, p95, maxTime)
 
 def usage(exitStatus=0):
 	''' Simple usage function using __doc__ for log form data
