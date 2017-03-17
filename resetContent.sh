@@ -29,11 +29,12 @@ Ctrl-C to cancel
 EOF
 sleep 30
 
-for host in prd-a-uicpo prd-b-uicpo prd-c-uicpo; do
-	for stack in 10 11; do
-		for ms in {1..6}; do
+for ms in {1..6}; do
+	for host in prd-a-uicpo prd-b-uicpo prd-c-uicpo; do
+		for stack in 10 11; do
 			port=${stack}30${ms}
 			java URLReader http://${host}.cpggpc.ca:${port}${URL_PATH}
+			sleep 20
 		done
 	done
 done
