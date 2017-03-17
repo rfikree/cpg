@@ -142,7 +142,7 @@ def genStats(timeData):
 	if (count % 2 == 0):
 		median = sortedData[count/2]
 	else:
-		median = (sortedData[count/2] + sortedData[count)/2 + 1]) / 2
+		median = (sortedData[count/2] + sortedData[count/2 + 1]) / 2
 	p5 = sortedData[count/20]
 	p10 = sortedData[count/10]
 	p90 = sortedData[-count/10]
