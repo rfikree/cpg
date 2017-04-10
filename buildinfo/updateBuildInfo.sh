@@ -12,9 +12,10 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 	-Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
 	-Dweblogic.ThreadPoolPercentSocketReaders=75
 	-Dweblogic.ThreadPoolSize=32
+	-Dweblogic.security.SSL.enableJSSE=true
 	-Dweblogic.security.allowCryptoJDefaultJCEVerification=true
 	-Dweblogic.security.allowCryptoJDefaultPRNG=true"
-
+             
 # Determine the environment to run reports for
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
