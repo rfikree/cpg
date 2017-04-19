@@ -26,7 +26,7 @@ singletonTags = (
 	'param',
 	'source',
 	'frame',
-	)
+)
 
 closeOptionalTags = (
 	'body',
@@ -45,8 +45,11 @@ closeOptionalTags = (
 	'th',
 	'thead',
 	'tr',
-	)
+)
 
+neverNestedTags = (
+	'script'
+)
 
 
 class SimpleHTMLValidator(HTMLParser):
@@ -77,6 +80,9 @@ class SimpleHTMLValidator(HTMLParser):
 		self.close()
 
 	def handle_starttag(self, tag, attrs):
+		if tag in neverNestedTags and tag in self.openTags: 
+			self.showWarning('"' + tag + '" should not be nested inside another "' 
+				+ tag + '" tag', self.getpos())
 		if tag not in singletonTags:
 			self.openTags.append(tag)
 
@@ -88,8 +94,8 @@ class SimpleHTMLValidator(HTMLParser):
 			raise HTMLParseError('Extra closing tag "' + tag + '" used', self.getpos())
 		while self.openTags:
 			openTag = self.openTags.pop()
-			if tag == openTag or openTag not in closeOptionalTags:
-				break
+			if tag == openTag or openTag not in closeOptionalTags:      
+				break                                                  
 		if tag != openTag:
 			raise HTMLParseError('"' + tag + '" tag closes "' + openTag + '" tag', self.getpos())
 
