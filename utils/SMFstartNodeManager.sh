@@ -1,6 +1,39 @@
 #!/usr/bin/bash
 #set -x
 
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+# or http://www.opensolaris.org/os/licensing.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+# Copyright 2006 Sun Microsystems, Inc. All rights reserved.
+# Use is subject to license terms.
+#
+# ident "%Z%%M% %I% %E SMI"
+. /lib/svc/share/smf_include.sh
+# SMF_FMRI is the name of the target service. This allows multiple instances
+# to use the same script
+
+getproparg() {
+ val=`svcprop -p $1 $SMF_FMRI`
+ [ -n "$val" ] && echo $val
+}
+
 # Config parameters
 SCRIPT_NAME=$(basename ${0})
 
@@ -10,7 +43,7 @@ CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 export CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
 
 # Get User who is running script
-username=`/usr/bin/who am i | /usr/bin/cut -d" " -f1`
+username=`getproparg method_context/user`
 #echo "The user running this script is: $username"
 
 # Create variable to store the application number (1=CPO,2=BDT,3=CMSS,5=SOA Common Payment,6=SOA Pulse)
