@@ -88,7 +88,7 @@ script="/cpg/cpo_apps/a${appnum}d${appid}/a${appnum}d${appid}${domain}/bin/start
 case ${appid} in
 	5*|6*)
 		#echo "The command to execute would be: $script > /cpg/cpo_var/a${appnum}d${appid}/a${appnum}d${appid}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
-		$script > /cpg/cpo_var/a${appnum}d${appid}/a${appnum}d${appid}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1
+		nohup $script > /cpg/cpo_var/a${appnum}d${appid}/a${appnum}d${appid}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1 & disown
 		;;
 	*)
 		#echo "The command to execute would be: $script"
