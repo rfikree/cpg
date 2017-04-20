@@ -95,3 +95,5 @@ case ${appid} in
 		$script
 		;;
 esac
+
+exit $SMF_EXIT_OK
