@@ -59,6 +59,6 @@ case ${appid} in
 		;;
 	*)
 		#echo "The command to execute would be: $script"
-		#$script
+		$script
 		;;
 esac
