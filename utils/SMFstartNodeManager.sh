@@ -79,6 +79,9 @@ case ${CPG_HOSTNAME:-''} in
 
 esac
 
+# Define the WL_HOME variable needed for the OLC startNodeManager script
+export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
+
 # build the Weblogic node manager script name to run
 script="/cpg/cpo_apps/a${appnum}d${appid}/a${appnum}d${appid}${domain}/bin/startNodeManager.sh"
 
