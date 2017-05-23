@@ -49,8 +49,14 @@ username=`getproparg method_context/user`
 # Create variable to store the application number (1=CPO,2=BDT,3=CMSS,5=SOA Common Payment,6=SOA Pulse)
 appnum=`/usr/bin/echo $username | /usr/bin/cut -c4`
 
+# Create a variable for the stack (d=development, s=staging, p=production
+appstack=`/usr/bin/echo $username | /usr/bin/cut -c1`
+
 # Create variable to store the application user ID (ie: dev50/stg50/prd50 = 50, dev10/stg10/prd10 = 10)
 appid=`/usr/bin/echo $username | /usr/bin/cut -c4-5`
+
+# Create a stack variable
+stack=a${appnum}${appstack}${appid}
 
 # Determine the WL domain this host runs for the user and assign to domain variable
 
@@ -83,15 +89,15 @@ esac
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # build the Weblogic node manager script name to run
-script="/cpg/cpo_apps/a${appnum}d${appid}/a${appnum}d${appid}${domain}/bin/startNodeManager.sh"
+script="/cpg/cpo_apps/${stack}/${stack}${domain}/bin/startNodeManager.sh"
 
 #echo "The script name to be run is: $script"
 
 # The 50 and 60 stack users have a different syntax for starting the node manager that differs from the 10, 20 & 30 stacks
 case ${appid} in
 	5*|6*)
-		#echo "The command to execute would be: $script > /cpg/cpo_var/a${appnum}d${appid}/a${appnum}d${appid}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
-		nohup $script > /cpg/cpo_var/a${appnum}d${appid}/a${appnum}d${appid}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1 & disown
+		#echo "The command to execute would be: $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
+		nohup $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1 & disown
 		;;
 	*)
 		#echo "The command to execute would be: $script"
