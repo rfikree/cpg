@@ -1,0 +1,142 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+
+<service_bundle type='manifest' name='nodemanager'>
+
+<service
+	name='application/weblogic/nodemanager'
+	type='service'
+	version='1'>
+
+	<!-- Need name service resolution and network to connect to WL AdminServer -->
+	<dependency
+		name='milestones'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/milestone/multi-user-server:default'/>
+		<service_fmri value='svc:/milestone/network:default'/>
+		<service_fmri value='svc:/milestone/name-services' />
+	</dependency>
+
+	<!-- Need the local file system and NFS client to be running -->
+	<dependency
+		name='file-systems'
+		grouping='require_all'
+		restart_on='restart'
+		type='service'>
+		<service_fmri value='svc:/system/filesystem/local:default' />
+		<service_fmri value='svc:/network/nfs/client:default' />
+		<service_fmri value='svc:/network/nfs/status:default' />
+	</dependency>
+
+	<!-- Need network services like DNS for hostname resolution and ldap for user access -->
+	<dependency
+		name='network'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/network/dns/client:default' />
+		<service_fmri value='svc:/network/ldap/client:default' />
+	</dependency>
+
+	<!-- Need crypto-service to be working for SSL operations to work -->
+	<dependency
+		name='crypto-service'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/system/cryptosvc' />
+	</dependency>
+
+	<exec_method
+		type='method'
+		name='start'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh'
+		timeout_seconds='30' >
+	</exec_method>
+
+	<exec_method
+		type='method'
+		name='stop'
+		exec=':kill'
+		timeout_seconds='10' >
+	</exec_method>
+
+	<exec_method
+		type='method'
+		name='refresh'
+		exec=':kill -3'
+		timeout_seconds='10' >
+	</exec_method>
+
+	<instance name='dev10' enabled='true'>
+		<method_context>
+			<method_credential user='dev10' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev11' enabled='false'>
+		<method_context>
+			<method_credential user='dev11' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev12' enabled='true'>
+		<method_context>
+			<method_credential user='dev12' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev13' enabled='false'>
+		<method_context>
+			<method_credential user='dev13' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev14' enabled='true'>
+		<method_context>
+			<method_credential user='dev14' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev15' enabled='false'>
+		<method_context>
+			<method_credential user='dev15' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev20' enabled='true'>
+		<method_context>
+			<method_credential user='dev20' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev21' enabled='false'>
+		<method_context>
+			<method_credential user='dev21' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev22' enabled='true'>
+		<method_context>
+			<method_credential user='dev22' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev23' enabled='false'>
+		<method_context>
+			<method_credential user='dev23' group='devapps' />
+		</method_context>
+	</instance>
+
+	<stability value='Evolving' />
+
+	<template>
+		<common_name>
+			<loctext xml:lang='C'>Multi Instance WebLogic Node Manager Service</loctext>
+		</common_name>
+	</template>
+
+</service>
+</service_bundle>
