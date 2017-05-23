@@ -69,7 +69,10 @@ export ENVIRONMENT STACKUSER
 
 #### Default values - may be overriden; DSS project overrides these
 
-JAVA_VERSION=jdk1.7.0_121
+for JAVA_VERSION in  $(ls -drt ${INSTALL_DIR}/java/jdk1.7*); do
+	JAVA_VERSION=${JAVA_VERSION##*/}
+done
+export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
 JAVA_VENDOR=Sun
 
 MW_DIR=Middleware_Home1
@@ -200,9 +203,10 @@ unset JAVA_VERSION MW_DIR WL_DIR
 #================================================
 # Force standard $PATH directory
 PATH=
-for DIR in ${JAVA_HOME}/bin ${WL_HOME}/common/bin /usr/bin /usr/sfw/bin \
-		/usr/local/bin ${scripts} ${scripts%/*}/bin /opt/WANdisco/bin \
-		/usr/openwin/bin /bin /usr/sbin /sbin ${SQLPLUS_HOME} ${lscripts}; do
+for DIR in ${JAVA_HOME}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
+		/usr/sfw/bin /bin /usr/sbin /sbin/ usr/openwin/bin /usr/local/bin \
+		/opt/WANdisco/bin ${WL_HOME1}/common/bin ${SQLPLUS_HOME} \
+		${scripts} ${scripts%/*}/bin ${lscripts}; do
 	if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
 		PATH=${PATH}:${DIR}
 	fi

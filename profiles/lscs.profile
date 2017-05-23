@@ -35,7 +35,9 @@ umask 027
 #================================================
 case $(uname -s) in
 SunOS)
-	JAVA_VERSION=jdk1.7.0_80
+	for JAVA_VERSION in  $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
+		JAVA_VERSION=${JAVA_VERSION##*/}
+	done
 	export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
 	;;
 Linux)
@@ -105,9 +107,10 @@ fi
 #================================================
 # Force standard $PATH directory
 PATH=
-for DIR in ${JAVA_HOME}/bin ${WL_HOME}/common/bin /usr/bin /usr/sfw/bin \
-		/usr/local/bin ${lscripts} /bin/opt/WANdisco/bin \
-		/usr/openwin/bin /bin /usr/sbin /sbin; do
+for DIR in ${JAVA_HOME}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
+		/usr/sfw/bin /bin /usr/sbin /sbin/ usr/openwin/bin /usr/local/bin \
+		/opt/WANdisco/bin ${WL_HOME1}/common/bin ${SQLPLUS_HOME} \
+		${scripts} ${scripts%/*}/bin ${lscripts}; do
 	if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
 		PATH=${PATH}:${DIR}
 	fi

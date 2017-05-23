@@ -1,9 +1,14 @@
 #! /bin/bash
 
 # Update here if JAVA or WebLogic is updated
-export JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.7.0_80
-export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home/wlserver_10.3
+for JAVA_HOME in  $(ls -drt ${INSTALL_DIR}/java/jdk1.7*); do
+	continue
+done
+export JAVA_HOME
+export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
+# Make everything visible
+umask 022
 
 # Setup the environment
 export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar
@@ -15,7 +20,7 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 	-Dweblogic.security.SSL.enableJSSE=true
 	-Dweblogic.security.allowCryptoJDefaultJCEVerification=true
 	-Dweblogic.security.allowCryptoJDefaultPRNG=true"
-             
+
 # Determine the environment to run reports for
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
