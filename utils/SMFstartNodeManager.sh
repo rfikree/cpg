@@ -85,6 +85,10 @@ case ${CPG_HOSTNAME:-''} in
 
 esac
 
+
+# WL_HOME and LD_LIBRARY_PATH should not be required after next configuration
+# run.
+
 # Define the WL_HOME variable needed for the OLC startNodeManager script
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
