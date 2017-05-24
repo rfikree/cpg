@@ -1,4 +1,3 @@
-Apr17$$d
 # cpg.profile
 
 VERSION='$Revision$'
