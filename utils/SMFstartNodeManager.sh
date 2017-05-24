@@ -88,6 +88,11 @@ esac
 # Define the WL_HOME variable needed for the OLC startNodeManager script
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
+# Add the SAPJCO and SAP Security to LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/cpg/3rdParty/installs/SAP/sapjco-sun_64-2.1.10
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/cpg/3rdParty/installs/SAP/sap-security-utils
+
+
 # build the Weblogic node manager script name to run
 script="/cpg/cpo_apps/${stack}/${stack}${domain}/bin/startNodeManager.sh"
 
