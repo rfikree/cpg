@@ -16,6 +16,7 @@ fi
 #================================================
 # Gobal Variables
 #================================================
+INSTALL_DIR=/cpg/3rdParty/installs
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 PROJECT_NAME=USER
 STACK=a1l10

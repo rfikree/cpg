@@ -35,7 +35,7 @@ umask 027
 #================================================
 case $(uname -s) in
 SunOS)
-	for JAVA_VERSION in  $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
+	for JAVA_VERSION in  $(ls -drt ${INSTALL_DIR}/java/jdk1.7*); do
 		JAVA_VERSION=${JAVA_VERSION##*/}
 	done
 	export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
