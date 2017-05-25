@@ -1,0 +1,214 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+
+<service_bundle type='manifest' name='nodemanager'>
+
+<service
+	name='application/weblogic/nodemanager'
+	type='service'
+	version='1'>
+
+	<!-- Need name service resolution and network to connect to WL AdminServer -->
+	<dependency
+		name='milestones'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/milestone/multi-user-server:default'/>
+		<service_fmri value='svc:/milestone/network:default'/>
+		<service_fmri value='svc:/milestone/name-services' />
+	</dependency>
+
+	<!-- Need the local file system and NFS client to be running -->
+	<dependency
+		name='file-systems'
+		grouping='require_all'
+		restart_on='restart'
+		type='service'>
+		<service_fmri value='svc:/system/filesystem/local:default' />
+		<service_fmri value='svc:/network/nfs/client:default' />
+		<service_fmri value='svc:/network/nfs/status:default' />
+	</dependency>
+
+	<!-- Need network services like DNS for hostname resolution and ldap for user access -->
+	<dependency
+		name='network'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/network/dns/client:default' />
+		<service_fmri value='svc:/network/ldap/client:default' />
+	</dependency>
+
+	<!-- Need crypto-service to be working for SSL operations to work -->
+	<dependency
+		name='crypto-service'
+		grouping='require_all'
+		restart_on='none'
+		type='service'>
+		<service_fmri value='svc:/system/cryptosvc' />
+	</dependency>
+
+	<exec_method
+		type='method'
+		name='start'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWebLogicAdmin.sh start'
+		timeout_seconds='15' >
+	</exec_method>
+
+	<exec_method
+		type='method'
+		name='stop'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWebLogicAdmin.sh stop'
+		timeout_seconds='30' >
+	</exec_method>
+
+	<exec_method
+		type='method'
+		name='refresh'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWebLogicAdmin.sh restart'
+		timeout_seconds='30' >
+	</exec_method>
+
+	<instance name='dev10d1' enabled='true'>
+		<method_context>
+			<method_credential user='dev10' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev10d2' enabled='true'>
+		<method_context>
+			<method_credential user='dev10' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev10d9' enabled='true'>
+		<method_context>
+			<method_credential user='dev10' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev11d1' enabled='false'>
+		<method_context>
+			<method_credential user='dev11' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev11d2' enabled='false'>
+		<method_context>
+			<method_credential user='dev11' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev11d9' enabled='false'>
+		<method_context>
+			<method_credential user='dev11' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev12d1' enabled='true'>
+		<method_context>
+			<method_credential user='dev12' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev12d2' enabled='true'>
+		<method_context>
+			<method_credential user='dev12' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev12d9' enabled='true'>
+		<method_context>
+			<method_credential user='dev12' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev13d1' enabled='false'>
+		<method_context>
+			<method_credential user='dev13' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev13d2' enabled='false'>
+		<method_context>
+			<method_credential user='dev13' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev13d9' enabled='false'>
+		<method_context>
+			<method_credential user='dev13' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev14d1' enabled='true'>
+		<method_context>
+			<method_credential user='dev14' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev14d2' enabled='true'>
+		<method_context>
+			<method_credential user='dev14' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev14d9' enabled='true'>
+		<method_context>
+			<method_credential user='dev14' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev15d1' enabled='false'>
+		<method_context>
+			<method_credential user='dev15' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev15d2' enabled='false'>
+		<method_context>
+			<method_credential user='dev15' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev15d9' enabled='false'>
+		<method_context>
+			<method_credential user='dev15' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev20d9' enabled='true'>
+		<method_context>
+			<method_credential user='dev20' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev21d9' enabled='false'>
+		<method_context>
+			<method_credential user='dev21' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev22d9' enabled='true'>
+		<method_context>
+			<method_credential user='dev22' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='dev23d9' enabled='false'>
+		<method_context>
+			<method_credential user='dev23' group='devapps' />
+		</method_context>
+	</instance>
+
+	<stability value='Evolving' />
+
+	<template>
+		<common_name>
+			<loctext xml:lang='C'>WebLogic Admin Server Service</loctext>
+		</common_name>
+	</template>
+
+</service>
+</service_bundle>
