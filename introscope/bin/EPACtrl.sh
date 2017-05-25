@@ -24,6 +24,18 @@
 # argument is reported.
 # Run "EPACtrl.sh help" for usage info
 
+# Allow running from anywhere
+cd `dirname $0`
+
+# Innovapost customizations
+LOGHOME=/cpg/cpo_var/introscope
+HOSTNAME=`hostname`
+AGENTNAME=`grep -i "^$HOSTNAME" /cpg/3rdParty/scripts/cpg/profiles/hostname.map | cut -d, -f2`
+if [ -z "$AGENTNAME" ]; then
+	echo FATAL: Unable to determine agent name for $HOSTNAME
+	exit 1
+fi
+
 # |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
 # Set the home directory if it is unset.
 # Different OSes require different test statements 
@@ -43,9 +55,9 @@ HP-UX)
     ;;
 esac
 # The logfile
-LOGFILE="${WILYHOME}/epa.log"
+LOGFILE="${LOGHOME}/epa_`hostname`.log"
 # the path to your PID file
-PIDFILE="${WILYHOME}/epa.pid"
+PIDFILE="${HOME}/epa.pid"
 
 
 # changes for passing heap values in arguments
@@ -64,7 +76,7 @@ if [ -z "$3" ]
     MAX_ARG_PRESENT=false 
 fi
 
-if [ "$MIN_ARG_PRESENT" == "true" ]
+if [ "$MIN_ARG_PRESENT" = "true" ]
    then
    	#checking whether the input is a number 
    	echo $2 | grep "[^0-9]" > /dev/null 2>&1
@@ -80,7 +92,7 @@ if [ "$MIN_ARG_PRESENT" == "true" ]
     	fi
 fi
 
-if [ "$MAX_ARG_PRESENT" == "true" ]
+if [ "$MAX_ARG_PRESENT" = "true" ]
    then
    	#checking whether the input is a number 
    	echo $3 | grep "[^0-9]" > /dev/null 2>&1
@@ -102,7 +114,7 @@ if [ ${MIN_HEAP_VAL_IN_MB} -gt ${MAX_HEAP_VAL_IN_MB} ]
 fi
 
 # the command to start the EPAgent
-EpaCmd="java -Xms${MIN_HEAP_VAL_IN_MB}m -Xmx${MAX_HEAP_VAL_IN_MB}m -cp lib/EPAgent.jar:lib/IntroscopeServices.jar:lib/Agent.jar:epaplugins/epaMQMonitor/epaMQMonitor.jar:epaplugins/epaMQMonitor:epaplugins/epaMQMonitor/lib/com.ibm.mq.pcf.jar:epaplugins/epaMQMonitor/lib/com.ibm.mq.jar:epaplugins/epaMQMonitor/lib/connector.jar:epaplugins/epaMQMonitor/lib/com.ibm.mqjms.jar com.wily.introscope.api.IntroscopeEPAgent"
+EpaCmd="java -Xms${MIN_HEAP_VAL_IN_MB}m -Xmx${MAX_HEAP_VAL_IN_MB}m -DWilyAgent=$AGENTNAME -cp lib/EPAgent.jar:lib/IntroscopeServices.jar:lib/Agent.jar:epaplugins/epaMQMonitor/epaMQMonitor.jar:epaplugins/epaMQMonitor:epaplugins/epaMQMonitor/lib/com.ibm.mq.pcf.jar:epaplugins/epaMQMonitor/lib/com.ibm.mq.jar:epaplugins/epaMQMonitor/lib/connector.jar:epaplugins/SolarisPerfPack.jar:epaplugins/epaMQMonitor/lib/com.ibm.mqjms.jar com.wily.introscope.api.IntroscopeEPAgent"
 #echo $EpaCmd 
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
 
