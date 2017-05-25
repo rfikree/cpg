@@ -36,7 +36,7 @@ if [ -z "$AGENTNAME" ]; then
 	exit 1
 fi
 # Modify for SMF startup
-if [ "$LOGNAME" = root ]; then
+if [ -z "$LOGNAME" ]; then
 	LOGNAME=`/usr/xpg4/bin/id -un`
 	HOME=`getent passwd apm | cut -d: -f6`
 else
