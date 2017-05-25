@@ -2,19 +2,19 @@
 #
 # EPACtrl.sh
 # Control script for running the Introscope EP Agent
-# as a Unix service via an easy-to-use command line interface. 
+# as a Unix service via an easy-to-use command line interface.
 # Usage:
 # EPACtrl.sh start
 # EPACtrl.sh status
 # EPACtrl.sh stop
 # EPACtrl.sh help
-# 
+#
 # With specifying memory values:
 # EPACtrl.sh start 64 1024
 #
 # The exit codes returned are:
 #	0 - operation completed successfully
-#	1 - 
+#	1 -
 #	2 - usage error
 #	3 - EPAgent could not be started
 #	4 - EPAgent could not be stopped
@@ -35,10 +35,26 @@ if [ -z "$AGENTNAME" ]; then
 	echo FATAL: Unable to determine agent name for $HOSTNAME
 	exit 1
 fi
+# Modify for SMF startup
+if [ "$LOGNAME" = root ]; then
+	LOGNAME=`/usr/xpg4/bin/id -un`
+	HOME=`getent passwd apm | cut -d: -f6`
+else
+	if [ "$1" = start ]; then
+		 echo Please use SMF to start `basename $0`
+		 exit 1
+	fi
+fi
+if [ "$LOGNAME" = root ]; then
+	if [ "$1" = start ]; then
+		 echo Do not start `basename $0` as root
+		 exit 1
+	fi
+fi
 
 # |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
 # Set the home directory if it is unset.
-# Different OSes require different test statements 
+# Different OSes require different test statements
 ERROR=0
 
 THIS_OS=`uname -a | awk '{print $1}'`
@@ -67,36 +83,36 @@ MAX_HEAP_VAL_IN_MB=256
 MIN_ARG_PRESENT=true
 if [ -z "$2" ]
   then
-    MIN_ARG_PRESENT=false 
+    MIN_ARG_PRESENT=false
 fi
 
 MAX_ARG_PRESENT=true
 if [ -z "$3" ]
   then
-    MAX_ARG_PRESENT=false 
+    MAX_ARG_PRESENT=false
 fi
 
 if [ "$MIN_ARG_PRESENT" = "true" ]
    then
-   	#checking whether the input is a number 
+   	#checking whether the input is a number
    	echo $2 | grep "[^0-9]" > /dev/null 2>&1
-   	if [ "$?" -eq "0" ]; then  # If the grep found something other than 0-9  # then it's not an integer.  
+   	if [ "$?" -eq "0" ]; then  # If the grep found something other than 0-9  # then it's not an integer.
    	  echo "Invalid value: $2. Please specify a numeric value for minimum java heap memory"
    	  ERROR=2
-   	else      
+   	else
    	  if [ $2 -gt ${MIN_HEAP_VAL_IN_MB} ]
     	    then
     	      MIN_HEAP_VAL_IN_MB=$2
-    	      #echo Min Heap is: $MIN_HEAP_VAL_IN_MB    	    
-    	  fi	
-    	fi
+    	      #echo Min Heap is: $MIN_HEAP_VAL_IN_MB
+      fi
+    fi
 fi
 
 if [ "$MAX_ARG_PRESENT" = "true" ]
    then
-   	#checking whether the input is a number 
+   	#checking whether the input is a number
    	echo $3 | grep "[^0-9]" > /dev/null 2>&1
-   	if [ "$?" -eq "0" ]; then  # If the grep found something other than 0-9  # then it's not an integer.  
+   	if [ "$?" -eq "0" ]; then  # If the grep found something other than 0-9  # then it's not an integer.
    	  echo "Invalid value: $3. Please specify a numeric value for maximum java heap memory"
    	  ERROR=2
    	else
@@ -115,13 +131,13 @@ fi
 
 # the command to start the EPAgent
 EpaCmd="java -Xms${MIN_HEAP_VAL_IN_MB}m -Xmx${MAX_HEAP_VAL_IN_MB}m -DWilyAgent=$AGENTNAME -cp lib/EPAgent.jar:lib/IntroscopeServices.jar:lib/Agent.jar:epaplugins/epaMQMonitor/epaMQMonitor.jar:epaplugins/epaMQMonitor:epaplugins/epaMQMonitor/lib/com.ibm.mq.pcf.jar:epaplugins/epaMQMonitor/lib/com.ibm.mq.jar:epaplugins/epaMQMonitor/lib/connector.jar:epaplugins/SolarisPerfPack.jar:epaplugins/epaMQMonitor/lib/com.ibm.mqjms.jar com.wily.introscope.api.IntroscopeEPAgent"
-#echo $EpaCmd 
+#echo $EpaCmd
 # ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
 
 cd "${WILYHOME}"
 
 ARGV="$@"
-if [ "x$ARGV" = "x" ] ; then 
+if [ "x$ARGV" = "x" ] ; then
     ARGS="help"
 fi
 
@@ -143,14 +159,14 @@ do
     fi
 
     if [ $ERROR -eq 2 ]
-      then 
+      then
       	ARG="help"
       	#echo  VALUE CHANGED to help: $ARG
       else
       	ARG=${ARG_RAW}
       	#echo  VALUE CHANGED to actual: $ARG
-    fi    
-    
+    fi
+
     case $ARG in
       status)
     	if [ $RUNNING -eq 1 ]; then
@@ -163,7 +179,7 @@ do
     	if [ $RUNNING -eq 1 ]; then
 	    echo "$0 $ARG: EPAgent (pid $PID) already running"
 	    continue
-	fi	
+	fi
 	nohup $EpaCmd >> "$LOGFILE" 2>&1 &
 	if [ "x$!" != "x" ] ; then
 	    echo "$!" > "$PIDFILE"
@@ -197,7 +213,7 @@ where
      help      			- this screen
      min java heap    		- minimum java heap memory in MB, default is 16
      max java heap		- maximum java heap memory in MB, default is 256
-     
+
 EOF
 	ERROR=2
     ;;
