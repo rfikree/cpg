@@ -52,21 +52,21 @@
 	<exec_method
 		type='method'
 		name='start'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWebLogicAdmin.sh start'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh start'
 		timeout_seconds='15' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWebLogicAdmin.sh stop'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh stop'
 		timeout_seconds='30' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='refresh'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWebLogicAdmin.sh restart'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh restart'
 		timeout_seconds='30' >
 	</exec_method>
 
