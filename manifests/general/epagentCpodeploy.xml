@@ -60,21 +60,21 @@
 	<exec_method
 		type='method'
 		name='start'
-		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent/bin/EPACtrl.sh start'
+		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent_cpodeploy/bin/EPACtrl.sh start'
 		timeout_seconds='30' >
 	</exec_method>
 
    <exec_method
 		type='method'
 		name='status'
-		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent/bin/EPACtrl.sh status'
+		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent_cpodeploy/bin/EPACtrl.sh status'
 		timeout_seconds='5' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
-		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent/bin/EPACtrl.sh stop'
+		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent_cpodeploy/bin/EPACtrl.sh stop'
 		timeout_seconds='30' >
 	</exec_method>
 
