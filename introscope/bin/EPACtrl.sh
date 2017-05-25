@@ -38,7 +38,7 @@ fi
 # Modify for SMF startup
 if [ -z "$LOGNAME" ]; then
 	LOGNAME=`/usr/xpg4/bin/id -un`
-	HOME=`getent passwd apm | cut -d: -f6`
+	HOME=`getent passwd $LOGNAME | cut -d: -f6`
 else
 	if [ "$1" = start ]; then
 		 echo Please use SMF to start `basename $0`
