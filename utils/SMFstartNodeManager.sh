@@ -60,7 +60,7 @@ stack=a${appnum}${appstack}${appid}
 
 # Handle stop option
 if [[ ${1} == stop ]]; then
-	PID=$(ps -fu ${username} | awk '/java.*[-]client/ {print $2}'
+	PID=$(ps -fu ${username} | awk '/java.*[-]client/ {print $2}')
 	[[ -n ${PID} ]] && kill ${PID}
 	exit  ${SMF_EXIT_OK}
 fi
