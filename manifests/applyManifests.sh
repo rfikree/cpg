@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-MANIFEST_BASE=/var/svc/manifests/site
+MANIFEST_BASE=/var/svc/manifest/application
 SOURCE_BASE=/cpg/3rdParty/scripts/cpg/manifests
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
