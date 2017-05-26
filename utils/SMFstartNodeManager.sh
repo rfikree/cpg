@@ -58,6 +58,13 @@ appid=`/usr/bin/echo $username | /usr/bin/cut -c4-5`
 # Create a stack variable
 stack=a${appnum}${appstack}${appid}
 
+# Handle stop option
+if [[ ${1} == stop ]]; then
+	PID=$(ps -fu ${username} | awk '/java.*[-]client/ {print $2}'
+	[[ -n ${PID} ]] && kill ${PID}
+	exit  ${SMF_EXIT_OK}
+fi
+
 # Determine the WL domain this host runs for the user and assign to domain variable
 
 case ${CPG_HOSTNAME:-''} in

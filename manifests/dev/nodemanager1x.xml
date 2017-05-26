@@ -8,65 +8,24 @@
 	type='service'
 	version='1'>
 
-	<!-- Need name service resolution and network to connect to WL AdminServer -->
-	<dependency
-		name='milestones'
+	<dependency name='multi-user'
 		grouping='require_all'
-		restart_on='none'
+		restart_on='error'
 		type='service'>
-		<service_fmri value='svc:/milestone/multi-user-server:default'/>
-		<service_fmri value='svc:/milestone/network:default'/>
-		<service_fmri value='svc:/milestone/name-services' />
-	</dependency>
-
-	<!-- Need the local file system and NFS client to be running -->
-	<dependency
-		name='file-systems'
-		grouping='require_all'
-		restart_on='restart'
-		type='service'>
-		<service_fmri value='svc:/system/filesystem/local:default' />
-		<service_fmri value='svc:/network/nfs/client:default' />
-		<service_fmri value='svc:/network/nfs/status:default' />
-	</dependency>
-
-	<!-- Need network services like DNS for hostname resolution and ldap for user access -->
-	<dependency
-		name='network'
-		grouping='require_all'
-		restart_on='none'
-		type='service'>
-		<service_fmri value='svc:/network/dns/client:default' />
-		<service_fmri value='svc:/network/ldap/client:default' />
-	</dependency>
-
-	<!-- Need crypto-service to be working for SSL operations to work --> 
-	<dependency
-		name='crypto-service'
-		grouping='require_all'
-		restart_on='none'
-		type='service'>
-		<service_fmri value='svc:/system/cryptosvc' />
+			<service_fmri value='svc:/milestone/multi-user:default'/>
 	</dependency>
 
 	<exec_method
 		type='method'
 		name='start'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh start'
 		timeout_seconds='30' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
-		exec=':kill'
-		timeout_seconds='10' >
-	</exec_method>
-
-	<exec_method
-		type='method'
-		name='refresh'
-		exec=':kill -3'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh stop'
 		timeout_seconds='10' >
 	</exec_method>
 

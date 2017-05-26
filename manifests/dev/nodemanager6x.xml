@@ -40,7 +40,7 @@
 		<service_fmri value='svc:/network/ldap/client:default' />
 	</dependency>
 
-	<!-- Need crypto-service to be working for SSL operations to work --> 
+	<!-- Need crypto-service to be working for SSL operations to work -->
 	<dependency
 		name='crypto-service'
 		grouping='require_all'
@@ -60,13 +60,6 @@
 		type='method'
 		name='stop'
 		exec=':kill'
-		timeout_seconds='10' >
-	</exec_method>
-
-	<exec_method
-		type='method'
-		name='refresh'
-		exec=':kill -3'
 		timeout_seconds='10' >
 	</exec_method>
 

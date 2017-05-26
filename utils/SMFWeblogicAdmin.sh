@@ -30,20 +30,22 @@ waitPid() {
 doStart() {
 	if [[ -z ${PID} ]]; then
 		${START_SCRIPT} & # Background
-		sleep 5 # Wait for Background to start Java process
+		#sleep 5 # Wait for Background to start Java process
 	else
 		echo ${SMF_FRMI} already running with pid ${PID}
-		exit ${SMF_EXIT_MON_DEGRADE}
+		exit ${SMF_EXIT_OK}
 	fi
 }
 
 doStop() {
-
 	if [[ -n ${PID} ]]; then
 		kill -HUP ${PID}
-		time=0
-		waitPid 10
+		waitPid 20
 		kill -0 ${PID} 2>/dev/null && kill -TERM ${PID}
+		waitPid 30
+		kill -0 ${PID} 2>/dev/null && kill -KILL ${PID}
+		waitPid 5
+		kill -0 ${PID} 2>/dev/null || exit ${SMF_EXIT_ERR_FATAL}
 	fi
 }
 
