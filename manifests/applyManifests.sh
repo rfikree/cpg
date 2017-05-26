@@ -82,11 +82,15 @@ case ${CPG_HOSTNAME:-''} in
         		epa_manifest="epagent.xml epagent.xml"
                 wl_manifest="nodemanager3x.xml nodemanager.xml"
                 ;;
-
+        *)
+        		echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
+        		exit 99
+        		;;
 esac
 
-if [[ ${CPG_HOSTNAME%%-*} !- dev ]]; then
-applyManifest general introscope ${epa_manifest}
+if [[ ${CPG_HOSTNAME%%-*} != dev ]]; then
+	applyManifest general introscope ${epa_manifest}
+fi
 if [[ -n ${wl_manifest} ]]; then
 	applyManifest ${CPG_HOSTNAME%%-*} ${wl_manifest}
 fi
