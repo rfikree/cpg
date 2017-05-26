@@ -6,7 +6,7 @@ SOURCE_BASE=/cpg/3rdParty/scripts/cpg/manifests
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
-
+CPG_HOSTNAME=$(CPG_HOSTNAME##*,}
 
 # Function to update or install configs only if missing or changed
 applyManifest() {
@@ -89,10 +89,10 @@ case ${CPG_HOSTNAME:-''} in
 esac
 
 if [[ ${CPG_HOSTNAME%%-*} != dev ]]; then
-	applyManifest general introscope ${epa_manifest}
+	applyManifest introscope general ${epa_manifest}
 fi
 if [[ -n ${wl_manifest} ]]; then
-	applyManifest ${CPG_HOSTNAME%%-*} ${wl_manifest}
+	applyManifest weblogic ${CPG_HOSTNAME%%-*} ${wl_manifest}
 fi
 
 # EOF
