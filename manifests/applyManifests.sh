@@ -11,21 +11,34 @@ export CPG_HOSTNAME=${CPG_HOSTNAME##*,}
 # Function to update or install configs only if missing or changed
 applyManifest() {
 	manifest_dir=${MANIFEST_BASE}/${1}
+	manifest_site=${MANIFEST_BASE}/site
 	manifest_src=${SOURCE_BASE}/${2}/${3}
-	manifest_dst=${manifest_dir}/${4}
+	manifest_dst=${manifest_site}/${4}
+	manifest_mv=${manifest_dir}/${4}
 	manifest_name=${4}
 
-	if [ ! -d ${manifest_dir} ]; then
-		echo Creating ${manifest_dir}
-		mkdir -m 0755 ${manifest_dir}
+	if [ ! -d ${manifest_site} ]; then
+		echo Creating ${manifest_site}
+		mkdir -m 0755 ${manifest_site}
 	fi
 	if [ ! -f ${manifest_src} ]; then
 		echo FATAL: Source file ${manifest_src} is missing
 		return 1
+	elif [ -f ${manifest_mv} ]; then
+		echo Need to move: ${manifest_mv}
+		cp ${manifest_src} ${manifest_dir}
+		perl -pi -e "s|/site/|/${1}/|"  ${manifest_dir}/${3}
+		if ! diff ${manifest_dir}/${3} ${manifest_dst} >/dev/null; then
+			cp ${manifest1_dir}/${3} ${manifest_dst}
+			cd ${manifest1_dir}
+			svccfg import ${manifest_name}
+			return 0
+		fi
+		return 1
 	elif [ ! -f ${manifest_dst} ]; then
 		echo Installing: ${manifest_dst}
 		cp ${manifest_src} ${manifest_dst}
-	elif diff ${manifest_src} ${manifest_dst} >/dev/null; then
+	elif ! diff ${manifest_src} ${manifest_dst} >/dev/null; then
 		echo ${manifest_dst} is up to datecd
 		return 0
 	else
@@ -34,7 +47,7 @@ applyManifest() {
 		cp ${manifest_src} ${manifest_dst}
 	fi
 
-	cd ${manifest_dir}
+	cd ${manifest_site}
 	if svccfg validate ${manifest_name}; then
 		svccfg import ${manifest_name}
 	else
@@ -88,11 +101,22 @@ case ${CPG_HOSTNAME:-''} in
         		;;
 esac
 
+
+# Apply the manifests
 if [[ ${CPG_HOSTNAME%%-*} != dev ]]; then
 	applyManifest introscope general ${epa_manifest}
 fi
 if [[ -n ${wl_manifest} ]]; then
 	applyManifest weblogic ${CPG_HOSTNAME%%-*} ${wl_manifest}
 fi
+
+
+# Cleanup olc_services
+for f in /etc/init.d/olc_services /etc/rc?.d/*olc_services; do
+	if [ -e ${f} ]; to
+		rm ${f}
+	fi
+done
+
 
 # EOF

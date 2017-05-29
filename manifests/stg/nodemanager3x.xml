@@ -4,13 +4,13 @@
 <service_bundle type='manifest' name='nodemanager'>
 
 <service
-	name='application/weblogic/nodemanager'
+	name='application/site/nodemanager'
 	type='service'
 	version='1'>
 
 	<dependency name='multi-user'
 		grouping='require_all'
-		restart_on='error'
+		restart_on='none'
 		type='service'>
 			<service_fmri value='svc:/milestone/multi-user:default'/>
 	</dependency>
@@ -52,6 +52,10 @@
 			<method_credential user='stg33' group='devapps' />
 		</method_context>
 	</instance>
+
+	<property_group name='startd' type='framework'>
+		<propval name='duration' type='astring' value='transient'/>
+	</property_group>
 
 	<stability value='Evolving' />
 
