@@ -24,13 +24,13 @@ applyManifest() {
 		echo Need to move: ${manifest_mv}
 		cp ${manifest_src} /tmp/${manifest_name}
 		perl -pi -e "s|/site/|/${1}/|" /tmp/${manifest_name}
-		if ! diff ${manifest_dir}/${manifest_name} ${manifest_dst} >/dev/null; then
-			mv /tmp/${manifest_name} ${manifest_dst}
+		if ! diff ${manifest_dir}/${manifest_name} ${manifest_mv} >/dev/null; then
+			mv /tmp/${manifest_name} ${manifest_mv}
 			cd ${manifest_dir}
 			svccfg import ${manifest_name}
 			return 0
 		else
-			rm /tmp}/${manifest_name}
+			rm /tmp/${manifest_name}
 		fi
 		return 1
 	elif [ ! -f ${manifest_dst} ]; then
@@ -110,8 +110,12 @@ fi
 
 
 # Cleanup olc_services
-for f in /etc/init.d/olc_services /etc/rc?.d/*olc_services; do
+for f in  /etc/rc?.d/*olc_services /etc/init.d/olc_services; do
 	if [ -e ${f} ]; then
+		echo Removing ${f}
+		rm ${f}
+	fi
+	if [ -L ${f} ]; then
 		echo Removing ${f}
 		rm ${f}
 	fi
