@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-MANIFEST_BASE=/var/svc/manifest/application
+MANIFEST_BASE=/var/svc/manifest
 SOURCE_BASE=/cpg/3rdParty/scripts/cpg/manifests
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
@@ -10,7 +10,7 @@ export CPG_HOSTNAME=${CPG_HOSTNAME##*,}
 
 # Function to update or install configs only if missing or changed
 applyManifest() {
-	manifest_dir=${MANIFEST_BASE}/${1}
+	manifest_dir=${MANIFEST_BASE}/application/${1}
 	manifest_site=${MANIFEST_BASE}/site
 	manifest_src=${SOURCE_BASE}/${2}/${3}
 	manifest_dst=${manifest_site}/${4}
@@ -30,7 +30,7 @@ applyManifest() {
 		perl -pi -e "s|/site/|/${1}/|" /tmp/${manifest_name}
 		if ! diff ${manifest_dir}/${manifest_name} ${manifest_dst} >/dev/null; then
 			mv /tmp/${manifest_name} ${manifest_dst}
-			cd ${manifest1_dir}
+			cd ${manifest_dir}
 			svccfg import ${manifest_name}
 			return 0
 		else
@@ -115,7 +115,8 @@ fi
 
 # Cleanup olc_services
 for f in /etc/init.d/olc_services /etc/rc?.d/*olc_services; do
-	if [ -e ${f} ]; to
+	if [ -e ${f} ]; then
+		Removing ${f}
 		rm ${f}
 	fi
 done

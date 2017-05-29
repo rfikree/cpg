@@ -4,7 +4,7 @@
 <service_bundle type='manifest' name='Introscope:epagent'>
 
 <service
-	name='application/introscope/epagent'
+	name='site/epagent'
 	type='service'
 	version='1'>
 

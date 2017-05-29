@@ -4,7 +4,7 @@
 <service_bundle type='manifest' name='weblogicAdmin'>
 
 <service
-	name='application/site/weblogicAdmin'
+	name='site/weblogicAdmin'
 	type='service'
 	version='1'>
 

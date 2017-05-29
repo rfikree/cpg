@@ -4,7 +4,7 @@
 <service_bundle type='manifest' name='nodemanager'>
 
 <service
-	name='application/site/nodemanager'
+	name='site/nodemanager'
 	type='service'
 	version='1'>
 
