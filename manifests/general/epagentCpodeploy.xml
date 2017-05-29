@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
-<service_bundle type='manifest' name='Introscope:epagent'>
+<service_bundle type='manifest' name='epagent'>
 
 <service
 	name='site/epagent'
