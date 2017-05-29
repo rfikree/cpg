@@ -26,13 +26,15 @@ applyManifest() {
 		return 1
 	elif [ -f ${manifest_mv} ]; then
 		echo Need to move: ${manifest_mv}
-		cp ${manifest_src} ${manifest_dir}
-		perl -pi -e "s|/site/|/${1}/|"  ${manifest_dir}/${3}
-		if ! diff ${manifest_dir}/${3} ${manifest_dst} >/dev/null; then
-			cp ${manifest1_dir}/${3} ${manifest_dst}
+		cp ${manifest_src} /tmp/${manifest_name}
+		perl -pi -e "s|/site/|/${1}/|" /tmp/${manifest_name}
+		if ! diff ${manifest_dir}/${manifest_name} ${manifest_dst} >/dev/null; then
+			mv /tmp/${manifest_name} ${manifest_dst}
 			cd ${manifest1_dir}
 			svccfg import ${manifest_name}
 			return 0
+		else
+			rm /tmp}/${manifest_name}
 		fi
 		return 1
 	elif [ ! -f ${manifest_dst} ]; then
