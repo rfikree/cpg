@@ -36,8 +36,8 @@ applyManifest() {
 	elif [ ! -f ${manifest_dst} ]; then
 		echo Installing: ${manifest_dst}
 		cp ${manifest_src} ${manifest_dst}
-	elif ! diff ${manifest_src} ${manifest_dst} >/dev/null; then
-		echo ${manifest_dst} is up to datecd
+	elif diff ${manifest_src} ${manifest_dst} >/dev/null; then
+		echo ${manifest_dst} is up to date
 		return 0
 	else
 		echo Updating: ${manifest_dst}
