@@ -17,10 +17,6 @@ applyManifest() {
 	manifest_mv=${manifest_dir}/${4}
 	manifest_name=${4}
 
-	if [ ! -d ${manifest_site} ]; then
-		echo Creating ${manifest_site}
-		mkdir -m 0755 ${manifest_site}
-	fi
 	if [ ! -f ${manifest_src} ]; then
 		echo FATAL: Source file ${manifest_src} is missing
 		return 1
