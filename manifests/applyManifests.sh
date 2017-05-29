@@ -112,7 +112,7 @@ fi
 # Cleanup olc_services
 for f in /etc/init.d/olc_services /etc/rc?.d/*olc_services; do
 	if [ -e ${f} ]; then
-		Removing ${f}
+		echo Removing ${f}
 		rm ${f}
 	fi
 done
