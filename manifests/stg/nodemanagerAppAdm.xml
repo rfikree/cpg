@@ -51,10 +51,6 @@
 		</method_context>
 	</instance>
 
-	<property_group name='startd' type='framework'>
-		<propval name='duration' type='astring' value='transient'/>
-	</property_group>
-
 	<instance name='stg13' enabled='false'>
 		<method_context>
 			<method_credential user='stg13' group='devapps' />
