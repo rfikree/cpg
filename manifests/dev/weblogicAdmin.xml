@@ -26,7 +26,7 @@
 		type='method'
 		name='stop'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh stop'
-		timeout_seconds='120' >
+		timeout_seconds='300' >
 	</exec_method>
 
    <!-- default service model of 'contract' -->

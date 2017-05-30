@@ -11,11 +11,12 @@ DOMAIN=a${SERVICE:3:1}${SERVICE:0:1}${SERVICE:3:2}
 STACK=${DOMAIN}${SERVICE:5:2}
 
 # Find the pid of the running process, if any
-PID=$(/usr/ucb/ps -xwww | awk "/[j]ava.*${STACK}/ {print \$1}")
+PID=$(/usr/ucb/ps -xwww | nawk "/[j]ava.*${STACK}/ {print \$1}")
 
 START_SCRIPT=/cpg/cpo_apps/${DOMAIN}/${STACK}/bin/startWebLogic.sh
 STOP_SCRIPT=/cpg/cpo_apps/${DOMAIN}/${STACK}/bin/stopWebLogic.sh
-LOG_FILE=cpg/cpo_var/${DOMAIN}/${STACK}/servers/AdminServer_nohup.out
+LOG_DIR=/cpg/cpo_var/${DOMAIN}/${STACK}/servers/runtime
+LOG_FILE=${LOG_DIR}/AdminServer_nohup.out
 
 waitPid() {
 	if [[ -n ${PID} ]]; then
@@ -29,6 +30,7 @@ waitPid() {
 }
 
 doStart() {
+	[[ -d ${LOG_DIR} ]] || mkdir -m 755 ${LOG_DIR}
 	if [[ -z ${PID} ]]; then
 		${START_SCRIPT} &> ${LOG_FILE} & 	# Run in background
 		sleep 5 	# Wait for Background to start Java process
