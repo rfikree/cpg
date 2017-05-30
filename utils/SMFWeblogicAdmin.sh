@@ -14,7 +14,8 @@ STACK=${DOMAIN}${SERVICE:5:2}
 PID=$(/usr/ucb/ps -xwww | awk "/[j]ava.*${STACK}/ {print \$1}")
 
 START_SCRIPT=/cpg/cpo_apps/${DOMAIN}/${STACK}/bin/startWebLogic.sh
-
+STOP_SCRIPT=/cpg/cpo_apps/${DOMAIN}/${STACK}/bin/stopWebLogic.sh
+LOG_FILE=cpg/cpo_var/${DOMAIN}/${STACK}/servers/AdminServer_nohup.out
 
 waitPid() {
 	if [[ -n ${PID} ]]; then
@@ -29,8 +30,8 @@ waitPid() {
 
 doStart() {
 	if [[ -z ${PID} ]]; then
-		${START_SCRIPT} & # Background
-		#sleep 5 # Wait for Background to start Java process
+		${START_SCRIPT} &> ${LOG_FILE} & 	# Run in background
+		sleep 5 	# Wait for Background to start Java process
 	else
 		echo ${SMF_FRMI} already running with pid ${PID}
 		exit ${SMF_EXIT_OK}
@@ -39,7 +40,7 @@ doStart() {
 
 doStop() {
 	if [[ -n ${PID} ]]; then
-		kill -HUP ${PID}
+		${STOP_SCRIPT}
 		waitPid 20
 		kill -0 ${PID} 2>/dev/null && kill -TERM ${PID}
 		waitPid 30

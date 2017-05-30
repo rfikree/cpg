@@ -89,7 +89,6 @@ case ${CPG_HOSTNAME:-''} in
         *-ws)
                 domain=d1
                 ;;
-
 esac
 
 
