@@ -21,7 +21,7 @@ LOG_FILE=${LOG_DIR}/AdminServer_nohup.out
 waitPid() {
 	if [[ -n ${PID} ]]; then
 		time=0
-		while [[ ${time} -lt ${1:10} ]]; do
+		while [[ ${time} -lt ${1:-10} ]]; do
 			sleep 1
 			kill -0 ${PID} 2>/dev/null || break
 			time=$(( time + 1 ))
