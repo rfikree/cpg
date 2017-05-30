@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Update here if JAVA or WebLogic is updated
-for JAVA_HOME in  $(ls -drt ${INSTALL_DIR}/java/jdk1.7*); do
+for JAVA_HOME in  $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
 	continue
 done
 export JAVA_HOME
