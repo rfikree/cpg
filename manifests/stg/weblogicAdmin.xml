@@ -26,7 +26,7 @@
 		type='method'
 		name='stop'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh stop'
-		timeout_seconds='30' >
+		timeout_seconds='120' >
 	</exec_method>
 
    <!-- default service model of 'contract' -->
@@ -52,19 +52,19 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg11d1' enabled='false'>
+	<instance name='stg11d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg11' group='stgapps' />
 		</method_context>
 	</instance>
 
-	<instance name='stg11d2' enabled='false'>
+	<instance name='stg11d2' enabled='true'>
 		<method_context>
 			<method_credential user='stg11' group='stgapps' />
 		</method_context>
 	</instance>
 
-	<instance name='stg11d9' enabled='false'>
+	<instance name='stg11d9' enabled='true'>
 		<method_context>
 			<method_credential user='stg11' group='stgapps' />
 		</method_context>
@@ -88,19 +88,19 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg13d1' enabled='false'>
+	<instance name='stg13d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg13' group='stgapps' />
 		</method_context>
 	</instance>
 
-	<instance name='stg13d2' enabled='false'>
+	<instance name='stg13d2' enabled='true'>
 		<method_context>
 			<method_credential user='stg13' group='stgapps' />
 		</method_context>
 	</instance>
 
-	<instance name='stg13d9' enabled='false'>
+	<instance name='stg13d9' enabled='true'>
 		<method_context>
 			<method_credential user='stg13' group='stgapps' />
 		</method_context>
@@ -130,7 +130,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg21d9' enabled='false'>
+	<instance name='stg21d9' enabled='true'>
 		<method_context>
 			<method_credential user='stg21' group='stgapps' />
 		</method_context>
@@ -148,7 +148,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg31d1' enabled='false'>
+	<instance name='stg31d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg31' group='stgapps' />
 		</method_context>
@@ -160,19 +160,19 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg33d1' enabled='false'>
+	<instance name='stg33d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg33' group='stgapps' />
 		</method_context>
 	</instance>
 
-	<instance name='stg50d1' enabled='false'>
+	<instance name='stg50d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg50' group='stgapps' />
 		</method_context>
 	</instance>
 
-	<instance name='stg60d1' enabled='false'>
+	<instance name='stg60d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg60' group='stgapps' />
 		</method_context>

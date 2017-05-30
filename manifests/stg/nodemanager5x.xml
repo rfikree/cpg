@@ -76,7 +76,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg51' enabled='false'>
+	<instance name='stg51' enabled='true'>
 		<method_context>
 			<method_credential user='stg51' group='devapps' />
 		</method_context>

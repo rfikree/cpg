@@ -39,7 +39,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg11' enabled='false'>
+	<instance name='stg11' enabled='true'>
 		<method_context>
 			<method_credential user='stg11' group='devapps' />
 		</method_context>
@@ -51,7 +51,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg13' enabled='false'>
+	<instance name='stg13' enabled='true'>
 		<method_context>
 			<method_credential user='stg13' group='devapps' />
 		</method_context>

@@ -39,7 +39,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev11' enabled='false'>
+	<instance name='dev11' enabled='true'>
 		<method_context>
 			<method_credential user='dev11' group='devapps' />
 		</method_context>
@@ -51,7 +51,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev13' enabled='false'>
+	<instance name='dev13' enabled='true'>
 		<method_context>
 			<method_credential user='dev13' group='devapps' />
 		</method_context>
@@ -63,7 +63,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev15' enabled='false'>
+	<instance name='dev15' enabled='true'>
 		<method_context>
 			<method_credential user='dev15' group='devapps' />
 		</method_context>
@@ -75,7 +75,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev21' enabled='false'>
+	<instance name='dev21' enabled='true'>
 		<method_context>
 			<method_credential user='dev21' group='devapps' />
 		</method_context>
@@ -87,7 +87,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev23' enabled='false'>
+	<instance name='dev23' enabled='true'>
 		<method_context>
 			<method_credential user='dev23' group='devapps' />
 		</method_context>

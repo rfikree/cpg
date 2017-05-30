@@ -12,7 +12,7 @@
 		grouping='require_all'
 		restart_on='none'
 		type='service'>
-			<service_fmri value='svc:/milestone/multi-user:default'/>
+		<service_fmri value='svc:/milestone/multi-user:default'/>
 	</dependency>
 
 	<exec_method
@@ -26,7 +26,7 @@
 		type='method'
 		name='stop'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh stop'
-		timeout_seconds='30' >
+		timeout_seconds='120' >
 	</exec_method>
 
 	<property_group name='startd' type='framework'>
@@ -39,7 +39,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev11' enabled='false'>
+	<instance name='dev11' enabled='true'>
 		<method_context>
 			<method_credential user='dev11' group='devapps' />
 		</method_context>
@@ -51,7 +51,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev13' enabled='false'>
+	<instance name='dev13' enabled='true'>
 		<method_context>
 			<method_credential user='dev13' group='devapps' />
 		</method_context>
@@ -63,7 +63,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev15' enabled='false'>
+	<instance name='dev15' enabled='true'>
 		<method_context>
 			<method_credential user='dev15' group='devapps' />
 		</method_context>

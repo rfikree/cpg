@@ -12,7 +12,7 @@
 		grouping='require_all'
 		restart_on='none'
 		type='service'>
-			<service_fmri value='svc:/milestone/multi-user:default'/>
+			<service_fmri value='svc:/milestone/multi-user-server'/>
 	</dependency>
 
 	<exec_method
@@ -39,7 +39,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev31' enabled='false'>
+	<instance name='dev31' enabled='true'>
 		<method_context>
 			<method_credential user='dev31' group='devapps' />
 		</method_context>
@@ -51,7 +51,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev33' enabled='false'>
+	<instance name='dev33' enabled='true'>
 		<method_context>
 			<method_credential user='dev33' group='devapps' />
 		</method_context>

@@ -42,7 +42,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='prd31' enabled='false'>
+	<instance name='prd31' enabled='true'>
 		<method_context>
 			<method_credential user='prd31' group='devapps' />
 		</method_context>
