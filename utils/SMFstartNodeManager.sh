@@ -112,7 +112,8 @@ script="/cpg/cpo_apps/${stack}/${stack}${domain}/bin/startNodeManager.sh"
 case ${appid} in
 	5*|6*)
 		#echo "The command to execute would be: $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
-		nohup $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1 & disown
+		$script &> /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out &
+		sleep 2
 		;;
 	*)
 		#echo "The command to execute would be: $script"
