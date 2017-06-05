@@ -9,18 +9,16 @@
 	version='1'>
 
 	<dependency name='multi-user'
-		grouping='require_all'
-		restart_on='none'
-		type='service'>
+			grouping='require_all'
+			restart_on='restart'
+			type='service'>
 		<service_fmri value='svc:/milestone/multi-user:default'/>
 	</dependency>
 
-	<dependency
-		name='file-systems'
-		grouping='require_all'
-		restart_on='refresh'
+	<dependency name='file-systems'
+			grouping='require_all'
+			restart_on='none'
 		type='path'>
-		<service_fmri value='file:///cpg/content/.mounted' />
 		<service_fmri value='file:///cpg/cpo_apps/.mounted' />
 		<service_fmri value='file:///cpg/cpo_var/.mounted' />
 		<service_fmri value='file:///cpg/3rdParty/.mounted' />
@@ -192,6 +190,12 @@
 	<instance name='stg50d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg50' group='stgapps' />
+		</method_context>
+	</instance>
+
+	<instance name='stg50d1' enabled='false'>
+		<method_context>
+			<method_credential user='stg51' group='stgapps' />
 		</method_context>
 	</instance>
 

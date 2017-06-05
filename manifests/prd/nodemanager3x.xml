@@ -4,51 +4,74 @@
 <service_bundle type='manifest' name='nodemanager'>
 
 <service
-	name='application/weblogic/nodemanager'
+	name='site/nodemanager'
 	type='service'
 	version='1'>
 
 	<dependency name='multi-user'
-		grouping='require_all'
-		restart_on='error'
-		type='service'>
-			<service_fmri value='svc:/milestone/multi-user:default'/>
+			grouping='require_all'
+			restart_on='refresh'
+			type='service'>
+		<service_fmri value='svc:/milestone/multi-user:default'/>
+	</dependency>
+  
+	<dependency name='file-systems'
+			grouping='require_all'
+			restart_on='none'
+			type='path'>
+		<service_fmri value='file:///cpg/content/.mounted' />
+		<service_fmri value='file:///cpg/cpo_apps/.mounted' />
+		<service_fmri value='file:///cpg/cpo_var/.mounted' />
+		<service_fmri value='file:///cpg/3rdParty/.mounted' />
 	</dependency>
 
 	<exec_method
 		type='method'
 		name='start'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh'
-		timeout_seconds='30' >
+		timeout_seconds='10' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
-		exec=':kill'
-		timeout_seconds='10' >
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh stop'
+		timeout_seconds='5' >
 	</exec_method>
 
-	<exec_method
-		type='method'
-		name='refresh'
-		exec=':kill -3'
-		timeout_seconds='10' >
-	</exec_method>
+	<property_group name='startd' type='framework'>
+		<propval name='duration' type='astring' value='transient'/>
+	</property_group>
 
-	<instance name='prd30' enabled='true'>
+	<!--
+	  Both action_authorization and value_authorization are needed
+	  to allow the framework general/enabled property to be changed
+	  when performing action (enable, disable, etc) on the service.
+	-->
+	<property_group name='general' type='framework'>
+		<propval name='value_authorization' type='astring'
+				value='solaris.smf.value.onlinechannel' />
+		<propval name='action_authorization' type='astring'
+				value='solaris.smf.manage.onlinechannel' />
+	</property_group>
+
+	<instance name='prd30' enabled='false'>
 		<method_context>
 			<method_credential user='prd30' group='devapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd31' enabled='true'>
+	<instance name='prd31' enabled='false'>
 		<method_context>
 			<method_credential user='prd31' group='devapps' />
 		</method_context>
 	</instance>
 
-	<stability value='Evolving' />
+	<instance name='prd32' enabled='false'>
+		<method_context>
+			<method_credential user='prd32' group='devapps' />
+		</method_context>
+	</instance>
 
 	<template>
 		<common_name>

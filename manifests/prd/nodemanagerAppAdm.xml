@@ -19,6 +19,7 @@
 			grouping='require_all'
 			restart_on='none'
 			type='path'>
+		<service_fmri value='file:///cpg/content/.mounted' />
 		<service_fmri value='file:///cpg/cpo_apps/.mounted' />
 		<service_fmri value='file:///cpg/cpo_var/.mounted' />
 		<service_fmri value='file:///cpg/3rdParty/.mounted' />
@@ -35,13 +36,13 @@
 		type='method'
 		name='stop'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh stop'
-		timeout_seconds='5' >
+		timeout_seconds='10' >
 	</exec_method>
 
 	<property_group name='startd' type='framework'>
 		<propval name='duration' type='astring' value='transient'/>
 	</property_group>
-
+    
 	<!--
 	  Both action_authorization and value_authorization are needed
 	  to allow the framework general/enabled property to be changed
@@ -54,17 +55,30 @@
 				value='solaris.smf.manage.onlinechannel' />
 	</property_group>
 
-	<instance name='prd50' enabled='false'>
+	<instance name='prd10' enabled='false'>
 		<method_context>
-			<method_credential user='prd50' group='devapps' />
+			<method_credential user='prd10' group='devapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd51' enabled='false'>
+	<instance name='prd11' enabled='false'>
 		<method_context>
-			<method_credential user='prd51' group='devapps' />
+			<method_credential user='prd11' group='devapps' />
 		</method_context>
 	</instance>
+
+	<instance name='prd20' enabled='false'>
+		<method_context>
+			<method_credential user='prd20' group='devapps' />
+		</method_context>
+	</instance>
+
+	<instance name='prd21' enabled='false'>
+		<method_context>
+			<method_credential user='prd21' group='devapps' />
+		</method_context>
+	</instance>
+
 	<stability value='Evolving' />
 
 	<template>

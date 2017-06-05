@@ -9,17 +9,16 @@
 	version='1'>
 
 	<dependency name='multi-user'
-		grouping='require_all'
-		restart_on='none'
-		type='service'>
-			<service_fmri value='svc:/milestone/multi-user:default'/>
+			grouping='require_all'
+			restart_on='restart'
+			type='service'>
+		<service_fmri value='svc:/milestone/multi-user:default'/>
 	</dependency>
 
-	<dependency
-		name='file-systems'
-		grouping='require_all'
-		restart_on='refresh'
-		type='path'>
+	<dependency name='file-systems'
+			grouping='require_all'
+			restart_on='none'
+			type='path'>
 		<service_fmri value='file:///cpg/content/.mounted' />
 		<service_fmri value='file:///cpg/cpo_apps/.mounted' />
 		<service_fmri value='file:///cpg/cpo_var/.mounted' />
