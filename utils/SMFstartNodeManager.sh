@@ -111,6 +111,16 @@ script="/cpg/cpo_apps/${stack}/${stack}${domain}/bin/startNodeManager.sh"
 # The 50 and 60 stack users have a different syntax for starting the node manager that differs from the 10, 20 & 30 stacks
 case ${appid} in
 	5*|6*)
+		# Set the environment to use UTF-8 en_CA
+		export LANG=en_CA.UTF-8
+		export LC_ALL=en_CA.UTF-8
+		export LC_MONETARY=en_CA.UTF-8
+		export LC_NUMERIC=en_CA.UTF-8
+		export LC_ALL=en_CA.UTF-8
+		export LC_MESSAGES=C
+		export LC_COLLATE=en_CA.UTF-8
+		export LC_CTYPE=en_CA.UTF-8
+		export LC_TIME=en_CA.UTF-8
 		#echo "The command to execute would be: $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
 		$script &> /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out &
 		sleep 2
