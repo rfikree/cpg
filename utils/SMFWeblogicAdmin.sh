@@ -10,6 +10,17 @@ SERVICE=${SMF_FMRI##*:}
 DOMAIN=a${SERVICE:3:1}${SERVICE:0:1}${SERVICE:3:2}
 STACK=${DOMAIN}${SERVICE:5:2}
 
+# Variables needed by SOA Suite for locale setting
+export LANG=en_CA.UTF-8
+export LC_ALL=en_CA.UTF-8
+export LC_MONETARY=en_CA.UTF-8
+export LC_NUMERIC=en_CA.UTF-8
+export LC_ALL=en_CA.UTF-8
+export LC_MESSAGES=C
+export LC_COLLATE=en_CA.UTF-8
+export LC_CTYPE=en_CA.UTF-8
+export LC_TIME=en_CA.UTF-8
+
 # Find the pid of the running process, if any
 PID=$(/usr/ucb/ps -xwww | nawk "/[j]ava.*${STACK}/ {print \$1}")
 
