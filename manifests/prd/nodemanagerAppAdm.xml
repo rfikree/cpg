@@ -55,27 +55,27 @@
 				value='solaris.smf.manage.onlinechannel' />
 	</property_group>
 
-	<instance name='prd10' enabled='false'>
+	<instance name='prd10' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='devapps' />
+			<method_credential user='prd10' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd11' enabled='false'>
+	<instance name='prd11' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='devapps' />
+			<method_credential user='prd11' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd20' enabled='false'>
+	<instance name='prd20' enabled='true'>
 		<method_context>
-			<method_credential user='prd20' group='devapps' />
+			<method_credential user='prd20' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd21' enabled='false'>
+	<instance name='prd21' enabled='true'>
 		<method_context>
-			<method_credential user='prd21' group='devapps' />
+			<method_credential user='prd21' group='prdapps' />
 		</method_context>
 	</instance>
 

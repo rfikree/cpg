@@ -54,9 +54,9 @@
 				value='solaris.smf.manage.onlinechannel' />
 	</property_group>
 
-	<instance name='prd60' enabled='false'>
+	<instance name='prd60' enabled='true'>
 		<method_context>
-			<method_credential user='prd60' group='devapps' />
+			<method_credential user='prd60' group='prdapps' />
 		</method_context>
 	</instance>
 

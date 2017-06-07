@@ -57,25 +57,25 @@
 
 	<instance name='stg30' enabled='true'>
 		<method_context>
-			<method_credential user='stg30' group='devapps' />
+			<method_credential user='stg30' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg31' enabled='true'>
 		<method_context>
-			<method_credential user='stg31' group='devapps' />
+			<method_credential user='stg31' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg32' enabled='true'>
 		<method_context>
-			<method_credential user='stg32' group='devapps' />
+			<method_credential user='stg32' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg33' enabled='true'>
 		<method_context>
-			<method_credential user='stg33' group='devapps' />
+			<method_credential user='stg33' group='stgapps' />
 		</method_context>
 	</instance>
 

@@ -56,13 +56,13 @@
 
 	<instance name='stg50' enabled='true'>
 		<method_context>
-			<method_credential user='stg50' group='devapps' />
+			<method_credential user='stg50' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg51' enabled='false'>
 		<method_context>
-			<method_credential user='stg51' group='devapps' />
+			<method_credential user='stg51' group='stgapps' />
 		</method_context>
 	</instance>
 	<stability value='Evolving' />

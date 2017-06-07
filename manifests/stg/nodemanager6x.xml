@@ -56,7 +56,7 @@
 
 	<instance name='stg60' enabled='true'>
 		<method_context>
-			<method_credential user='stg60' group='devapps' />
+			<method_credential user='stg60' group='stgapps' />
 		</method_context>
 	</instance>
 

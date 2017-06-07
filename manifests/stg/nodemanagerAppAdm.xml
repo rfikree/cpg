@@ -57,49 +57,49 @@
 
 	<instance name='stg10' enabled='true'>
 		<method_context>
-			<method_credential user='stg10' group='devapps' />
+			<method_credential user='stg10' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg11' enabled='true'>
 		<method_context>
-			<method_credential user='stg11' group='devapps' />
+			<method_credential user='stg11' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg12' enabled='true'>
 		<method_context>
-			<method_credential user='stg12' group='devapps' />
+			<method_credential user='stg12' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg13' enabled='true'>
 		<method_context>
-			<method_credential user='stg13' group='devapps' />
+			<method_credential user='stg13' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg14' enabled='true'>
 		<method_context>
-			<method_credential user='stg14' group='devapps' />
+			<method_credential user='stg14' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg20' enabled='true'>
 		<method_context>
-			<method_credential user='stg20' group='devapps' />
+			<method_credential user='stg20' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg21' enabled='true'>
 		<method_context>
-			<method_credential user='stg21' group='devapps' />
+			<method_credential user='stg21' group='stgapps' />
 		</method_context>
 	</instance>
 
 	<instance name='stg22' enabled='true'>
 		<method_context>
-			<method_credential user='stg22' group='devapps' />
+			<method_credential user='stg22' group='stgapps' />
 		</method_context>
 	</instance>
 

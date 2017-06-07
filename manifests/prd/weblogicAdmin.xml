@@ -55,75 +55,75 @@
 				value='solaris.smf.manage.onlinechannel' />
 	</property_group>
 
-	<instance name='prd10d1' enabled='false'>
+	<instance name='prd10d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='stgapps' />
+			<method_credential user='prd10' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd10d2' enabled='false'>
+	<instance name='prd10d2' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='stgapps' />
+			<method_credential user='prd10' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd10d9' enabled='false'>
+	<instance name='prd10d9' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='stgapps' />
+			<method_credential user='prd10' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd11d1' enabled='false'>
+	<instance name='prd11d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='stgapps' />
+			<method_credential user='prd11' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd11d2' enabled='false'>
+	<instance name='prd11d2' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='stgapps' />
+			<method_credential user='prd11' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd11d9' enabled='false'>
+	<instance name='prd11d9' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='stgapps' />
+			<method_credential user='prd11' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd30d1' enabled='false'>
+	<instance name='prd30d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd30' group='stgapps' />
+			<method_credential user='prd30' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd31d1' enabled='false'>
+	<instance name='prd31d1' enabled='true'>
 		<method_context>
-			<method_credential user='true' group='stgapps' />
+			<method_credential user='prd31' group='prdapps' />
 		</method_context>
 	</instance>
 
 	<instance name='prd32d1' enabled='false'>
 		<method_context>
-			<method_credential user='prd32' group='stgapps' />
+			<method_credential user='prd32' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd50d1' enabled='false'>
+	<instance name='prd50d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd50' group='stgapps' />
+			<method_credential user='prd50' group='prdapps' />
 		</method_context>
 	</instance>
 
 	<instance name='prd51d1' enabled='false'>
 		<method_context>
-			<method_credential user='prd50' group='stgapps' />
+			<method_credential user='prd51' group='prdapps' />
 		</method_context>
 	</instance>
 
-	<instance name='prd60d1' enabled='false'>
+	<instance name='prd60d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd60' group='stgapps' />
+			<method_credential user='prd60' group='prdapps' />
 		</method_context>
 	</instance>
 
