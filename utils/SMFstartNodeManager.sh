@@ -92,12 +92,16 @@ case ${CPG_HOSTNAME:-''} in
 esac
 
 
-# WL_HOME and LD_LIBRARY_PATH should not be required after next configuration
-# run.
+# Define the WL_HOME and JAVA_HOME from the Domain.properties file
+PROPS_FILE=/cpg/cpo_apps/${stack}/automation/stacks/${stack}/*d1/Domain.properties
+if [ -f ${PROPS_FILE} ]; then
+	eval $(egrep '^(jdk|bea)Path *=' ${PROPS_FILE} | tr -d ' ')
+fi
+export JAVA_HOME={jdkPath}
+export WL_HOME=${beaPath}/wlserver_10.3
 
-# Define the WL_HOME variable needed for the OLC startNodeManager script
-export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
+# LD_LIBRARY_PATH should not be required after next configuration run.
 # Add the SAPJCO and SAP Security to LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/cpg/3rdParty/installs/SAP/sapjco-sun_64-2.1.10
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/cpg/3rdParty/installs/SAP/sap-security-utils

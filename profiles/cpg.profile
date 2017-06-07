@@ -177,7 +177,7 @@ if [[ "${JAVA_HOME}" != "${jdkPath}" \
 	case $(uname -s) in
 	SunOS)
 		echo Setting JAVA_HOME from Domain.properties
-		JAVA_HOME=${ROOT_PREFIX}${jdkPath}
+		JAVA_HOME=${jdkPath}
 		;;
 	*)
 		if [[ -z ${JAVA_HOME} ]]; then
@@ -192,7 +192,7 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 && -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then
 	echo Setting WL_HOME from Domain.properties
 	echo
-	WL_HOME=${ROOT_PREFIX}${beaPath}/${WL_DIR}
+	WL_HOME=${beaPath}/${WL_DIR}
 fi
 
 export JAVA_HOME WL_HOME
