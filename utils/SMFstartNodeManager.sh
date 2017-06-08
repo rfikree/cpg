@@ -96,9 +96,19 @@ esac
 PROPS_FILE=/cpg/cpo_apps/${stack}/automation/stacks/${stack}/*d1/Domain.properties
 if [ -f ${PROPS_FILE} ]; then
 	eval $(egrep '^(jdk|bea)Path *=' ${PROPS_FILE} | tr -d ' ')
+
+	if [[ -n ${beaPath} ]]; then
+		export WL_HOME=${beaPath}/wlserver_10.3
+	fi
+fi                                                      
+if [[ -n ${jdkPath} ]]; then 
+	JAVA_HOME=${jdkPath}
+else	# Fallback to directory search
+	for JAVA_HOME in $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
+		continue
+	done
 fi
-export JAVA_HOME={jdkPath}
-export WL_HOME=${beaPath}/wlserver_10.3
+export JAVA_HOME
 
 
 # LD_LIBRARY_PATH should not be required after next configuration run.
