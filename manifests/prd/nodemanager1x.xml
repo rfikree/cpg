@@ -19,17 +19,17 @@
 			grouping='require_all'
 			restart_on='none'
 			type='path'>
-		<service_fmri value='file:///cpg/content/.mounted' />
-		<service_fmri value='file:///cpg/cpo_apps/.mounted' />
-		<service_fmri value='file:///cpg/cpo_var/.mounted' />
-		<service_fmri value='file:///cpg/3rdParty/.mounted' />
+		<service_fmri value='file://cpg/3rdParty/.mounted'/>
+		<!-- service_fmri value='file://cpg/content/.mounted'/>
+		<service_fmri value='file://cpg/cpo_apps/.mounted'/>
+		<service_fmri value='file://cpg/cpo_var/.mounted'/-->
 	</dependency>
 
 	<exec_method
 		type='method'
 		name='start'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh'
-		timeout_seconds='10' >
+		timeout_seconds='300' >
 	</exec_method>
 
 	<exec_method
