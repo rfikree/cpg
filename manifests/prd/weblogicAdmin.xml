@@ -19,9 +19,9 @@
 			grouping='require_all'
 			restart_on='none'
 			type='path'>
-		<service_fmri value='file:///cpg/cpo_apps/.mounted' />
-		<service_fmri value='file:///cpg/cpo_var/.mounted' />
-		<service_fmri value='file:///cpg/3rdParty/.mounted' />
+		<service_fmri value='file://localhost/cpg/3rdParty/.mounted'/>
+		<service_fmri value='file://localhost/cpg/cpo_apps/.mounted'/>
+		<service_fmri value='file://localhost/cpg/cpo_var/.mounted'/>
 	</dependency>
 
 	<exec_method

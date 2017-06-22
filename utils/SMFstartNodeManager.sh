@@ -66,14 +66,14 @@ if [[ ${1} == stop ]]; then
 fi
 
 
-# Wait for file systems to be mounted - randomly 1 to 5 seconds
-for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
-	if [[ -d ${DIR} ]]; then
-		while [[ ! -e ${DIR}/.mounted ]]; do 
-			sleep $(( ${RANDOM} / 6554 + 1 ))
-		done
-	fi
-done
+## Wait for file systems to be mounted - randomly 1 to 5 seconds
+#for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
+#	if [[ -d ${DIR} ]]; then
+#		while [[ ! -e ${DIR}/.mounted ]]; do 
+#			sleep $(( ${RANDOM} / 6554 + 1 ))
+#		done
+#	fi
+#done
 
 
 # Determine the WL domain this host runs for the user and assign to domain variable
