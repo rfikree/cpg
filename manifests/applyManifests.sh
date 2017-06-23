@@ -109,12 +109,12 @@ if [[ -n ${wl_manifest} ]]; then
 fi
 
 # Apply test manifest 
-applyManifest olctest general olctest.xml olctest.xml
 if [[ ! -f /usr/local/bin/olctest ]]; then
 	cp ${SOURCE_BASE}/general/olctest /usr/local/bin
 elif ! diff ${SOURCE_BASE}/general/olctest /usr/local/bin/olctest >/dev/null; then
 	cp ${SOURCE_BASE}/general/olctest /usr/local/bin
 fi 
+applyManifest olctest general olctest.xml olctest.xml
 
 # Cleanup olc_services
 for f in  /etc/rc?.d/*olc_services /etc/init.d/olc_services; do

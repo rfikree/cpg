@@ -12,27 +12,28 @@
 
 	<single_instance/>
 
-	<dependent name='multi-user'
+	<dependency name='multi-user'
 			grouping='require_all'
-			restart_on='refresh'>
+			restart_on='error'
+			type='service'>
 		<service_fmri value='svc:/milestone/multi-user:default'/>
-	</dependent>
+	</dependency>
 
 	<method_context>
-		<method_credential user='apm' group='3rdparty'/>
+		<method_credential user='apm'/>
 	</method_context>
 
 	<exec_method
 		type='method'
 		name='start'
-		exec='/usr/local/bin/olctest start'
+		exec='/usr/local/bin/olctest'
 		timeout_seconds='3600'>
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
-		exec=':kill'
+		exec=':true'
 		timeout_seconds='10'>
 	</exec_method>
 

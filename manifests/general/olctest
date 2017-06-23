@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/usr/bin/bash
 
-date
+. /lib/svc/share/smf_include.sh
+echo $(date) Starting ${SMF_FMRI}
 
 # Wait for file systems to be mounted - randomly 1 to 5 seconds
 for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
@@ -15,5 +16,6 @@ for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
 done
 
 echo $(date) Done
+exit ${SMF_EXIT_OK}
 
 # EOF
