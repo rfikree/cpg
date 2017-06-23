@@ -1,46 +1,53 @@
 <?xml version='1.0'?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
-<service_bundle type='manifest' name='nodemanager'>
+<service_bundle type='manifest' name='epagent'>
 
 <service
-	name='site/nodemanager'
+	name='site/epagent'
 	type='service'
 	version='1'>
 
-	<dependency name='multi-user-server'
+	<create_default_instance enabled='true' />
+
+	<single_instance/>
+
+	<dependency name='multi-user'
 			grouping='require_all'
-			restart_on='refresh'
+			restart_on='none'
 			type='service'>
-		<service_fmri value='svc:/milestone/multi-user-server:default'/>
+		<service_fmri value='svc:/milestone/multi-user:default'/>
 	</dependency>
 
 	<dependency name='file-systems'
 			grouping='require_all'
-			restart_on='error'
+			restart_on='refresh'
 			type='path'>
 		<service_fmri value='file://localhost/cpg/3rdParty/.mounted'/>
-		<service_fmri value='file://localhost/cpg/content/.mounted'/>
-		<service_fmri value='file://cpg/localhost/cpo_apps/.mounted'/>
-		<service_fmri value='file://cpg/localhost/cpo_var/.mounted'/>
+		<service_fmri value='file://localhost/cpg/cpo_var/.mounted'/>
 	</dependency>
-       
+
+	<method_context>
+		<method_credential user='apm' group='devapps' />
+	</method_context>
+
 	<exec_method
 		type='method'
 		name='start'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh'
-		timeout_seconds='300' >
+		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent/bin/EPACtrl.sh start'
+		timeout_seconds='15' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh stop'
-		timeout_seconds='5' >
+		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent/bin/EPACtrl.sh stop'
+		timeout_seconds='10' >
 	</exec_method>
 
+   <!-- default service model of 'contract' -->
 	<property_group name='startd' type='framework'>
-		<propval name='duration' type='astring' value='transient'/>
+		<propval name='duration' type='astring' value='contract'/>
 	</property_group>
 
 	<!--
@@ -55,23 +62,11 @@
 				value='solaris.smf.manage.onlinechannel' />
 	</property_group>
 
-	<instance name='prd10' enabled='true'>
-		<method_context>
-			<method_credential user='prd10' group='prdapps' />
-		</method_context>
-	</instance>
-
-	<instance name='prd11' enabled='true'>
-		<method_context>
-			<method_credential user='prd11' group='prdapps' />
-		</method_context>
-	</instance>
-
 	<stability value='Evolving' />
 
 	<template>
 		<common_name>
-			<loctext xml:lang='C'>Multi Instance WebLogic Node Manager Service</loctext>
+			<loctext xml:lang='C'>Introscope ePAgent</loctext>
 		</common_name>
 	</template>
 

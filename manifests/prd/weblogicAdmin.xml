@@ -8,11 +8,11 @@
 	type='service'
 	version='1'>
 
-	<dependency name='multi-user'
+	<dependency name='multi-user-server'
 			grouping='require_all'
 			restart_on='refresh'
 			type='service'>
-		<service_fmri value='svc:/milestone/multi-user:default'/>
+		<service_fmri value='svc:/milestone/multi-user-server:default'/>
 	</dependency>
 
 	<dependency name='file-systems'
@@ -28,7 +28,7 @@
 		type='method'
 		name='start'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh start'
-		timeout_seconds='15' >
+		timeout_seconds='300' >
 	</exec_method>
 
 	<exec_method

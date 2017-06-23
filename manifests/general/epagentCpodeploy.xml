@@ -12,16 +12,16 @@
 
 	<single_instance/>
 
-	<dependency name='multi-user'
+	<dependency name='multi-user-server'
 			grouping='require_all'
-			restart_on='none'
+			restart_on='error'
 			type='service'>
-		<service_fmri value='svc:/milestone/multi-user:default'/>
+		<service_fmri value='svc:/milestone/multi-user-server:default'/>
 	</dependency>
 
 	<dependency name='file-systems'
 			grouping='require_all'
-			restart_on='refresh'
+			restart_on='error'
 			type='path'>
 		<service_fmri value='file://localhost/cpg/3rdParty/.mounted'/>
 		<service_fmri value='file://localhost/cpg/cpo_var/.mounted'/>
