@@ -61,7 +61,7 @@ doStop() {
 		kill -0 ${PID} 2>/dev/null && kill -KILL ${PID}
 		waitPid 5
 		kill -0 ${PID} 2>/dev/null && exit ${SMF_EXIT_ERR_FATAL}
-	fi:
+	fi
 }
 
 if [ ! -f ${START_SCRIPT} ]; then
