@@ -109,7 +109,7 @@ if [[ -n ${wl_manifest} ]]; then
 fi
 
 # Apply test manifest 
-apply manifest olctest general olctest.xml olctest.xml
+applyManifest olctest general olctest.xml olctest.xml
 if [[ ! -f /usr/local/bin/olctest ]]; then
 	cp ${SOURCE_BASE}/general/olctest /usr/local/bin
 elif ! diff ${SOURCE_BASE}/general/olctest /usr/local/bin/olctest >/dev/null; then
