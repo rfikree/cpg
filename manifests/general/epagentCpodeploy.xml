@@ -28,7 +28,7 @@
 	</dependency>
 
 	<method_context>
-		<method_credential user='apm' group='devapps' />
+		<method_credential user='apm'/>
 	</method_context>
 
 	<exec_method

@@ -50,84 +50,96 @@
 	-->
 	<property_group name='general' type='framework'>
 		<propval name='value_authorization' type='astring'
-				value='solaris.smf.value.onlinechannel' />
+				value='solaris.smf.value.onlinechannel'/>
 		<propval name='action_authorization' type='astring'
-				value='solaris.smf.manage.onlinechannel' />
+				value='solaris.smf.manage.onlinechannel'/>
 	</property_group>
 
 	<instance name='prd10d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='prdapps' />
+			<method_credential user='prd10' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd10d2' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='prdapps' />
+			<method_credential user='prd10' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd10d9' enabled='true'>
 		<method_context>
-			<method_credential user='prd10' group='prdapps' />
+			<method_credential user='prd10' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd11d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='prdapps' />
+			<method_credential user='prd11' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd11d2' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='prdapps' />
+			<method_credential user='prd11' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd11d9' enabled='true'>
 		<method_context>
-			<method_credential user='prd11' group='prdapps' />
+			<method_credential user='prd11' group='prdapps'/>
+		</method_context>
+	</instance>
+
+	<instance name='prd20d9' enabled='true'>
+		<method_context>
+			<method_credential user='prd20' group='prdapps'/>
+		</method_context>
+	</instance>
+
+	<instance name='prd21d9' enabled='true'>
+		<method_context>
+			<method_credential user='prd21' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd30d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd30' group='prdapps' />
+			<method_credential user='prd30' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd31d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd31' group='prdapps' />
+			<method_credential user='prd31' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd32d1' enabled='false'>
 		<method_context>
-			<method_credential user='prd32' group='prdapps' />
+			<method_credential user='prd32' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd50d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd50' group='prdapps' />
+			<method_credential user='prd50' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd51d1' enabled='false'>
 		<method_context>
-			<method_credential user='prd51' group='prdapps' />
+			<method_credential user='prd51' group='prdapps'/>
 		</method_context>
 	</instance>
 
 	<instance name='prd60d1' enabled='true'>
 		<method_context>
-			<method_credential user='prd60' group='prdapps' />
+			<method_credential user='prd60' group='prdapps'/>
 		</method_context>
 	</instance>
 
-	<stability value='Evolving' />
+	<stability value='Evolving'/>
 
 	<template>
 		<common_name>
