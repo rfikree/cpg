@@ -44,6 +44,7 @@ doStart() {
 	[[ -d ${LOG_DIR} ]] || mkdir -m 755 ${LOG_DIR}
 	if [[ -z ${PID} ]]; then
 		${START_SCRIPT} &> ${LOG_FILE} & 	# Run in background
+		echo ${SMF_FRMI} starting Weblogic $!
 		sleep 5 	# Wait for Background to start Java process
 	else
 		echo ${SMF_FRMI} already running with pid ${PID}
@@ -54,13 +55,13 @@ doStart() {
 doStop() {
 	if [[ -n ${PID} ]]; then
 		${STOP_SCRIPT}
-		waitPid 20
+		waitPid 90
 		kill -0 ${PID} 2>/dev/null && kill -TERM ${PID}
-		waitPid 30
+		waitPid 60
 		kill -0 ${PID} 2>/dev/null && kill -KILL ${PID}
 		waitPid 5
-		kill -0 ${PID} 2>/dev/null || exit ${SMF_EXIT_ERR_FATAL}
-	fi
+		kill -0 ${PID} 2>/dev/null && exit ${SMF_EXIT_ERR_FATAL}
+	fi:
 }
 
 if [ ! -f ${START_SCRIPT} ]; then
