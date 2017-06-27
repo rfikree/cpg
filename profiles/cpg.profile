@@ -101,11 +101,11 @@ case $LOB in
 		domains='1 9';;
 	3)  PROJECT_NAME=WS;;
 	5)  PROJECT_NAME=CPC-SOA
-		MW_DIR=fmw50
+		MW_DIR=fmw${STACK_NUM}
 		WL_DIR=wlserver_10.3
 		;;
 	6)  PROJECT_NAME=PULSE
-		MW_DIR=fmw60
+		MW_DIR=fmw6${STACK_NUM}
 		WL_DIR=wlserver_10.3
 		;;
 	*)  ;;
