@@ -206,7 +206,7 @@ unset JAVA_VERSION MW_DIR WL_DIR
 PATH=
 for DIR in ${JAVA_HOME}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
 		/usr/sfw/bin /bin /usr/sbin /sbin/ usr/openwin/bin /usr/local/bin \
-		/opt/WANdisco/bin ${WL_HOME1}/common/bin ${SQLPLUS_HOME} \
+		/opt/WANdisco/bin ${WL_HOME}/common/bin ${SQLPLUS_HOME} \
 		${scripts} ${scripts%/*}/bin ${lscripts}; do
 	if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
 		PATH=${PATH}:${DIR}
