@@ -24,8 +24,9 @@ export LC_TIME=en_CA.UTF-8
 # Find the pid of the running process, if any
 PID=$(/usr/ucb/ps -xwww | nawk "/[j]ava.*${STACK}/ {print \$1}")
 
-START_SCRIPT=/cpg/cpo_apps/${DOMAIN}/${STACK}/bin/startWebLogic.sh
-STOP_SCRIPT=/cpg/cpo_apps/${DOMAIN}/${STACK}/bin/stopWebLogic.sh
+DOMAIN_HOME=/cpg/cpo_apps/${DOMAIN}/${STACK}
+START_SCRIPT=${DOMAIN_HOME}/bin/startWebLogic.sh
+STOP_SCRIPT=${DOMAIN_HOME}/bin/stopWebLogic.sh
 LOG_DIR=/cpg/cpo_var/${DOMAIN}/${STACK}/servers/runtime
 LOG_FILE=${LOG_DIR}/AdminServer_nohup.out
 
@@ -54,6 +55,7 @@ doStart() {
 
 doStop() {
 	if [[ -n ${PID} ]]; then
+		cd ${DOMAIN_HOME}
 		${STOP_SCRIPT}
 		waitPid 90
 		kill -0 ${PID} 2>/dev/null && kill -TERM ${PID}
