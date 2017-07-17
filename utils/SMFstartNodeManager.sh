@@ -59,10 +59,14 @@ appid=`/usr/bin/echo $username | /usr/bin/cut -c4-5`
 stack=a${appnum}${appstack}${appid}
 
 # Handle stop option
-if [ "${1}" == stop ]; then
-	PID=`ps -fu ${username} | awk '/java.*[-]client/ {print $2}'`
-	echo Running process\(es\): ${PID} for ${username}
-	[ -n "${PID}" ] && kill ${PID}
+PID=`ps -fu ${username} | awk '/java.*[-]client/ {print $2}'`
+if [ -n "${PID}" ]; then
+	if [ "${1}" == stop ]; then
+		echo Killing process\(es\): ${PID} for ${username}
+		kill ${PID}
+	else
+		echo Already running process\(es\): ${PID} for ${username}
+	fi
 	exit ${SMF_EXIT_OK}
 fi
 
