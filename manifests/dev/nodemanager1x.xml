@@ -28,7 +28,7 @@
 	<exec_method
 		type='method'
 		name='start'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh start'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh'
 		timeout_seconds='10' >
 	</exec_method>
 
