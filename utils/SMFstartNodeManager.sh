@@ -64,10 +64,16 @@ if [ -n "${PID}" ]; then
 	if [ "${1}" == stop ]; then
 		echo Killing process\(es\): ${PID} for ${username}
 		kill ${PID}
+		exit ${SMF_EXIT_OK}
 	else
 		echo Already running process\(es\): ${PID} for ${username}
+		exit ${SMF_EXIT_ERR_NOSMF}
 	fi
-	exit ${SMF_EXIT_OK}
+else
+	if [ "${1}" == stop ]; then
+		echo No processes:${PID} for ${username}
+		exit ${SMF_EXIT_OK}
+	fi
 fi
 
 
