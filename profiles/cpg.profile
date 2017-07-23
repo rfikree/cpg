@@ -105,7 +105,7 @@ case $LOB in
 		WL_DIR=wlserver_10.3
 		;;
 	6)  PROJECT_NAME=PULSE
-		MW_DIR=fmw6${STACK_NUM}
+		MW_DIR=fmw${STACK_NUM}
 		WL_DIR=wlserver_10.3
 		;;
 	*)  ;;
