@@ -27,7 +27,7 @@
 	<exec_method
 		type='method'
 		name='start'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh'
+		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh start'
 		timeout_seconds='15' >
 	</exec_method>
 
