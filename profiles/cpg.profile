@@ -320,7 +320,7 @@ if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
 fi
 
 # Make wget work with HTTPS connections
-alias wget='\wget --ca-directory=/cpg/3rdParty/security/ca'
+alias wget='\wget --ca-directory=/cpg/3rdParty/security/ca_dir'
 
 # Fix timezones for some databases - Temporary ??
 alias java='java -Doracle.jdbc.timezoneAsRegion=false'
