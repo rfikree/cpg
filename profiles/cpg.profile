@@ -15,7 +15,7 @@ fi
 
 #================================================
 # Gobal Variables
-#================================================
+#================================================                                                                             
 INSTALL_DIR=/cpg/3rdParty/installs
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 PROJECT_NAME=USER
@@ -320,7 +320,7 @@ if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
 fi
 
 # Make wget work with HTTPS connections
-alias wget='\wget --no-check-certificate'
+alias wget='\wget --ca-directory=/cpg/3rdParty/security/ca'
 
 # Fix timezones for some databases - Temporary ??
 alias java='java -Doracle.jdbc.timezoneAsRegion=false'
