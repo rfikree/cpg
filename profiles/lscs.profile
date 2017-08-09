@@ -7,7 +7,7 @@ if [[ $0 =~ bash ]]; then
 	echo
 	echo '------------------------------------------------------------'
 	echo '                   Welcome to CPG Server'
-	echo "       Global lscl.profile (rev: ${VERSION}) for ${LOGNAME} ..."
+	echo "       Global lscs.profile (rev: ${VERSION}) for ${LOGNAME} ..."
 	echo '------------------------------------------------------------'
 	echo
 fi
