@@ -60,7 +60,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev51' enabled='false'>
+	<instance name='dev51' enabled='true'>
 		<method_context>
 			<method_credential user='dev51' group='devapps' />
 		</method_context>

@@ -193,7 +193,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='stg50d1' enabled='false'>
+	<instance name='stg51d1' enabled='true'>
 		<method_context>
 			<method_credential user='stg51' group='stgapps' />
 		</method_context>

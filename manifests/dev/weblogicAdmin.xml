@@ -216,7 +216,7 @@
 		</method_context>
 	</instance>
 
-	<instance name='dev51d1' enabled='false'>
+	<instance name='dev51d1' enabled='true'>
 		<method_context>
 			<method_credential user='dev51' group='devapps' />
 		</method_context>
