@@ -143,7 +143,7 @@ def genStats(timeData):
 	#print( 'genStats', sortedData )
 	minTime = sortedData[0]
 	maxTime = sortedData[-1]
-	if (count % 2 == 0):
+	if (count % 2 == 0) or count == 1:
 		median = sortedData[count/2]
 	else:
 		median = (sortedData[count/2] + sortedData[count/2 + 1]) / 2
