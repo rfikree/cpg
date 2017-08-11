@@ -43,7 +43,7 @@ def openLogFile(fileName):
 		return open(fileName, 'r')
 
 
-def parseLog(fileName, data, contents):
+def parseLog(fileName, data, contents, regex):
 	''' parse a named access log file updating
 		statistics dictionary "data" is updated for each row
 	'''
@@ -205,7 +205,7 @@ def main():
 
 	data = {}
 	for fileName in args:
-		data = parseLog(fileName, data, urlContents)
+		data = parseLog(fileName, data, urlContents, regex)
 		if outputSet:
 			print ('Parsed:', fileName, len(data), file=output)
 		print ('Parsed:', fileName, len(data))
