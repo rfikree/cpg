@@ -175,8 +175,8 @@ def main():
 	urlContents = None
 
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'c:o:h:t:',
-			['help', 'contents=' 'output=', 'hits=', 'time='])
+		opts, args = getopt.getopt(sys.argv[1:], 'c:h:o:r:t:',
+			['help', 'contents=', 'hits=', 'output=', 'regex=', 'time='])
 
 		for opt, arg in opts:
 			if opt in ('-c', '--contents'):
