@@ -16,14 +16,16 @@ Options:
 	--hits (-h) <hits> : Min hits to report line (default 100)
 	--time (-t) <seconds>:  Report all URL patterns with a hit over this time.
 	--contents (-c) <urlSubstring>: Report only URLs containing string
+	--regex (-r) <regex>: Report only if URL matches regex
 
 Output includes
   - count: number of hits for the specified pattern
   - mean response time with standard devation
-  - response times (min, avg, 90%, and max)
+  - response times (10%, avg, 90%, and 95%)
   - the pattern the preceeding statistics apply to
 
 '''
+#  - response times (min, avg, 90%, and max)
 
 from __future__ import print_function
 import sys
@@ -57,6 +59,8 @@ def parseLog(fileName, data, contents):
 			(ip, aDate, aTime, method, status, bytes,
 				timeTaken, uri, userAgent) = fields
 			if contents is not None and contents not in uri:
+				continue
+			if regex is not None and not regex.search(uri):
 				continue
 			key = parseURI(uri)
 			timeTaken = float(timeTaken)
@@ -147,10 +151,11 @@ def genStats(timeData):
 	p10 = sortedData[count/10]
 	p90 = sortedData[-count/10]
 	p95 = sortedData[-count/20]
+	p99 = sortedData[-count/100]
 	
 	return (count, mean, stdDev, minTime, p5, p10, median, p90, p95, maxTime)
 
-def usage(exitStatus=0):
+def usage(exitStatus=1):
 	''' Simple usage function using __doc__ for log form data
 	'''
 	print('\nUsage:', sys.argv[0].split('/')[-1], '[options] file...')
@@ -165,6 +170,7 @@ def main():
 	hits = 100;
 	output = sys.stdout
 	outputSet = False
+	regex = None
 	rptTime = None
 	urlContents = None
 
@@ -180,6 +186,8 @@ def main():
 			elif opt in ('-o', '--output'):
 				output = open(arg, 'w')
 				outputSet = True
+			elif opt in ('-r', '--regex'):
+				regex = re.compile(arg)
 			elif opt in ('-t', '--time'):
 				rptTime = float(arg)
 			elif opt in ('--help'):
