@@ -60,17 +60,31 @@ stack=a${appnum}${appstack}${appid}
 
 # Handle stop option
 PID=`ps -fu ${username} | awk '/java.*[-]client/ {print $2}'`
+
+waitPid() {
+	if [[ -n ${PID} ]]; then
+		time=0
+		while [[ ${time} -lt ${1:-10} ]]; do
+			sleep 1
+			kill -0 ${PID} 2>/dev/null || break
+			time=$(( time + 1 ))
+		done
+	fi
+}
+
 if [ -n "${PID}" ]; then
-	if [ "${1}" == stop ]; then
+	if [ "${1}" == stop -o "${1}" == restart ]; then
 		echo Killing process\(es\): ${PID} for ${username}
 		kill ${PID}
+		waitPid 20
+		kill -0 ${PID} 2>/dev/null && exit ${SMF_EXIT_ERR_FATAL}
 		exit ${SMF_EXIT_OK}
 	else
 		echo Already running process\(es\): ${PID} for ${username}
 		exit ${SMF_EXIT_ERR_NOSMF}
 	fi
 else
-	if [ "${1}" == stop ]; then
+	if [ "${1}" == stop -o "${1}" == restart ]; then
 		echo No processes:${PID} for ${username}
 		exit ${SMF_EXIT_OK}
 	fi

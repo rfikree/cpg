@@ -35,14 +35,14 @@
 		type='method'
 		name='start'
 		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent_cpodeploy/bin/EPACtrl.sh start'
-		timeout_seconds='15' >
+		timeout_seconds='300' >
 	</exec_method>
 
 	<exec_method
 		type='method'
 		name='stop'
 		exec='/cpg/3rdParty/installs/introscope/9.7.1.0/epagent_cpodeploy/bin/EPACtrl.sh stop'
-		timeout_seconds='10' >
+		timeout_seconds='30' >
 	</exec_method>
 
    <!-- default service model of 'contract' -->

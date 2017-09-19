@@ -36,7 +36,7 @@
 		type='method'
 		name='stop'
 		exec='/cpg/3rdParty/scripts/cpg/utils/SMFstartNodeManager.sh stop'
-		timeout_seconds='5' >
+		timeout_seconds='10' >
 	</exec_method>
 
 	<property_group name='startd' type='framework'>
