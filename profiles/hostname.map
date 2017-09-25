@@ -48,20 +48,23 @@ s-00875-c5a,prd-cpodeploy
 s-00886-c5a,prd-wladm
 
 s-00881-c5a,prd-a-uicpo
+s-00879-c5a,prd-d-uicpo
 s-00880-c5a,prd-a-blcpo
-s-00879-c5a,prd-a-bdt
+#s-00879-c5a,prd-a-bdt
 s-00887-c5a,prd-a-ws
 s-00882-c5a,prd-a-appadm
 
 s-00885-c5a,prd-b-uicpo
+s-00883-c5a,prd-e-uicpo
 s-00884-c5a,prd-b-blcpo
-s-00883-c5a,prd-b-bdt
+#s-00883-c5a,prd-b-bdt
 s-00888-c5a,prd-b-ws
 s-00892-c5a,prd-b-appadm
 
 s-00878-c5a,prd-c-uicpo
+s-00876-c5a,prd-f-uicpo
 s-00877-c5a,prd-c-blcpo
-s-00876-c5a,prd-c-bdt
+#s-00876-c5a,prd-c-bdt
 s-00889-c5a,prd-c-ws
 
 s-01222-c5a,prd-a-soaz0
