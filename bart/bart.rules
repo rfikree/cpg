@@ -1,0 +1,25 @@
+## Cuddletech Standard BART Rules 
+##      benr@cuddletech.com - 06/24/09
+#
+# Attributes: acl, all, contents, dest, devnode, dirmtime, 
+#              gid, lnmtime, mode, mtime, size, type, uid
+
+
+## GLOBAL:  These parameters apply to all other checks 
+##		unless otherwise overridden.
+CHECK all
+IGNORE dirmtime
+
+
+## Local Checks:  Specify directory structure to check followed 
+## 	          by applicable CHECK/IGNORE's, or accept the GLOBAL above.
+/etc
+
+/usr 
+
+/lib
+
+/sbin
+
+/kernel
+
