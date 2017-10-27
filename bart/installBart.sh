@@ -74,4 +74,10 @@ if [ -f ${INSTALL_BASE}/bin/bartlog ]; then
 fi
 
 
+# Do initial run if required
+if [ ! -f $BART_MANIFESTS/bart.manifest.0 ]; then
+	${INSTALL_BASE}/sbin/bartlog &
+fi
+
+
 # EOF
