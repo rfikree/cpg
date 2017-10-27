@@ -13,7 +13,7 @@ import time
 def usage():
 	print "tcpping.py - Minimal TCP ping client"
 	print
-	print "Pings a host over TCP and report result"
+	print "Pings a host over TCP and reports the result"
 	print
 	print "Options:"
 	print "    --help (-h) - print this message and exit"
