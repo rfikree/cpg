@@ -19,7 +19,7 @@ def usage():
 	print "    --help (-h) - print this message and exit"
 	print "    --address (-a) - host address to  ping (default localhost)"
 	print "    --port (-p) - port to ping (default 7/echo"
-	print "    --once (-o) - exit after firt ping"
+	print "    --once (-o) - exit after first ping"
 	print
 
 def timeDiff(start):
