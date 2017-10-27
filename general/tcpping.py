@@ -2,7 +2,7 @@
 # (c) December 2007 Thomas Guettler http://www.thomas-guettler.de
 # tcptraceroute.py
 # This script is in the public domain
-
+import getopt                  
 import os
 import re
 import sys
@@ -11,25 +11,21 @@ import socket
 import time
 
 def usage():
-	print '''Usage: %s host [port]
-Tries to connect to host at the specified TCP port with a timeout of 5 seconds.
-If the port is not specifed it defaults to 7 (TCP echo).
-''' % os.path.basename(sys.argv[0])
+	print "tcpping.py - Minimal TCP ping client"
+	print
+	print "Pings a host over TCP and report result"
+	print
+	print "Options:"
+	print "    --help (-h) - print this message and exit"
+	print "    --address (-a) - host address to  ping (default localhost)"
+	print "    --port (-p) - port to ping (default 7/echo"
+	print "    --once (-o) - exit after firt ping"
+	print
 
 def timeDiff(start):
 	return time.time() - start
 
-def main():
-	if not 1 < len(sys.argv) < 4:
-		usage()
-		sys.exit(1)
-
-	host = sys.argv[1]
-	if len(sys.argv) <= 2:
-		port = '7'
-	else:
-		port = sys.argv[2]
-	port_int = None
+def ping(address='localhost', port='7', once=False):
 	try:
 		port_int=int(port)
 	except ValueError:
@@ -47,12 +43,13 @@ def main():
 			sys.exit(1)
 	port=port_int
 
-	while True:
+	running = True
+	while running:
 		s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.settimeout(5)
 		try:
 			start = time.time()
-			s.connect((host, port))
+			s.connect((address, port))
 			print '%2.6f - Connected' % (timeDiff(start))
 		except (socket.error, socket.timeout), err:
 			print '%2.6f - %s' % (timeDiff(start), err)
@@ -62,9 +59,38 @@ def main():
 			break
 		finally:
 			s.close()
-		time.sleep(1)
+		time.sleep(1)                                                      
+		if once:
+			running = False
 
+def main():
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "hoa:p:",
+					["help", "once", "address=", "port="])
+	except getopt.GetoptError, err:
+		# print help information and exit:
+		print str(err) # will print something like "option -a not recognized"
+		usage()
+		sys.exit(2)
+		
+	address='localhost'
+	port='7'
+	once=False
+		
+	for o, a in opts:
+		if o in ("-h", "--help"):
+			usage()
+			sys.exit()
+		elif o in ("-a", "--address"):
+			address = a
+		elif o in ("-p", "--port"):
+			port = int(a)
+		elif o in ("-o", "--once"):
+			once = True
+		else:
+			assert False, "unhandled option"
 
+	ping(address, port, once)
 
 if __name__=='__main__':
 	main()
