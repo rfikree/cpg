@@ -1,9 +1,11 @@
 #!/usr/bin/bash
 
+
 INSTALL_BASE=/usr/local
 SOURCE_BASE=/cpg/3rdParty/scripts/cpg/bart
 BART_MANIFESTS=/var/tmp
 
+PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
 export CPG_HOSTNAME=${CPG_HOSTNAME##*,}
@@ -19,18 +21,13 @@ updateChanged() {
 		echo Installing: ${2}
 		cp ${3} ${1} ${2}
 		return 0
-	elif ! diff -q ${1} ${2} >/dev/null; then
+	elif ! diff ${1} ${2} &>/dev/null; then
 		echo Updating: ${2}
 		cp ${2}{,.$(date +%Y%m%dT%H%M)}
 		cp ${3} ${1} ${2}
 		return 0
 	fi
 	return 1
-}
-
-
-# Function to update or install files only if missing or changed
-installFiles() {
 }
 
 
@@ -64,8 +61,9 @@ esac
 
 
 # Install the files
-updateChanged ${SOURCE_BASE}/${1} ${INSTALL_BASE}/etc/bart.rules
-updateChanged ${SOURCE_BASE}/${1} ${INSTALL_BASE}/sbin/bartlog
+updateChanged ${SOURCE_BASE}/${rules_file} ${INSTALL_BASE}/etc/bart.rules
+updateChanged ${SOURCE_BASE}/bartlog ${INSTALL_BASE}/sbin/bartlog
+updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 
 
 # Remove script from bin if found

@@ -13,10 +13,12 @@
 #                       temporarily disable logging. 
 
 
-SYSLOG_PRIORITY=audit.err
-BART_RULES=/usr/local/etc/bart.rules
+BART_MAIL=/usr/local/sbin/bartMail.py
 BART_MANIFESTS=/var/tmp
-BART_DIFFS=/tmp/bartdiffs.$$
+BART_RULES=/usr/local/etc/bart.rules
+SYSLOG_PRIORITY=audit.err
+
+BART_DIFFS=/tmp/bartdiff_$(date +%Y%m%dT%H%M)_$(hostname).log
 
 #
 # Exit if BART isn't installed.
@@ -59,9 +61,9 @@ fi
 if [ -f $BART_MANIFESTS/bart.manifest.0 ]; then
         /usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
 else
+        echo "Creating initial manifest."
         /usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
-        echo "Created manifest... exit time."
-        #/bin/logger -p $SYSLOG_PRIORITY "bartlog: Creating Initial Manifest"
+        /bin/logger -p $SYSLOG_PRIORITY "bartlog: Created initial bart manifest"
         exit
 fi
 
@@ -72,11 +74,13 @@ fi
 
 /usr/bin/bart compare -r $BART_RULES -p $BART_MANIFESTS/bart.manifest.0 \
 	      $BART_MANIFESTS/bart.manifest.1 &> ${BART_DIFFS}
+
 if [ -s ${BART_DIFFS} ]; then
-	cat ${BART_DIFFS} | mailx -s "$(hostname) bart validation - changes" \
-				  -r root@$(logname) \
-			      -c olc_techteam@innovapost.ca \
-			       Eric.Maheux@innovapost.com
+	${BART_MAIL} -S smtprelay-na.cpggpc.ca -f ${BART_DIFFS} \
+		-s "$(hostname) bart validation - changes" \
+		-F $(logname)@$(hostname).cpggpc.ca \
+		-t Eric.Maheux@innovapost.com \
+		-c olc_techteam@innovapost.com  || exit -1
 fi
 
 #(IFS=$(echo -en "\n\b")
