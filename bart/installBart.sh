@@ -66,8 +66,8 @@ updateChanged ${SOURCE_BASE}/bartlog ${INSTALL_BASE}/sbin/bartlog
 updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 
 updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner
-if updateChanged ${SOURCE_BASE}/bart_runner,xml /var/svc/manifest/sites/bart_runner,xml; then
-	svccfg import /var/svc/manifest/sites/bart_runner,xml
+if updateChanged ${SOURCE_BASE}/bart_runner.xml /var/svc/manifest/sites/bart_runner.xml; then
+	svccfg import /var/svc/manifest/sites/bart_runner.xml
 	svdadm refresh bart_runner
 fi
 
