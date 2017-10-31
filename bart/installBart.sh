@@ -65,10 +65,10 @@ updateChanged ${SOURCE_BASE}/${rules_file} ${INSTALL_BASE}/etc/bart.rules
 updateChanged ${SOURCE_BASE}/bartlog ${INSTALL_BASE}/sbin/bartlog
 updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 
-
-# Remove script from bin if found
-if [ -f ${INSTALL_BASE}/bin/bartlog ]; then
-	rm ${INSTALL_BASE}/bin/bartlog
+updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner
+if updateChanged ${SOURCE_BASE}/bart_runner,xml /var/svc/manifest/sites/bart_runner,xml; then
+	svccfg import /var/svc/manifest/sites/bart_runner,xml
+	svdadm refresh bart_runner
 fi
 
 

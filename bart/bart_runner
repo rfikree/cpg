@@ -1,0 +1,23 @@
+#!/usr/bin/bash
+#
+# bart_runner:	bill.thorsteinson@innovapost.com (10/31/17)
+# -------------------------------------------
+# BART wrapper to be run instead of using cron
+#   Intended to be run by SMF.
+#
+# Modified 10/31/17: Initial version. 
+
+# Specify hour as value from 1 to 12.  Runs twice daily during specified hour
+RUN_HOUR=6
+
+BARTLOG=/usr/local/sbin/bartlog
+
+# Loop forever waiting most of an hour between run attempts
+while sleep 3550; do 
+	if [[ ${RUN_HOUR} -eq $(date +%l) ]]; then
+		${BART_LOG}
+		sleep 60  # Skip to next hour
+	fi
+done
+
+# EOF

@@ -1,0 +1,55 @@
+	<?xml version='1.0'?>
+	<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+	
+	<service_bundle type="manifest" name="bart_runner">
+	  <service name="site/bart_runner" type="service" version="1">
+	  
+		<create_default_instance enabled="true"/>
+		<single_instance/>
+	  
+		<dependency name="multi-user" grouping="require_all" 
+					restart_on="error" type="service">
+		  <service_fmri value="svc:/milestone/multi-user:default"/>
+		</dependency>
+	  
+		<method_context>
+		  <method_credential user="root"/>
+		</method_context>
+	  
+		<exec_method type="method" name="start" exec="/usr/local/sbin/bart_runner" 
+					 timeout_seconds="30"></exec_method>
+	  
+		<exec_method type="method" name="stop" exec=":true" 
+					 timeout_seconds="10"></exec_method>
+	
+		<!-- default service model is 'contract' which monitors service processes
+			 use 'transient' if service does not run continuously, or 
+			 child if the servicd does not detach
+		-->
+		<property_group name="startd" type="framework">
+		  <propval name="duration" type="astring" value="child"/>
+		</property_group>
+	
+		<!-- Both action_authorization and value_authorization are needed
+			 to allow the framework general/enabled property to be changed
+			 when performing action (enable, disable, etc) on the service.
+			 This allows granting control access to users.
+		- ->
+		<property_group name="general" type="framework">
+		  <propval name="value_authorization" type="astring" 
+				   value="solaris.smf.value.bart_runner"/>
+		  <propval name="action_authorization" type="astring" 
+				   value="solaris.smf.manage.bart_runner"/>
+		</property_group>
+		<!- - -->
+	  
+		<stability value="Evolving" />
+	  
+		<template>
+		  <common_name>
+			<loctext xml:lang="C">Script to run bartlog periodically</loctext>
+		  </common_name>
+		</template>
+	
+	  </service>
+	</service_bundle>
