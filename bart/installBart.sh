@@ -23,7 +23,8 @@ updateChanged() {
 		return 0
 	elif ! diff ${1} ${2} &>/dev/null; then
 		echo Updating: ${2}
-		cp ${2}{,.$(date +%Y%m%dT%H%M)}
+		#cp ${2}{,.$(date +%Y%m%dT%H%M)}
+		rm -f ${2}.${date +%Y}*
 		cp ${3} ${1} ${2}
 		return 0
 	fi
@@ -68,7 +69,7 @@ updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner
 if updateChanged ${SOURCE_BASE}/bart_runner.xml /var/svc/manifest/site/bart_runner.xml; then
 	svccfg import /var/svc/manifest/site/bart_runner.xml
-	svdadm refresh bart_runner
+	svcadm refresh bart_runner
 fi
 
 

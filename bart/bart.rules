@@ -13,13 +13,23 @@ IGNORE dirmtime
 
 ## Local Checks:  Specify directory structure to check followed 
 ## 	          by applicable CHECK/IGNORE's, or accept the GLOBAL above.
+
 /etc
-
-/usr 
-
-/lib
-
-/sbin
-
 /kernel
+/lib
+/opt
+/platform
+/sbin
+/usr
 
+CHECK
+
+## Local Exclusions - These files and directories will be ignored
+
+/opt/nimsoft niscache/ tmp/ pids/ *.db *.log cdm.data logmon.dta
+/opt/nsr  logs/ nsrladb/ run/ tmp/
+/opt/CA/CCAAgent/tmp/
+
+/usr/local/var/
+
+IGNORE all

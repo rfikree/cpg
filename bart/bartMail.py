@@ -45,9 +45,9 @@ def sendFile(outer, path):
             ctype = 'application/octet-stream'
         maintype, subtype = ctype.split('/', 1)
         if maintype == 'text':
-            fp = open(path)
-            # Note: we should handle calculating the charset
-            msg = MIMEText(fp.read(), _subtype=subtype, _charset='UTF-8')
+            fp = open(path, 'rU')	# Ensure Unix line endings
+            # Convert to DOS line endings and use default characterset 
+            msg = MIMEText(fp.read().replace('\n', '\r\n'), _subtype=subtype)
             fp.close()
         elif maintype == 'image':
             fp = open(path, 'rb')
