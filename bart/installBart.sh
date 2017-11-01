@@ -24,7 +24,7 @@ updateChanged() {
 	elif ! diff ${1} ${2} &>/dev/null; then
 		echo Updating: ${2}
 		#cp ${2}{,.$(date +%Y%m%dT%H%M)}
-		rm -f ${2}.${date +%Y}*
+		rm -f ${2}.$(date +%Y)*
 		cp ${3} ${1} ${2}
 		return 0
 	fi
