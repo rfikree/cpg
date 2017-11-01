@@ -14,6 +14,7 @@ IGNORE dirmtime
 ## Local Checks:  Specify directory structure to check followed 
 ## 	          by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
+/dev
 /etc
 /kernel
 /lib
@@ -26,8 +27,14 @@ CHECK
 
 ## Local Exclusions - These files and directories will be ignored
 
+/dev/fd/
+/dev/pts/
+/dev/null
+/dev/tty
+/dev/xconsole
+
 /opt/nimsoft niscache/ tmp/ pids/ *.db *.log cdm.data logmon.dta
-/opt/nsr  logs/ nsrladb/ run/ tmp/
+/opt/nsr logs/ nsrladb/ run/ tmp/
 /opt/CA/CCAAgent/tmp/
 
 /usr/local/var/
