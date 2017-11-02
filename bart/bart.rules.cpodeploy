@@ -33,7 +33,7 @@ CHECK
 /dev/pts/
 /dev/null
 /dev/tty
-/dev/xconsole
+/dev/zconsole
 
 /etc/mnttab
 /etc/svc/repository.db
