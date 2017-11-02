@@ -1,17 +1,17 @@
-## Cuddletech Standard BART Rules 
+## Cuddletech Standard BART Rules
 ##      benr@cuddletech.com - 06/24/09
 #
-# Attributes: acl, all, contents, dest, devnode, dirmtime, 
+# Attributes: acl, all, contents, dest, devnode, dirmtime,
 #              gid, lnmtime, mode, mtime, size, type, uid
 
 
-## GLOBAL:  These parameters apply to all other checks 
+## GLOBAL:  These parameters apply to all other checks
 ##		unless otherwise overridden.
 CHECK all
 IGNORE dirmtime
 
 
-## Local Checks:  Specify directory structure to check followed 
+## Local Checks:  Specify directory structure to check followed
 ## 	          by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
 /dev
@@ -23,15 +23,20 @@ IGNORE dirmtime
 /sbin
 /usr
 
+/cpg/3rdParty
+
 CHECK
 
-## Local Exclusions 
+## Local Exclusions
 
 /dev/fd/
 /dev/pts/
 /dev/null
 /dev/tty
 /dev/xconsole
+
+/etc/mnttab
+/etc/svc/repository.db
 
 /opt/nimsoft niscache/ tmp/ pids/ *.db *.log cdm.data logmon.dta
 /opt/nsr logs/ nsrladb/ run/ tmp/
