@@ -3,14 +3,14 @@
 # bartlog:      benr@cuddletech.com (6/24/09)
 #               bill.thorsteinson@innovapost.com (10/23/17)
 # -------------------------------------------
-# BART wrapper to be run from cron and output 
+# BART wrapper to be run from cron and output
 #  changes to syslog.
 #
-# Modified 3/8/10: Report creation of initial manifest in-band (syslog), 
+# Modified 3/8/10: Report creation of initial manifest in-band (syslog),
 #                       this will warn us if someone has destroyed our manifest
 #                       to cover their tracks.
 # Modified 10/23/17: Upgrade bash syntax; protect IFS; Email results;
-#                       temporarily disable logging. 
+#                       temporarily disable logging.
 # Modified 10/23/17: Upgrades to bash syntax; reeable logging
 
 
@@ -24,16 +24,16 @@ BART_DIFFS=/tmp/bartdiff_$(date +%Y%m%dT%H%M)_$(hostname).log
 #
 # Exit if BART isn't installed.
 #
-if [ ! -x /usr/bin/bart ] 
+if [ ! -x /usr/bin/bart ]
 then
-        echo "BART not installed.  Please install SUNWbart."
-        exit
+		echo "BART not installed.  Please install SUNWbart."
+		exit
 fi
 
 #
 # Exit if logger isn't installed.
-# 
-if [ ! -x /usr/bin/logger ] 
+#
+if [ ! -x /usr/bin/logger ]
 then
 	echo "Logger not found.  It is part of SUNWcsu."
 	exit
@@ -45,21 +45,21 @@ fi
 #
 if [ ! -f $BART_RULES ]
 then
-        echo "$BART_RULES Not Found.  Exiting."
-        exit
+		echo "$BART_RULES Not Found.  Exiting."
+		exit
 fi
 
 #
-# If an initial manifest exists, create a new one for diff, 
+# If an initial manifest exists, create a new one for diff,
 #       otherwise, create the initial and exit.
 #
 if [ -f $BART_MANIFESTS/bart.manifest.0 ]; then
-        /usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
+		/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
 else
-        echo "Creating initial manifest."
-        /bin/logger -p $SYSLOG_PRIORITY "bartlog: Creating initial bart manifest"
-        /usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
-        exit
+		echo "Creating initial manifest."
+		/bin/logger -p $SYSLOG_PRIORITY "bartlog: Creating initial bart manifest"
+		/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
+		exit
 fi
 
 
@@ -69,29 +69,38 @@ fi
 
 /usr/bin/bart compare -r $BART_RULES -p $BART_MANIFESTS/bart.manifest.{0,1} &> ${BART_DIFFS}
 
-# Email the changes - use custom mail client
+#
+#  Process diffs file reporting changes if any.
+#
+
 if [ -s ${BART_DIFFS} ]; then
+	# Email the changes - use custom mail client
 	${BART_MAIL} -S smtprelay-na.cpggpc.ca -F 'Bart <no-reply@innovapost.ca>' \
 		-t Bill.Thorsteinson@innovapost.com \
 		-f ${BART_DIFFS} -s "$(hostname) bart validation - changes" || exit -1
 #		-t Eric.Maheux@innovapost.com \
 #		-c olc_techteam@innovapost.com \
+
+	# Log the changes line by line to syslog
+	(IFS=$(echo -en "\n\b")
+		for i in $(cat ${BART_DIFFS}); do
+			/bin/logger -p $SYSLOG_PRIORITY "BART Reports Change: $i"
+		done
+	)
+	#
+	# Finally, rotate for the next run
+	#
+	mv $BART_MANIFESTS/bart.manifest.{1,0}
+else
+	# Retain original to indicate last known change date
+	rm $BART_MANIFESTS/bart.manifest.1
 fi
 
-# Log the changes line by line to syslog
-(IFS=$(echo -en "\n\b")
-	for i in $(cat ${BART_DIFFS}); do 
-		/bin/logger -p $SYSLOG_PRIORITY "BART Reports Change: $i"
-	done
-)
+#
+# Cleanup by removing diffs file.
+#
 
 rm ${BART_DIFFS}
-
-
-#
-# Finally, rotate for the next run
-#
-/usr/bin/mv $BART_MANIFESTS/bart.manifest.{1,0}
 
 
 # EOF

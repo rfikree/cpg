@@ -12,51 +12,26 @@ IGNORE dirmtime
 
 
 ## Local Checks:  Specify directory structure to check followed
-## 	          by applicable CHECK/IGNORE's, or accept the GLOBAL above.
+##   by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
-/dev
-/etc
+/dev 	!fd/ !pts/ !/dev/*console !/dev/null !/dev/tty
+/etc	!/etc/mnttab !/etc/svc/repository.db
 /kernel
 /lib
-/opt
+/opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
+	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
+	!CA/CCAAgent/tmp/
 /platform
 /sbin
-/usr
+/usr	!local/var/
 
-/cpg/3rdParty
+# Broken down to simplify exclusions
+/cpg/3rdParty	!.etc/ !installs/ !scripts/
+/cpg/3rdParty/installs	!Oracle/ !instroscope/
+/cpg/3rdParty/installs/Oracle !logs/
+/cpg/3rdParty/installs/introscope !dependencymap/ !logs/ !offset/
+/cpg/3rdParty/scripts !.svn/!.svn/
 
 CHECK
 
-## Local Exclusions
-
-/dev/fd/
-/dev/pts/
-/dev/null
-/dev/tty
-/dev/zconsole
-
-/etc/mnttab
-/etc/svc/repository.db
-
-/opt/nimsoft/niscache/
-/opt/nimsoft/pids/
-/opt/nimsoft/probes/
-/opt/nimsoft/robot/
-/opt/nimsoft/tmp/
-
-/opt/nsr/dedup/
-/opt/nsr/logs/
-/opt/nsr/res/
-/opt/nsr/run/
-/opt/nsr/tmp/
-
-/opt/CA/CCAAgent/tmp/
-
-/usr/local/var/
-
-/cpg/3rdParty/.etc/
-/cpg/3rdParty/installs/Oracle logs/
-/cpg/3rdParty/installs/introscope dependencymap/ logs/ offset/
-/cpg/3rdParty/scripts !.svn/
-
-IGNORE all
+# EOF
