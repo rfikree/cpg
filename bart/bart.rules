@@ -21,9 +21,9 @@ IGNORE dirmtime
 /opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/tmp/
-/opt/nimsoft/plugins
-/opt/nimsoft/probes !*.dta
-/opt/nimsoft/robot 	!*.log
+/opt/nimsoft/plugins	!state
+/opt/nimsoft/probes	!*.dta
+/opt/nimsoft/robot	!*.log !*.rdb
 /platform
 /sbin
 /usr	!local/var/
