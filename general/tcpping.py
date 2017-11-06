@@ -66,9 +66,10 @@ def ping(address='localhost', interval=1, port=7, once=False, tls=False):
             break
         finally:
             s.close()
-        time.sleep(interval)
         if once:
             running = False
+            return
+        time.sleep(interval)
 
 def main():
     try:
@@ -105,12 +106,13 @@ def main():
         else:
             assert False, "unhandled option"
 
+    if tls:
+        print 'Using TLS for',
     if not once:
         print 'Pinging %s:%i every %i seconds' % (address, port, interval)
     else:
         print 'Pinging %s:%i' % (address, port)
-    if tls:
-        print 'Using TLS'
+
     ping(address, interval, port, once, tls)
 
 if __name__=='__main__':
