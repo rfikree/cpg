@@ -18,7 +18,7 @@ IGNORE dirmtime
 /etc	!/etc/mnttab !/etc/svc/repository.db
 /kernel
 /lib
-/opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ q!nimsoft/tmp/ \
+/opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/tmp/
 /opt/nimsoft/plugins	!state
