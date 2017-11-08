@@ -32,7 +32,7 @@ IGNORE dirmtime
 /cpg/3rdParty				!.etc/ !installs/ !scripts/
 /cpg/3rdParty/installs			!Oracle/ !introscope/
 /cpg/3rdParty/installs/Oracle		!logs/
-/cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/
+/cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/ !*.db !*.log
 /cpg/3rdParty/scripts 			!.svn/
 
 CHECK
