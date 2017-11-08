@@ -22,7 +22,7 @@ IGNORE dirmtime
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/tmp/
 /opt/nimsoft/plugins	!state
-/opt/nimsoft/probes	!*.dta *.db
+/opt/nimsoft/probes	!*.dta !*.db
 /opt/nimsoft/robot	!*.log !*.rdb
 /opt/nimsoft/system	!cdm.data
 /platform
