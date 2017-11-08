@@ -18,23 +18,25 @@ IGNORE dirmtime
 /etc	!/etc/mnttab !/etc/svc/repository.db
 /kernel
 /lib
-/opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
+/opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/system/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/tmp/
 /opt/nimsoft/plugins	!state
-/opt/nimsoft/probes	!*.dta
-/opt/nimsoft/robot 	!*.log !*.rdb
+/opt/nimsoft/probes	!*.dta *.db
+/opt/nimsoft/robot	!*.log !*.rdb
+/opt/nimsoft/system	!cdm.data
 /platform
 /sbin
-/usr	!local/var/
+/usr			!local/var/
 
 # Broken down to simplify exclusions
-/cpg/3rdParty	!.etc/ !installs/ !scripts/
-/cpg/3rdParty/installs	!Oracle/ !instroscope/
-/cpg/3rdParty/installs/Oracle !logs/
-/cpg/3rdParty/installs/introscope !dependencymap/ !logs/ !offset/
-/cpg/3rdParty/scripts !.svn/!.svn/
+/cpg/3rdParty				!.etc/ !installs/ !scripts/
+/cpg/3rdParty/installs			!Oracle/ !instroscope/
+/cpg/3rdParty/installs/Oracle		!logs/
+/cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/
+/cpg/3rdParty/scripts 			!.svn/
 
 CHECK
+
 
 # EOF
