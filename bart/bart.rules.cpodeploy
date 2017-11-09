@@ -15,18 +15,18 @@ IGNORE dirmtime
 ##   by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
 /dev 	!fd/ !pts/ !/dev/*console !/dev/null !/dev/tty
-/etc	!/etc/mnttab !/etc/svc/repository.db
+/etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data !cma.d/lpc.conf
 /kernel
 /lib
 /opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
-	!CA/CCAAgent/tmp/
+	!CA/CCAAgent/tmp/ !McAffee/cma/scratch/
 /opt/nimsoft/plugins	!state
-/opt/nimsoft/probes	!*.dta !*.db !cdm.data
+/opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log
 /opt/nimsoft/robot	!*.log !*.rdb
 /platform
 /sbin
-/usr			!local/var/
+/usr	!local/var/ !local/uvscan/*.dat
 
 # Broken down to simplify exclusions
 /cpg/3rdParty				!.etc/ !installs/ !scripts/
