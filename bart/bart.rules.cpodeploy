@@ -20,7 +20,7 @@ IGNORE dirmtime
 /lib
 /opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
-	!CA/CCAAgent/tmp/ !McAffee/cma/scratch/
+	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
 /opt/nimsoft/plugins	!state
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log
 /opt/nimsoft/robot	!*.log !*.rdb
@@ -31,8 +31,9 @@ IGNORE dirmtime
 # Broken down to simplify exclusions
 /cpg/3rdParty				!.etc/ !installs/ !scripts/
 /cpg/3rdParty/installs			!Oracle/ !introscope/
-/cpg/3rdParty/installs/Oracle		!logs/
-/cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/ !*.db !*.log
+/cpg/3rdParty/installs/Oracle		!logs
+/cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/ !.settings/ !*.db !*.log
+
 /cpg/3rdParty/scripts 			!.svn/
 
 CHECK

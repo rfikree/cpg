@@ -20,7 +20,7 @@ IGNORE dirmtime
 /lib
 /opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
-	!CA/CCAAgent/tmp/ !McAffee/cma/scratch/
+	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
 /opt/nimsoft/plugins	!state
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log
 /opt/nimsoft/robot	!*.log !*.rdb
