@@ -35,29 +35,29 @@ updateChanged() {
 # Define the rules file to apply; check for unsupported server
 rules_file=bart.rules
 case ${CPG_HOSTNAME:-''} in
-        *-appadm)
-                ;;
-        *-bdt)
-                ;;
-        *-blcpo)
-                 ;;
-        *-cpodeploy)
-        		rules_file=bart.rules.cpodeploy
-                ;;
-#        *-soaz0)
-#                ;;
-#        *-soaz1)
-#                ;;
-        *-uicpo)
-                ;;
-        *-wladm)
-                ;;
-        *-ws)
-                ;;
-        *)
-        		echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
-        		exit 99
-        		;;
+		*-appadm)
+				;;
+		*-bdt)
+				;;
+		*-blcpo)
+				 ;;
+		*-cpodeploy)
+				rules_file=bart.rules.cpodeploy
+				;;
+		X*-soaz0)
+				;;
+		X*-soaz1)
+				;;
+		*-uicpo)
+				;;
+		*-wladm)
+				;;
+		*-ws)
+				;;
+		*)
+				echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
+				exit 99
+				;;
 esac
 
 
@@ -66,7 +66,17 @@ updateChanged ${SOURCE_BASE}/${rules_file} ${INSTALL_BASE}/etc/bart.rules
 updateChanged ${SOURCE_BASE}/bartlog ${INSTALL_BASE}/sbin/bartlog
 updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 
-updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner
+if updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner; then
+	if [[ -f /var/svc/manifest/site/bart_runner.xml ]]; then
+		(
+		svcadm disable bart_runnner
+		sleep 15
+		svcadm enable bart_runner
+		sleep 2
+		svcs bart_runner
+		) & disown
+	fi
+fi
 if updateChanged ${SOURCE_BASE}/bart_runner.xml /var/svc/manifest/site/bart_runner.xml; then
 	svccfg import /var/svc/manifest/site/bart_runner.xml
 	svcadm refresh bart_runner

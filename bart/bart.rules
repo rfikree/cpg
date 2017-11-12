@@ -15,7 +15,8 @@ IGNORE dirmtime
 ##   by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
 /dev 	!fd/ !pts/ !/dev/*console !/dev/null !/dev/tty
-/etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data !cma.d/lpc.conf
+/etc	!/etc/mnttab !/etc/svc/repository.db \
+	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf !security/audit_data
 /kernel
 /lib
 /opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \

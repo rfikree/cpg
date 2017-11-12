@@ -1,25 +1,29 @@
 #!/usr/bin/bash
 #
-# bart_runner:	bill.thorsteinson@innovapost.com (10/31/17)
+# bart_runner:	bill.thorsteinson@innovapost.com (17/10/31)
 # -------------------------------------------
 # BART wrapper to be run instead of using cron
 #   Intended to be run by SMF.
 #
-# Modified 10/31/17: Initial version. 
-# Modified 11/01/17: Add visible bart string to sleep command; makes greping processes easier
+# Modified 17/10/31: Initial version.
+# Modified 17/11/01: Add visible bart string to sleep command; makes greping processes easier.
+# Modified 17/11/11: Run install script before log.
 
 # Specify hour as value from 1 to 12.  Runs twice daily during specified hour
 RUN_HOUR=6
 
+BART_INSTALLER=/cpg/3rdParty/scripts/cpg/bart/installBart.sh
 BART_LOG=/usr/local/sbin/bartlog
 
 # Loop forever waiting most of an hour between run attempts
-while true; do 
+while true; do
 	if [[ ${RUN_HOUR} -eq $(date +%l) ]]; then
+		[[ -f ${BART_INSTALLER} ]] && ${BART_INSTALLER}
 		${BART_LOG}
 	fi
 	# Wait most of an hour - needs to be long enough that bartlog does't run twice the same hour
 	sleep 3550 bart_runner
 done
+
 
 # EOF
