@@ -74,7 +74,7 @@ if updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner; th
 		svcadm enable bart_runner
 		sleep 2
 		svcs bart_runner
-		) & disown
+		) &
 	fi
 fi
 if updateChanged ${SOURCE_BASE}/bart_runner.xml /var/svc/manifest/site/bart_runner.xml; then
