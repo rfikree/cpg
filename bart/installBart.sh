@@ -69,7 +69,7 @@ updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 if updateChanged ${SOURCE_BASE}/bart_runner ${INSTALL_BASE}/sbin/bart_runner; then
 	if [[ -f /var/svc/manifest/site/bart_runner.xml ]]; then
 		(
-		svcadm disable bart_runnner
+		svcadm disable bart_runner
 		sleep 15
 		svcadm enable bart_runner
 		sleep 2
