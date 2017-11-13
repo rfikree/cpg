@@ -16,13 +16,13 @@ IGNORE dirmtime
 
 /dev 	!fd/ !pts/ !/dev/*console !/dev/null !/dev/tty
 /etc	!/etc/mnttab !/etc/svc/repository.db \
-	!CA/CCAAgent/runAgent.*	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
+	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
 	!security/audit_data
 /kernel
 /lib
 /opt	!nimsoft/niscache/ !nimsoft/p*/ !nimsoft/robot/ !nimsoft/tmp/ \
 	!nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
-	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
+	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
 /opt/nimsoft/plugins	!state
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log
 /opt/nimsoft/robot	!*.log !*.rdb
