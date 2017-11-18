@@ -17,7 +17,7 @@
 BART_MAIL=/usr/local/sbin/bartMail.py
 BART_MANIFESTS=/var/tmp
 BART_RULES=/usr/local/etc/bart.rules
-SYSLOG_PRIORITY=audit.err
+SYSLOG_PRIORITY=audit.warning
 
 BART_DIFFS=/tmp/bartdiff_$(date +%Y%m%dT%H%M)_$(hostname).log
 
@@ -76,10 +76,10 @@ fi
 if [ -s ${BART_DIFFS} ]; then
 	# Email the changes - use custom mail client
 	${BART_MAIL} -S smtprelay-na.cpggpc.ca -F 'Bart <no-reply@innovapost.ca>' \
+		-t security.operations@innovapost.com \
 		-t Bill.Thorsteinson@innovapost.com \
+		-c olc_techteam@innovapost.com \
 		-f ${BART_DIFFS} -s "$(hostname) bart validation - changes" || exit -1
-#		-t Eric.Maheux@innovapost.com \
-#		-c olc_techteam@innovapost.com \
 
 	# Log the changes line by line to syslog
 	(IFS=$(echo -en "\n\b")
