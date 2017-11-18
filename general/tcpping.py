@@ -12,9 +12,9 @@ import socket
 import time
 
 def usage():
-    print "tcpping.py - Minimal TCP ping client"
+    print "tcpping.py - Minimal TCP/UDP ping client"
     print
-    print "Pings a host over TCP and reports the result"
+    print "Pings a host over TCP or UDP and reports the result"
     print
     print "Options:"
     print "    --help (-h) - print this message and exit"
@@ -23,12 +23,16 @@ def usage():
     print "    --port (-p) - port to ping (default 7/echo"
     print "    --once (-o) - exit after first ping"
     print "    --tls (-t) - establish a TLS connection"
+    print "    --udp (-u) - establish a UDP connection (disables TLS)"
     print
+    print "UDP provides timing only, port may not have a listener"
+    print
+    sys.exit(2)
 
 def timeDiff(start):
     return time.time() - start
 
-def ping(address='localhost', interval=1, port=7, once=False, tls=False):
+def ping(address='localhost', interval=1, port=7, once=False, tls=False, udp=False):
     try:
         port_int=int(port)
     except ValueError:
@@ -46,10 +50,13 @@ def ping(address='localhost', interval=1, port=7, once=False, tls=False):
             sys.exit(1)
     port=port_int
 
-    running = True
+    sock_type = socket.SOCK_STREAM
+    if udp:
+        sock_type = socket.SOCK_DGRAM
+        tls = False
 
-    while running:
-        s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        s=socket.socket(socket.AF_INET, sock_type)
         s.settimeout(5)
         if tls:
             s = ssl.wrap_socket(s,
@@ -62,30 +69,32 @@ def ping(address='localhost', interval=1, port=7, once=False, tls=False):
             print '%2.6f - %s' % (timeDiff(start), err)
             pass
         except KeyboardInterrupt:
-            print 'KeyboardInterrupt'
+            print 'Keyboard interrupt: Exiting'
             break
         finally:
             s.close()
         if once:
-            running = False
-            return
+            break;
         time.sleep(interval)
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hoa:i:p:t",
-                    ["help", "once", "address=", "interval=", "port=", "tls"])
+        opts, args = getopt.getopt(sys.argv[1:], "hoa:i:p:tu",
+                    ["help", "once", "address=", "interval=", "port=", "tls", "udp"])
+        print opts, args
+        if args:
+            usage()
     except getopt.GetoptError, err:
         # print help information and exit:
         print str(err) # will print something like "option -a not recognized"
         usage()
-        sys.exit(2)
 
-    address='localhost'
-    interval=1
-    port=7
-    once=False
-    tls=False
+    address = 'localhost'
+    interval = 1
+    port = 7
+    once = False
+    tls = False
+    udp = False
 
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -103,6 +112,8 @@ def main():
             once = True
         elif o in ("-t", "--tls"):
             tls = True
+        elif o in ("-u", "--udp"):
+            udp = True
         else:
             assert False, "unhandled option"
 
@@ -113,7 +124,11 @@ def main():
     else:
         print 'Pinging %s:%i' % (address, port)
 
-    ping(address, interval, port, once, tls)
+    try:
+        ping(address, interval, port, once, tls, udp)
+    except KeyboardInterrupt:
+        print 'Keyboard interrupt: Exiting'
+
 
 if __name__=='__main__':
     main()
