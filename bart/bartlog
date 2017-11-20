@@ -17,7 +17,7 @@
 BART_MAIL=/usr/local/sbin/bartMail.py
 BART_MANIFESTS=/var/tmp
 BART_RULES=/usr/local/etc/bart.rules
-SYSLOG_PRIORITY=audit.warning
+SYSLOG_PRIORITY=audit.info
 
 BART_DIFFS=/tmp/bartdiff_$(date +%Y%m%dT%H%M)_$(hostname).log
 
@@ -26,8 +26,8 @@ BART_DIFFS=/tmp/bartdiff_$(date +%Y%m%dT%H%M)_$(hostname).log
 #
 if [ ! -x /usr/bin/bart ]
 then
-		echo "BART not installed.  Please install SUNWbart."
-		exit
+	echo "BART not installed.  Please install SUNWbart."
+	exit
 fi
 
 #
@@ -45,8 +45,8 @@ fi
 #
 if [ ! -f $BART_RULES ]
 then
-		echo "$BART_RULES Not Found.  Exiting."
-		exit
+	echo "$BART_RULES Not Found.  Exiting."
+	exit
 fi
 
 #
@@ -54,12 +54,12 @@ fi
 #       otherwise, create the initial and exit.
 #
 if [ -f $BART_MANIFESTS/bart.manifest.0 ]; then
-		/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
+	/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
 else
-		echo "Creating initial manifest."
-		/bin/logger -p $SYSLOG_PRIORITY "bartlog: Creating initial bart manifest"
-		/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
-		exit
+	echo "Creating initial manifest."
+	/bin/logger -id=bart-$$ -p $SYSLOG_PRIORITY "bartlog: Creating initial bart manifest"
+	/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
+	exit
 fi
 
 
@@ -83,9 +83,9 @@ if [ -s ${BART_DIFFS} ]; then
 
 	# Log the changes line by line to syslog
 	(IFS=$(echo -en "\n\b")
-		for i in $(cat ${BART_DIFFS}); do
-			/bin/logger -p $SYSLOG_PRIORITY "BART Reports Change: $i"
-		done
+	for i in $(cat ${BART_DIFFS}); do
+		/bin/logger -p $SYSLOG_PRIORITY "BART Reports Change: $i"
+	done
 	)
 	#
 	# Finally, rotate for the next run
