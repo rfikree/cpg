@@ -81,7 +81,6 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hoa:i:p:tu",
                     ["help", "once", "address=", "interval=", "port=", "tls", "udp"])
-        print opts, args
         if args:
             usage()
     except getopt.GetoptError, err:
