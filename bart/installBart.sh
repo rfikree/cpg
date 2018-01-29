@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-
+# Install bart onto the system from the CPG scripts directory - OLC servers only
 
 INSTALL_BASE=/usr/local
 SOURCE_BASE=/cpg/3rdParty/scripts/cpg/bart
@@ -35,29 +35,31 @@ updateChanged() {
 # Define the rules file to apply; check for unsupported server
 rules_file=bart.rules
 case ${CPG_HOSTNAME:-''} in
-		*-appadm)
-				;;
-		*-bdt)
-				;;
-		*-blcpo)
-				 ;;
-		*-cpodeploy)
-				rules_file=bart.rules.cpodeploy
-				;;
-		X*-soaz0)
-				;;
-		X*-soaz1)
-				;;
-		*-uicpo)
-				;;
-		*-wladm)
-				;;
-		*-ws)
-				;;
-		*)
-				echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
-				exit 99
-				;;
+	*-appadm)
+		;;
+	*-bdt)
+		;;
+	*-blcpo)
+		 ;;
+	*-cpodeploy)
+		rules_file=bart.rules.cpodeploy
+		;;
+	*-soaz0)
+		rules_file=bart.rules.full
+		;;
+	*-soaz1)
+		rules_file=bart.rules.full
+		;;
+	*-uicpo)
+		;;
+	*-wladm)
+		;;
+	*-ws)
+		;;
+	*)
+		echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
+		exit 99
+		;;
 esac
 
 
@@ -83,4 +85,4 @@ if [ ! -f $BART_MANIFESTS/bart.manifest.0 ]; then
 fi
 
 
-# EOF
+# EOF	:indentSize=4:tabSize=4:noTabs=false:mode=bash:
