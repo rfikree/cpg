@@ -12,13 +12,13 @@ CHECK all
 IGNORE dirmtime
 
 
-## Local Checks: Specify directory structure to check followed
+## Directory Checks: Specify directory structure to check followed
 ##   by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
 ## Standard hierarchy - exclude dynamic files or directories
 ##   - recursion does not cross file system type boundaries
 
-# First level only; lower levels added back below
+# First level only; add lower levels below
 /       !*/* !*/*/
 
 /boot
@@ -35,10 +35,10 @@ IGNORE dirmtime
 /kernel
 /lib
 
-## /opt - Exclude directories with dynamic content, add back related static content
+# /opt - Exclude directories with dynamic content, add back related static content
 /opt	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
-/opt/nimsoft/		!niscache/ !pids/ !probes/ !robot/ !tmp/ !state
+/opt/nimsoft		!niscache/ !pids/ !probes/ !robot/ !tmp/ !state
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log
 /opt/nimsoft/robot	!*.log !*.rdb
 
@@ -51,8 +51,8 @@ IGNORE dirmtime
 /usr	!local/var/ !local/uvscan/*.dat \
 	!local/mcafee/solidcore/passwd !local/mcafee/solidcore/run/evt_cache
 
-# Second level only, including files.
-/var    ![0-uw-zV]*/* !*/*/
+# Second level only, including files
+/var    !*/*/ !*/*/*
 
 
 ## /cpg/3rdParty - like /opt but NFS mounted; checked only on one server
