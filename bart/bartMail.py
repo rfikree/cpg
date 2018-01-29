@@ -179,7 +179,7 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
         for filename in opts.files:
             add_file(outer, filename)
 
-     # Now send or store the message
+    # Now send or store the message
     composed = outer.as_string()
     if opts.output:
         fp = open(opts.output, 'w')
