@@ -2,28 +2,28 @@
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
 <service_bundle type="manifest" name="bart_runner">
-  <service name="site/bart_runner" type="service" version="1">
-  
+    <service name="site/bart_runner" type="service" version="1">
+
 	<create_default_instance enabled="true"/>
 	<single_instance/>
-  
-	<dependency name="multi-user" grouping="require_all" 
+
+	<dependency name="multi-user" grouping="require_all"
 				restart_on="error" type="service">
 	  <service_fmri value="svc:/milestone/multi-user:default"/>
 	</dependency>
-  
+
 	<method_context>
 	  <method_credential user="root"/>
 	</method_context>
-  
-	<exec_method type="method" name="start" exec="/usr/local/sbin/bart_runner" 
+
+	<exec_method type="method" name="start" exec="/usr/local/sbin/bart_runner"
 				 timeout_seconds="30"></exec_method>
-  
-	<exec_method type="method" name="stop" exec=":kill" 
+
+	<exec_method type="method" name="stop" exec=":kill"
 				 timeout_seconds="10"></exec_method>
 
 	<!-- default service model is 'contract' which monitors service processes
-		 use 'transient' if service does not run continuously, or 
+		 use 'transient' if service does not run continuously, or
 		 'child' if the servicd does not detach
 	-->
 	<property_group name="startd" type="framework">
@@ -31,12 +31,12 @@
 	</property_group>
 
 	<stability value="Evolving" />
-  
+
 	<template>
 	  <common_name>
 		<loctext xml:lang="C">Script to run bartlog periodically</loctext>
 	  </common_name>
 	</template>
 
-  </service>
+    </service>
 </service_bundle>
