@@ -12,7 +12,7 @@
 # Modified 10/23/17: Upgrade bash syntax; protect IFS; Email results;
 #                       temporarily disable logging.
 # Modified 10/23/17: Upgrades to bash syntax; reeable logging
-
+# Modified 12/15/17: Fix logger calls and use -f option to log diff details.
 
 BART_MAIL=/usr/local/sbin/bartMail.py
 BART_MANIFESTS=/var/tmp
@@ -39,7 +39,6 @@ then
 	exit
 fi
 
-
 #
 # Check for rules:
 #
@@ -57,11 +56,10 @@ if [ -f $BART_MANIFESTS/bart.manifest.0 ]; then
 	/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
 else
 	echo "Creating initial manifest."
-	/bin/logger -id=bart-$$ -p $SYSLOG_PRIORITY "bartlog: Creating initial bart manifest"
+	/bin/logger -i -p $SYSLOG_PRIORITY -t bartlog "Creating initial bart manifest"
 	/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
-	exit
+	exit $?
 fi
-
 
 #
 # Compare "control" (.0) manifest against new "test" (.1) manifest and log the changes
@@ -74,6 +72,9 @@ fi
 #
 
 if [ -s ${BART_DIFFS} ]; then
+	# Log the changes to syslog (line by line)
+	/bin/logger -i -p $SYSLOG_PRIORITY -t bartlog -f ${BART_DIFFS}
+
 	# Email the changes - use custom mail client
 	${BART_MAIL} -S smtprelay-na.cpggpc.ca -F 'Bart <no-reply@innovapost.ca>' \
 		-t security.operations@innovapost.com \
@@ -81,15 +82,7 @@ if [ -s ${BART_DIFFS} ]; then
 		-c olc_techteam@innovapost.com \
 		-f ${BART_DIFFS} -s "$(hostname) bart validation - changes" || exit -1
 
-	# Log the changes line by line to syslog
-	(IFS=$(echo -en "\n\b")
-	for i in $(cat ${BART_DIFFS}); do
-		/bin/logger -p $SYSLOG_PRIORITY "BART Reports Change: $i"
-	done
-	)
-	#
 	# Finally, rotate for the next run
-	#
 	mv $BART_MANIFESTS/bart.manifest.{1,0}
 else
 	# Retain original to indicate last known change date
@@ -102,5 +95,4 @@ fi
 
 rm ${BART_DIFFS}
 
-
-# EOF
+# EOF	:indentSize=4:tabSize=4:noTabs=false:mode=bash:
