@@ -12,7 +12,6 @@ from optparse import OptionParser
 from optparse import OptionGroup
 
 from email import encoders
-#from email.message import Message
 from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
@@ -20,6 +19,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 COMMASPACE = ', '
+SMTPUSER='donotreply_FLEX-delivery@md.canadapost.ca'
+SMTPPASS='Welcome@878'
 
 def add_directory(outer, directory):
     '''Add the files in a directory to the message without recursion'''
@@ -67,12 +68,13 @@ def add_file(outer, path):
         fp.close()
         # Encode the payload using Base64
         encoders.encode_base64(msg)
+
     # Set the filename parameter
     msg.add_header('Content-Disposition', 'attachment', filename=filename)
     outer.attach(msg)
 
 def main():
-    ''' Parse the arguements and send a message.
+    ''' Parse the arguments and send a message.
         This is an enhanced replacement for mailx in send mode.
     '''
     parser = OptionParser(usage="""\
@@ -168,6 +170,9 @@ must be running an SMTP server.
         fp.close()
     else:
         smtp = smtplib.SMTP(opts.server)
+        if SMTPUSER:
+                smtp.starttls()
+                smtp.login(SMTPUSER, SMTPPASS)
         smtp.sendmail(opts.sender, opts.recipients, composed)
         smtp.quit()
 
