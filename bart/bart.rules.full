@@ -1,0 +1,93 @@
+## SysteMajik Standard BART Rules
+##      bill@systemajik.com - 2017-11-22
+## Derived from Cuddletech Standard BART Rules <benr@cuddletech.com>
+#
+# Attributes: acl, all, contents, dest, devnode, dirmtime,
+#              gid, lnmtime, mode, mtime, size, type, uid
+
+
+## GLOBAL:  These parameters apply to all other checks
+##		unless otherwise overridden.
+CHECK all
+IGNORE dirmtime
+
+
+## Directory Checks: Specify directory structure to check followed
+##   by applicable CHECK/IGNORE's, or accept the GLOBAL above.
+
+## Standard hierarchy - exclude dynamic files or directories
+##   - recursion does not cross file system type boundaries
+
+# First level only; add lower levels below
+/       !*/* !*/*/
+
+/boot
+/cpg
+
+# Exclude volatile configuration files
+/etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data \
+	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
+	!mcafee/solidcore/solidcore.conf
+
+# Home directories are likely to change
+/export !home/*/
+
+/kernel
+/lib
+
+# /opt - Exclude directories with dynamic content, add back related static content
+/opt	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
+	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
+/opt/nimsoft		!niscache/ !pids/ !probes/ !robot/ !tmp/ !state
+/opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log
+/opt/nimsoft/robot	!*.log !*.rdb
+
+/packages
+/platform
+/sbin
+
+# /usr/local has a var tree; exclude virus definitions (should be in local/var)
+#   mcaffee solidcore also has some variable data
+/usr	!local/var/ !local/uvscan/*.dat \
+	!local/mcafee/solidcore/passwd !local/mcafee/solidcore/run/evt_cache
+
+# Second level only, including files
+/var    !*/*/ !*/*/*
+
+/vol
+
+CHECK
+
+
+# Ignore size change for directories that change size somewhat frequently
+# tmp and home directories
+
+/		!home/*/ !tmp/*/ !tmp/* ![.0-gi-su-zHT]*/
+/export		!home/*/
+/var		!tmp/* !tmp/*/ !tomcat* !tomcat*/ ![.0-su-zT]*/
+
+IGNORE dirmtime size
+
+
+# Resources that get touched relatively frequently
+
+# Exclude volatile devices
+/dev	!fd/ !pts/
+
+/etc	.java/.systemPrefs .syslog_door cma.conf coreadm.conf \
+	smc/smcserver.config syslog.pid zones/index
+
+/opt/nimsoft/robot		robot.cfg robot_env.sds
+/opt/nimsoft/probes/system/cdm	cdm.cfg
+
+IGNORE dirmtime lnmtime mtime
+
+
+# Resources that should be totally ignored - avoid adding additional files to manifest
+
+/       .bash_history !home/*/.bash_history
+
+IGNORE all
+
+
+# EOF	:indentSize=8:tabSize=8:noTabs=false:mode=properties:
