@@ -85,6 +85,8 @@ Usage: %prog [options]
 Unless the -o option is given, the email is sent by forwarding to your local
 SMTP server, which then does the normal delivery process.  Your local machine
 must be running an SMTP server.
+
+You can specify a remote SMTP server with optional USER and PASSWORD for authentication
 """)
     parser.add_option('-F', '--from',
                       type='string', action='store', metavar='FROM',
@@ -101,6 +103,9 @@ must be running an SMTP server.
     parser.add_option('-s', '--subject',
                       type='string', action='store', metavar='SUBJECT',
                       help='Optional  subject for this message')
+    parser.add_option('-v', '--verbose',
+                      action='store_true', dest='verbose', default=False,
+                      help='Provide verbose diagnostics.')
 
     group = OptionGroup(parser, "Content Options - at least one required")
     group.add_option('-d', '--directory',
@@ -124,6 +129,18 @@ must be running an SMTP server.
                      type='string', action='store', metavar='SERVER',
                      default='localhost',
                      help='The server to send the message to')
+    group.add_option('-a', '--anonymous',
+                     action='store_true', metavar='ANON',
+                     default=False,
+                     help='Server connection is anonymous')
+    group.add_option('-u', '--user',
+                     type='string', action='store', metavar='USER',
+                     default=SMTPUSER,
+                     help='Server connection user')
+    group.add_option('-p', '--password',
+                     type='string', action='store', metavar='PASSWD',
+                     default=SMTPPASS,
+                     help='Server connection password')
     group.add_option('-o', '--output',
                      type='string', action='store', metavar='FILE',
                      help="""Print the composed message to FILE instead of
@@ -169,8 +186,9 @@ must be running an SMTP server.
         fp.write(composed)
         fp.close()
     else:
-        smtp = smtplib.SMTP(opts.server)
-        if SMTPUSER:
+        smtp = smtplib.SMTP(opts.server, timeout=60)
+        smtp.set_debuglevel(opts.verbose)
+        if opts.user and opts.password and not opts.anonymous:
                 smtp.starttls()
                 smtp.login(SMTPUSER, SMTPPASS)
         smtp.sendmail(opts.sender, opts.recipients, composed)
