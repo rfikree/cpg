@@ -23,18 +23,16 @@ IGNORE dirmtime
 # First level only; add lower levels below
 /       !*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst
 
+/.ssh
 /boot
 /cpg
 
 # Exclude volatile configuration files
 /etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data \
-	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
 	!.java/.systemPrefs !.syslog_door !cma.conf !coreadm.conf \
 	!smc/smcserver.config !syslog.pid !zones/index \
+	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
 	!mcafee/solidcore/solidcore.conf
-
-# Home directories are likely to change
-/export !home/*/
 
 /kernel
 /lib
@@ -42,7 +40,7 @@ IGNORE dirmtime
 # /opt - Exclude directories with dynamic content, add back related static content
 /opt	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
-/opt/nimsoft		!niscache/ !pids/ !tmp/ !state !probes/ !*robot/
+/opt/nimsoft		!niscache/ !pids/ !state !tmp/ !probes/ !robot/
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log !system/cdm/cdm.cfg
 /opt/nimsoft/robot	!*.log !*.rdb !robot.cfg !robot_env.sds
 
@@ -71,7 +69,6 @@ CHECK
 /export		!home/*/
 /var		tmp/ !tmp/* !tmp/*/
 
-
 IGNORE dirmtime size
 
 
@@ -93,14 +90,6 @@ IGNORE dirmtime size
 /opt/nimsoft/robot		robot_env.sds
 
 IGNORE dirmtime lnmtime mtime
-
-
-# Resources that should be totally ignored - avoid adding additional files to manifest
-
-#/       .bash_history !home/*/.bash_history
-#/       .lesshst !home/*/.lesshst
-
-#IGNORE all
 
 
 # EOF	:indentSize=8:tabSize=8:noTabs=false:mode=properties:
