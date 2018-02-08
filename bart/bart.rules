@@ -26,11 +26,10 @@ IGNORE dirmtime
 
 # Exclude volatile configuration files
 /etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data \
+	!.java/.systemPrefs !.syslog_door !cma.conf !coreadm.conf \
+	!smc/smcserver.config !syslog.pid !zones/index \
 	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
 	!mcafee/solidcore/solidcore.conf
-
-# Home directories are likely to change
-/export !home/*/
 
 /kernel
 /lib
@@ -69,7 +68,7 @@ IGNORE dirmtime size
 
 # Resources that get touched relatively frequently
 
-# Exclude volatile devices
+# Exclude volatile directories
 /dev	!fd/ !pts/
 
 /etc	.java/.systemPrefs .syslog_door cma.conf coreadm.conf \
@@ -79,13 +78,6 @@ IGNORE dirmtime size
 /opt/nimsoft/probes/system/cdm	cdm.cfg
 
 IGNORE dirmtime lnmtime mtime
-
-
-# Resources that should be totally ignored - avoid adding additional files to manifest
-
-/       .bash_history !home/*/.bash_history
-
-IGNORE all
 
 
 # EOF	:indentSize=8:tabSize=8:noTabs=false:mode=properties:

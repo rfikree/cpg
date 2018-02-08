@@ -16,6 +16,7 @@ from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
+from email.mime.nonmultipart import MIMENonMultipart
 from email.mime.text import MIMEText
 
 COMMASPACE = ', '
@@ -88,7 +89,7 @@ must be running an SMTP server.
 
 You can specify a remote SMTP server with optional USER and PASSWORD for authentication
 """)
-    parser.add_option('-F', '--from',
+    parser.add_option('-f', '--from',
                       type='string', action='store', metavar='FROM',
                       dest='sender',
                       help='The value of the From: header (required)')
@@ -108,20 +109,24 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
                       help='Provide verbose diagnostics.')
 
     group = OptionGroup(parser, "Content Options - at least one required")
-    group.add_option('-d', '--directory',
+    group.add_option('-D', '--directory',
                      type='string', action='store', metavar='DIRECTORY',
                      default=None, dest='directory',
                      help="""Mail the contents of the specified directory,
                      otherwise don't use a directory.  Only the regular
                      files in the directory are sent, and we don't recurse to
                      subdirectories.""")
-    group.add_option('-f', '--file',
+    group.add_option('-F', '--file',
                      type='string', action='append', metavar='FILEPATH',
                      default=[], dest='files',
                      help="""Mail the contents of the specified file,
                      otherwise use the directory.  Only the regular
                      files in the directory are sent, and we don't recurse to
                      subdirectories.""")
+    group.add_option('-T', '--text',
+                     type='string', action='store', metavar='TEXTFILE',
+                     default=None, dest='text',
+                     help="Mail the contents as the mail text")
     parser.add_option_group(group)
 
     group = OptionGroup(parser, "Delivery Options - optional")
@@ -129,19 +134,19 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
                      type='string', action='store', metavar='SERVER',
                      default='localhost',
                      help='The server to send the message to')
-    group.add_option('-a', '--anonymous',
+    group.add_option('-A', '--anonymous',
                      action='store_true', metavar='ANON',
                      default=False,
                      help='Server connection is anonymous')
-    group.add_option('-u', '--user',
+    group.add_option('-U', '--user',
                      type='string', action='store', metavar='USER',
                      default=SMTPUSER,
                      help='Server connection user')
-    group.add_option('-p', '--password',
+    group.add_option('-P', '--password',
                      type='string', action='store', metavar='PASSWD',
                      default=SMTPPASS,
                      help='Server connection password')
-    group.add_option('-o', '--output',
+    group.add_option('-O', '--output',
                      type='string', action='store', metavar='FILE',
                      help="""Print the composed message to FILE instead of
                      sending the message to the SMTP server.""")
@@ -151,15 +156,16 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
     if not opts.sender or not opts.recipients:
         parser.print_help()
         sys.exit(1)
-    if not opts.directory and not opts.files:
-        parser.print_help()
-        sys.exit(1)
     if args:
         parser.print_help()
         sys.exit(1)
 
     # Create the enclosing (outer) message
+    #if opts.directory or opts.files:
     outer = MIMEMultipart()
+    #else:
+        #if not opts.text:
+        #outer = MIMENonMultipart('text/rfc822', {})
     outer['From'] = opts.sender
     outer['To'] = COMMASPACE.join(opts.recipients)
     if opts.cc_recipients:
@@ -168,6 +174,17 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
     if opts.subject:
         outer['Subject'] = opts.subject
     outer.preamble = 'This message is intended for a MIME-aware mail reader.\n'
+
+    if not opts.directory and not opts.files and not opts.text:
+        print "Enter text - end with EOF (^D):"
+        msg = MIMEText(sys.stdin.read())
+        outer.attach(msg)
+
+    if opts.text:
+        #print opts.text
+        with open (opts.text, "r") as fp:
+            msg = MIMEText(fp.read().replace('\n', '\r\n'))
+        outer.attach(msg)
 
     if opts.directory:
         add_directory(outer, opts.directory)
@@ -197,3 +214,5 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
 
 if __name__ == '__main__':
     main()
+
+# EOF   :indentSize=4:tabSize=4:noTabs=true:mode=python:

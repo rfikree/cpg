@@ -9,6 +9,7 @@
 # Modified 17/11/01: Add visible bart string to sleep command; makes greping processes easier.
 # Modified 17/11/11: Run install script before log.
 # Modified 17/11/12: Adjust time to first 10 minutes of the hour when sleeping.
+# Modified 18/02/07: Sleep an hour immediately after a run. Avoid back to back runs.
 
 # Specify hour as value from 1 to 12.  Runs twice daily during specified hour
 RUN_HOUR=6
@@ -21,6 +22,7 @@ while true; do
 	if [[ ${RUN_HOUR} -eq $(date +%l) ]]; then
 		[[ -f ${BART_INSTALLER} ]] && ${BART_INSTALLER}
 		${BART_LOG}
+		sleep 3600 bart_runner post-run
 	fi
 	# Wait most of an hour - Adjust time to first 10 minutes of the hour
 	sleep $(( 3600 - $(date +%M) / 10 * 600 )) bart_runner
