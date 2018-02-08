@@ -25,7 +25,6 @@ IGNORE dirmtime
 
 /.ssh
 /boot
-/cpg
 
 # Exclude volatile configuration files
 /etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data \
