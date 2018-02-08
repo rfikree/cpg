@@ -1,9 +1,8 @@
 #! dev15.crontab
 
 # Compress (and delete) log files
-20  1 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3 35
-20  7 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3
-20 19 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3
+20  1   * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3 35
+20 7,19 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3
 
 # Reload crontab Monday evening
 20 23 * * 1  crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.crontab
