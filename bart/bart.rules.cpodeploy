@@ -58,9 +58,7 @@ IGNORE dirmtime
 
 ## /cpg/3rdParty - like /opt but NFS mounted; checked only on one server
 
-/cpg/3rdParty				!.etc/ !installs/ !scripts/
-/cpg/3rdParty/installs			!Oracle/ !introscope/
-/cpg/3rdParty/installs/Oracle		!logs/
+/cpg/3rdParty				!.etc/ !downloads/ !installs/ !scripts/
 /cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/ !.settings/ !*.db !*.log
 /cpg/3rdParty/scripts 			!.svn/
 

@@ -76,11 +76,13 @@ if [ -s ${BART_DIFFS} ]; then
 	/bin/logger -i -p $SYSLOG_PRIORITY -t bartlog -f ${BART_DIFFS}
 
 	# Email the changes - use custom mail client
-	${BART_MAIL} -S smtprelay-na.cpggpc.ca -f 'Bart <no-reply@innovapost.ca>' \
+	${BART_MAIL} -f 'Bart <no-reply@innovapost.ca>' \
 		-t Bill.Thorsteinson@innovapost.com \
-		-T ${BART_DIFFS} -F ${BART_DIFFS} -s "$(hostname) bart validation - changes" || exit -1
-#		-t security.operations@innovapost.com \
-#		-c olc_techteam@innovapost.com \
+		-t security.operations@innovapost.com \
+		-c olc_techteam@innovapost.com \
+		-s "$(hostname) bart validation - changes" \
+		-T ${BART_DIFFS} \
+		-S smtprelay.cpggpc.ca || exit -1
 
 	# Finally, rotate for the next run
 	mv $BART_MANIFESTS/bart.manifest.{1,0}
