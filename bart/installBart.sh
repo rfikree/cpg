@@ -1,8 +1,8 @@
 #!/usr/bin/bash
-# Install bart onto the system from the CPG scripts directory - OLC servers only
+# Install bart onto the system from the script's directory
 
 INSTALL_BASE=/usr/local
-SOURCE_BASE=/cpg/3rdParty/scripts/cpg/bart
+SOURCE_BASE=$(dirname ${0})
 BART_MANIFESTS=/var/tmp
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
@@ -34,7 +34,7 @@ updateChanged() {
 
 # Define the rules file to apply; check for unsupported server
 rules_file=bart.rules
-case ${CPG_HOSTNAME:-''} in
+case ${CPG_HOSTNAME:-'unknown'} in
 	*-appadm)
 		;;
 	*-bdt)
@@ -55,6 +55,9 @@ case ${CPG_HOSTNAME:-''} in
 	*-wladm)
 		;;
 	*-ws)
+		;;
+	unknown)
+		rules_file=bart.rules.full
 		;;
 	*)
 		echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
