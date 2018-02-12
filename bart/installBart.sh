@@ -33,13 +33,16 @@ updateChanged() {
 
 
 # Define the rules file to apply; check for unsupported server
-rules_file=bart.rules
+rules_file=bart.rules.full
 case ${CPG_HOSTNAME:-'unknown'} in
 	*-appadm)
+		rules_file=bart.rules.local
 		;;
 	*-bdt)
+		rules_file=bart.rules.local
 		;;
 	*-blcpo)
+		rules_file=bart.rules.local
 		 ;;
 	*-cpodeploy)
 		rules_file=bart.rules.cpodeploy
@@ -51,10 +54,13 @@ case ${CPG_HOSTNAME:-'unknown'} in
 		rules_file=bart.rules.full
 		;;
 	*-uicpo)
+		rules_file=bart.rules.local
 		;;
 	*-wladm)
+		rules_file=bart.rules.local
 		;;
 	*-ws)
+		rules_file=bart.rules.local
 		;;
 	unknown)
 		rules_file=bart.rules.full

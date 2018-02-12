@@ -25,7 +25,6 @@ IGNORE dirmtime
 /       !*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst
 
 /.ssh
-/boot
 /cpg
 
 # Exclude volatile configuration files
