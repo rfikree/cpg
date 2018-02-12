@@ -13,12 +13,13 @@ IGNORE dirmtime
 
 
 ## Directory Checks: Specify directory structure to check followed
-##   by applicable CHECK/IGNORE's, or accept the GLOBAL above.
+##    by applicable CHECK/IGNORE's, or accept the GLOBAL above.
 
-## WARN: Avoid including files twice. They may get included twice if updated during the run.
+## WARN: Avoid including files twice. 
+##    They may get included twice if updated during the run.
 
 ## Standard hierarchy - exclude dynamic files or directories
-##   - recursion does not cross file system type boundaries
+##    recursion does not cross file system type boundaries
 
 # First level only; add lower levels below
 /       !*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst
@@ -28,9 +29,11 @@ IGNORE dirmtime
 /cpg
 
 # Exclude volatile configuration files
-/etc	!/etc/mnttab !/etc/svc/repository.db !security/audit_data \
-	!.java/.systemPrefs !.syslog_door !cma.conf !coreadm.conf \
-	!smc/smcserver.config !syslog.pid !zones/index \
+/etc	!devices/snapshot_cache !etc/mnttab \
+	!svc/repository.db !security/audit_data \
+	!.java/.systemPrefs/ !.syslog_door !acctadm.conf !cma.conf \
+	!coreadm.conf !mpxio/devid_path.cache !smc/smcserver.config \
+	!syslog.pid vx/ddl.support !zones/index \
 	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
 	!mcafee/solidcore/solidcore.conf
 
@@ -38,7 +41,8 @@ IGNORE dirmtime
 /lib
 
 # /opt - Exclude directories with dynamic content, add back related static content
-/opt	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
+/opt	!SUNWexplo/output/ !sun/n1gc/etc/diskinfo_auto.properties \
+	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
 	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
 /opt/nimsoft		!niscache/ !pids/ !state !tmp/ !probes/ !robot/
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log !system/cdm/cdm.cfg
@@ -50,7 +54,8 @@ IGNORE dirmtime
 
 # /usr/local has a var tree; exclude virus definitions (should be in local/var)
 #   mcaffee solidcore also has some variable data
-/usr	!local/var/ !local/uvscan/*.dat \
+/usr	!lib/rda/da/output/log/da_discovery.log !local/var/ \
+	!local/uvscan/*.dat \
 	!local/mcafee/solidcore/passwd !local/mcafee/solidcore/run/evt_cache
 
 # Second level only, including files
@@ -62,10 +67,10 @@ CHECK
 # Ignore size change for directories that change size somewhat frequently
 # tmp and home directories
 
-/		home/ !home/*/
-/		tmp/ !tmp/* !tmp/*/
-/export		!home/*/
-/var		tmp/ !tmp/* !tmp/*/
+/	home/ !home/*/
+/	tmp/ !tmp/* !tmp/*/
+/export	!home/*/
+/var	tmp/ !tmp/* !tmp/*/
 
 IGNORE dirmtime size
 
@@ -75,12 +80,15 @@ IGNORE dirmtime size
 # Exclude volatile devices
 /dev	!fd/ !pts/
 
-/etc	.java/.systemPrefs
+/etc	.java/.systemPrefs/
 /etc	.syslog_door
+/etc	acctadm.conf
 /etc	cma.conf
 /etc	coreadm.conf
+/etc	mpxio/devid_path.cache
 /etc	smc/smcserver.config
 /etc	syslog.pid
+/etc	vx/ddl.support
 /etc	zones/index
 
 /opt/nimsoft/probes/system/cdm	cdm.cfg
