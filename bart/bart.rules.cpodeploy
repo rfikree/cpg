@@ -33,7 +33,7 @@ IGNORE dirmtime
 	!svc/repository.db !security/audit_data \
 	!.java/.systemPrefs/ !.syslog_door !acctadm.conf !cma.conf \
 	!coreadm.conf !mpxio/devid_path.cache !smc/smcserver.config \
-	!syslog.pid vx/ddl.support !zones/index \
+	!syslog.pid !vx/ddl.support !zones/index \
 	!cma.d/CMNUPD__3000/config.xml !cma.d/lpc.conf \
 	!mcafee/solidcore/solidcore.conf
 
