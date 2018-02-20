@@ -66,7 +66,7 @@ find ${CPO_VAR}/${STACK}*/* -type f -mtime +${DELETE_DAYS} -name '*.zip' \
 
 
 # Cleanup http and compression logs
-[ -d find ${CPO_VAR}/httpcheck ] && \
+[ -d ${CPO_VAR}/httpcheck ] && \
 	find ${CPO_VAR}/httpcheck -type f -mtime +35 -print -exec rm {} \;
 find ${CPO_VAR}/cleanup_logs -type f -mtime +189 -print -exec rm {} \;
 
