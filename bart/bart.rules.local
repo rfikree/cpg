@@ -22,7 +22,7 @@ IGNORE dirmtime
 ##    recursion does not cross file system type boundaries
 
 # First level only; add lower levels below
-/       !*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst
+/       !/*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst
 
 /.ssh
 /cpg
