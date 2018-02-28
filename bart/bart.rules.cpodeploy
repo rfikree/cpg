@@ -26,7 +26,7 @@ IGNORE dirmtime
 
 /.ssh
 /boot
-/cpg
+/cpg	!ReportData/*
 
 # Exclude volatile configuration files
 /etc	!devices/snapshot_cache !etc/mnttab \
