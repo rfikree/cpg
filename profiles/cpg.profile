@@ -321,7 +321,7 @@ fi
 
 # Cleanup WSLT temp files 
 if [[ "${STACKUSER}" == 'true' ]]; then 
-	find /var/tmp -name wlst_module* -user ${LOGNAME} -mtime +7 \
+	find /var/tmp -name wlst_module* -user ${LOGNAME} -mtime +2 \
 		-exec rm {} + 2>/dev/null
 fi
 
