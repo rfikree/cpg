@@ -322,7 +322,7 @@ fi
 # Cleanup WSLT temp files 
 if [[ "${STACKUSER}" == 'true' ]]; then 
 	find /var/tmp -name wlst_module* -user ${LOGNAME} -mtime +7 \
-		-exec rm {} + 2>/dev/null &
+		-exec rm {} + 2>/dev/null
 fi
 
 # Make wget work with HTTPS connections
