@@ -319,15 +319,30 @@ if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
 	}
 fi
 
+# Cleanup WSLT temp files 
+if [[ "${STACKUSER}" != 'true' ]]; then 
+	find /var/tmp -name wlst_module* -user ${LOGNAME} -mtime +7 \
+		-exec rm {} +
+fi
+
 # Make wget work with HTTPS connections
 alias wget='\wget --ca-directory=/cpg/3rdParty/security/ca_dir'
 
 # Fix timezones for some databases - Temporary ??
 alias java='java -Doracle.jdbc.timezoneAsRegion=false'
 
-# Fix for WLST - Configure custom trust path.
+# Fix for WLST - Configure custom trust path; TLSv1
 export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
--Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks"
+-Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
+-Dweblogic.security.SSL.enableJSSE=true
+-Dweblogic.ssl.JSSEEnabled=true
+-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1
+-Dweblogic.security.allowCryptoJDefaultJCEVerification=true
+-Dweblogic.security.allowCryptoJDefaultPRNG=true
+-Dweblogic.security.SSL.ignoreHostnameVerification=true
+-Djdk.tls.client.protocols=TLSv1,TLSv1.1,TLSv1.2"
+#-Dsun.security.ssl.allowUnsafeRenegotiation=true
+#-Dsun.security.ssl.allowLegacyHelloMessages=true"
 
 
 #==================================================
