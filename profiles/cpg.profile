@@ -320,7 +320,7 @@ if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
 fi
 
 # Cleanup WSLT temp files 
-if [[ "${STACKUSER}" != 'true' ]]; then 
+if [[ "${STACKUSER}" == 'true' ]]; then 
 	find /var/tmp -name wlst_module* -user ${LOGNAME} -mtime +7 \
 		-exec rm {} +
 fi
