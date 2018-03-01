@@ -18,7 +18,7 @@ IGNORE dirmtime
 ## WARN: Avoid including files twice. 
 ##    They may get included twice if updated during the run.
 
-## Standard hierarchy - exclude dynamic files or directories
+## Standard8 hierarchy - exclude dynamic files or directories
 ##    recursion does not cross file system type boundaries
 
 # First level only; add lower levels below
@@ -26,7 +26,7 @@ IGNORE dirmtime
 
 /.ssh
 /boot
-/cpg	!ReportData/*
+/cpg	!ReportData/*/
 
 # Exclude volatile configuration files
 /etc	!devices/snapshot_cache !etc/mnttab \
