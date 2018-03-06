@@ -19,7 +19,14 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 	-Dweblogic.ThreadPoolSize=32
 	-Dweblogic.security.SSL.enableJSSE=true
 	-Dweblogic.security.allowCryptoJDefaultJCEVerification=true
-	-Dweblogic.security.allowCryptoJDefaultPRNG=true"
+	-Dweblogic.security.allowCryptoJDefaultPRNG=true
+	-Dweblogic.security.SSL.enableJSSE=true
+	-Dweblogic.ssl.JSSEEnabled=true
+	-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1
+	-Dweblogic.security.allowCryptoJDefaultJCEVerification=true
+	-Dweblogic.security.allowCryptoJDefaultPRNG=true
+	-Dweblogic.security.SSL.ignoreHostnameVerification=true
+	-Djdk.tls.client.protocols=TLSv1,TLSv1.1,TLSv1.2"
 
 # Determine the environment to run reports for
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
