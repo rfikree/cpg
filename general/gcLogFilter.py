@@ -97,4 +97,6 @@ if len(args) == 1:
 else:
     usage()
 
+## jedit	:tabSize=4:indentSize=4:noTabs=true:mode=python:
+# vim: ai ts=4 sts=4 et sw=4 ft=python
 # EOF

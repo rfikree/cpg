@@ -47,66 +47,71 @@ pageFooter = '''
 
 
 def genBody(server, port, artifacts):
-	'''	Generate the body portion for a single url
-		- a report may contain multiple bodies (tables)
-	'''
-	applications, libraries = artifacts
+    '''	Generate the body portion for a single url
+        - a report may contain multiple bodies (tables)
+    '''
+    applications, libraries = artifacts
 
-	content = applicationHeader % (server, port)
-	for artifact in applications:
-		content += tableRow % artifact
-	content += tableFooter
+    content = applicationHeader % (server, port)
+    for artifact in applications:
+        content += tableRow % artifact
+    content += tableFooter
 
-	if libraries:
-		content += libraryHeader
-		for artifact in libraries:
-			content += tableRow % artifact
-		content += tableFooter
+    if libraries:
+        content += libraryHeader
+        for artifact in libraries:
+            content += tableRow % artifact
+        content += tableFooter
 
-	return content
+    return content
 
 def genReport(reportid, reportComponents):
-	''' Generate a report with the specified report id
-		given a list of of url, artificats '''
-	report = pageHeader % (reportid, reportid)
+    ''' Generate a report with the specified report id
+        given a list of of url, artificats '''
+    report = pageHeader % (reportid, reportid)
 
-	for (adminurl, artifacts) in reportComponents:
-		(protocol, server, port) = adminurl.split(':')
-		server = server.lstrip('/')
-		body = genBody(server, port, artifacts)
-		report += body
+    for (adminurl, artifacts) in reportComponents:
+        (protocol, server, port) = adminurl.split(':')
+        server = server.lstrip('/')
+        body = genBody(server, port, artifacts)
+        report += body
 
-	now = time.localtime()
-	now = time.strftime('%Y-%m-%d %H:%M', now)
+    now = time.localtime()
+    now = time.strftime('%Y-%m-%d %H:%M', now)
 
-	report += pageFooter % (now,)
-	return report
+    report += pageFooter % (now,)
+    return report
 
 def _testReport():
-	if len(sys.argv) not in [2, 4]:
-		print
-		print 'usage: wlst.sh', sys.argv[0], 'adminurl'
-		print 'usage: wlst.sh', sys.argv[0], 'adminurl user password'
-		print
-		exit('', 1)
+    if len(sys.argv) not in [2, 4]:
+        print
+        print 'usage: wlst.sh', sys.argv[0], 'adminurl'
+        print 'usage: wlst.sh', sys.argv[0], 'adminurl user password'
+        print
+        exit('', 1)
 
-	adminurl = sys.argv[1]
+    adminurl = sys.argv[1]
 
-	if len(sys.argv) == 2:
-		#print adminurl
-		artifacts = getArtifacts(adminurl)
-	else:
-		user = sys.argv[2]
-		passwd = sys.argv[3]
-		#print adminurl, user, passwd
-		artifacts = getArtifacts(adminurl, user, passwd)
+    if len(sys.argv) == 2:
+        #print adminurl
+        artifacts = getArtifacts(adminurl)
+    else:
+        user = sys.argv[2]
+        passwd = sys.argv[3]
+        #print adminurl, user, passwd
+        artifacts = getArtifacts(adminurl, user, passwd)
 
-	if artifacts:
-		(protocol, server, port) = adminurl.split(':')
-		server = server.lstrip('/')
-		userid = server.split('-')[0] + port[:2]
-		print 'calling genReport'
-		print genReport(userid, [(adminurl, artifacts)])
+    if artifacts:
+        (protocol, server, port) = adminurl.split(':')
+        server = server.lstrip('/')
+        userid = server.split('-')[0] + port[:2]
+        print 'calling genReport'
+        print genReport(userid, [(adminurl, artifacts)])
 
 if __name__ == "main":
-	_testReport()
+    _testReport()
+
+
+# jedit	:tabSize=4:indentSize=4:noTabs=true:mode=python:
+# vim: ai ts=4 sts=4 et sw=4 ft=python
+# EOF

@@ -215,4 +215,6 @@ You can specify a remote SMTP server with optional USER and PASSWORD for authent
 if __name__ == '__main__':
     main()
 
-# EOF   :indentSize=4:tabSize=4:noTabs=true:mode=python:
+# jedit	:tabSize=4:indentSize=4:noTabs=true:mode=python:
+# vim: ai ts=4 sts=4 et sw=4 ft=python
+# EOF
