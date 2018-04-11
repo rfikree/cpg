@@ -59,7 +59,7 @@ def parseLog(fileName, data, contents, regex, format):
 
     divisor = 1
     if format == 1:
-        pattern = r'\s(?P<time>\d+\.\d+)\s[^/]*(?<=\s)(?P<path>/[^ \t?;]*)[ \t?;]'
+        pattern = r'\s(?P<time>\d+\.\d+)\s[^/]*?(?<=\s)(?P<path>/[^ \t?;]*)[ \t?;]'
     elif format == 2:
         pattern = r'\s(?P<path>/[^ \t?;]*)[ \t?;].*?\s(?P<time>\d+\.\d+)\s'
     elif format == 3:
