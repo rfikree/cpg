@@ -95,12 +95,12 @@ class SimpleHTMLValidator(HTMLParser):
             raise HTMLParseError('Extra closing tag "' + tag + '" used', self.getpos())
         while self.openTags:
             openTag = self.openTags.pop()
-            tagLoc = 'line {0[0]}, column {0[1]}'.format(self.tagLocs.pop())
+            tagLoc = self.tagLocs.pop()
             if tag == openTag or openTag not in closeOptionalTags:
                 break
         if tag != openTag:
-            raise HTMLParseError('"' + tag + '" tag closes "' + openTag +
-                '" tag (' + tagLoc + ')', self.getpos())
+            openMsg = '"{0}" (line {1[0]}, column {1[1]})'.format(openTag, tagLoc)
+            raise HTMLParseError('"' + tag + '" tag closes ' + openMsg, self.getpos())
 
     def handle_startendtag(self, tag, attrs):
         if tag not in singletonTags:
