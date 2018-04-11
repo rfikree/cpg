@@ -136,7 +136,7 @@ def reportData(data, output, hits, rptTime, limits):
         Data dictionary contains an array of hits for the key
     '''
     if limits:
-        hdr = ('Count', 'Mean', 'SDev', 'Min', 'Med', '95%', 'Max', 'Path Pattern'),
+        hdr = ('Count', 'Mean', 'SDev', 'Min', 'Med', '95%', 'Max', 'Path Pattern')
     else:
         hdr = ('Count', 'Mean', 'SDev', '10%', 'Med', '90%', '95%', 'Path Pattern')
     print ('%8s%7s%6s%7s%6s%6s%7s  %s' % hdr, file=output)
@@ -150,7 +150,7 @@ def reportData(data, output, hits, rptTime, limits):
             if limits:
                 cols = (count, mean, stdDev, minTime, median, p95, maxTime, key)
             else:
-                cols = (count, mean, stdDev, p10, median, p90, p95, key)
+                cols = (count, mean, stdDev, p10,     median, p90, p95,     key)
             print ('%8d%7.2f%6.2f%7.2f%6.2f%6.2f%7.2f  %s' % cols, file=output)
 
 def genStats(timeData):
