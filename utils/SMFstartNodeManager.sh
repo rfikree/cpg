@@ -172,13 +172,21 @@ case ${appid} in
 		export LC_CTYPE=en_CA.UTF-8
 		export LC_TIME=en_CA.UTF-8
 		#echo "The command to execute would be: $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
-		$script &> /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out &
+		$script &> /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out & disown
 		sleep 2
 		;;
 	*)
 		#echo "The command to execute would be: $script"
-		exec $script
+		$script & disown
 		;;
 esac
+
+# Wait for subprocess to exit - Allow wait to work
+PID=$!
+while true; do
+	sleep 60
+	kill -0 $PID || break
+done
+
 
 exit $SMF_EXIT_OK
