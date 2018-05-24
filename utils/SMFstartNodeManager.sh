@@ -94,7 +94,7 @@ fi
 ## Wait for file systems to be mounted - randomly 1 to 5 seconds
 #for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
 #	if [[ -d ${DIR} ]]; then
-#		while [[ ! -e ${DIR}/.mounted ]]; do 
+#		while [[ ! -e ${DIR}/.mounted ]]; do
 #			sleep $(( ${RANDOM} / 6554 + 1 ))
 #		done
 #	fi
@@ -104,27 +104,27 @@ fi
 # Determine the WL domain this host runs for the user and assign to domain variable
 
 case ${CPG_HOSTNAME:-''} in
-        *-appadm)
-                domain=d9
-                ;;
-        *-bdt)
-                domain=d1
-                ;;
-        *-blcpo)
-                domain=d2
-                ;;
-        *-soaz0)
-                domain=d1
-                ;;
-        *-soaz1)
-                domain=d1
-                ;;
-        *-uicpo)
-                domain=d1
-                ;;
-        *-ws)
-                domain=d1
-                ;;
+		*-appadm)
+				domain=d9
+				;;
+		*-bdt)
+				domain=d1
+				;;
+		*-blcpo)
+				domain=d2
+				;;
+		*-soaz0)
+				domain=d1
+				;;
+		*-soaz1)
+				domain=d1
+				;;
+		*-uicpo)
+				domain=d1
+				;;
+		*-ws)
+				domain=d1
+				;;
 esac
 
 
@@ -136,8 +136,8 @@ if [ -f ${PROPS_FILE} ]; then
 	if [[ -n ${beaPath} ]]; then
 		export WL_HOME=${beaPath}/wlserver_10.3
 	fi
-fi                                                      
-if [[ -n ${jdkPath} ]]; then 
+fi
+if [[ -n ${jdkPath} ]]; then
 	JAVA_HOME=${jdkPath}
 else	# Fallback to directory search
 	for JAVA_HOME in $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
@@ -177,7 +177,7 @@ case ${appid} in
 		;;
 	*)
 		#echo "The command to execute would be: $script"
-		$script
+		exec $script
 		;;
 esac
 
