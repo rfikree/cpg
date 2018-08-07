@@ -1,4 +1,4 @@
-# Development Servers
+# Solaris 10 Development Servers
 
 s-01317-c5f,dev-cpodeploy
 s-01316-c5f,dev-wladm
@@ -17,6 +17,17 @@ s-01961-c5f,dev-b-blcpo
 s-01959-c5f,dev-b-bdt
 s-01960-c5f,dev-b-ws
 s-01973-c5f,dev-b-appadm
+
+# Solaris 11/RHEL 7 Development Servers
+
+l-03380-c5f,l-dev-cpodeploy
+s-03055-c5f,s-dev-wladm
+
+s-03056-c5f,dev-c-uicpo
+s-03057-c5f,dev-a-blws
+
+s-03058-c5f,dev-d-uicpo
+s-03059-c5f,dev-b-blws
 
 
 # Staging Servers
@@ -41,6 +52,16 @@ s-01045-c5c,stg-b-soaz1
 s-01046-c5c,stg-a-soaz0
 s-01047-c5c,stg-b-soaz0
 
+# Solaris 11/RHEL 7 Staging Servers
+
+l-03381-c5f,l-stg-cpodeploy
+s-03060-c5f,s-stg-wladm
+
+s-03061-c5f,stg-c-uicpo
+s-03062-c5f,stg-a-blws
+
+s-03063-c5f,stg-d-uicpo
+s-03064-c5f,stg-b-blws
 
 # Production Servers
 
@@ -73,6 +94,20 @@ s-01223-c5a,prd-b-soaz0
 s-01221-c5a,prd-b-soaz1
 
 s-00890-c5a,prd-data-appmon
+
+# Solaris 11/RHEL 7 Production Servers
+
+l-03382-c5f,l-prd-cpodeploy
+s-03065-c5f,s-prd-wladm
+
+s-03066-c5f,prd-d-uicpo
+s-03067-c5f,prd-a-blws
+
+s-03068-c5f,prd-e-uicpo
+s-03069-c5f,prd-b-blws
+
+s-03070-c5f,prd-f-uicpo
+s-03071-c5f,prd-c-blws
 
 
 # Non CPO Servers
