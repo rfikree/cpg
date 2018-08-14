@@ -1,51 +1,54 @@
-# Solaris 10 Development Servers
+# On-Line Channel Server Mapping
+# Format: Hostname,OLC_Hostname[,IP Address[,Mgmt IP Address]]
+
+
+# Development Servers
 
 s-01317-c5f,dev-cpodeploy
+l-03380-c5f,l-dev-cpodeploy
 s-01316-c5f,dev-wladm
+s-03055-c5f,s-dev-wladm
 
 s-01042-c5c,dev-a-soaz0
 s-01043-c5c,dev-a-soaz1
 
-s-01957-c5f,dev-a-uicpo
+s-01957-c5f,dev-a-uicpo,10.237.135.87
 s-01956-c5f,dev-a-blcpo
-s-01954-c5f,dev-a-bdt
+s-03057-c5f,dev-a-blwscpo
 s-01955-c5f,dev-a-ws
 s-01958-c5f,dev-a-appadm
 
-s-01962-c5f,dev-b-uicpo
+s-01962-c5f,dev-b-uicpo,10.237.135.91
 s-01961-c5f,dev-b-blcpo
-s-01959-c5f,dev-b-bdt
 s-01960-c5f,dev-b-ws
+s-03059-c5f,dev-b-blwscpo
 s-01973-c5f,dev-b-appadm
 
-# Solaris 11/RHEL 7 Development Servers
-
-l-03380-c5f,l-dev-cpodeploy
-s-03055-c5f,s-dev-wladm
-
-s-03056-c5f,dev-c-uicpo
-s-03057-c5f,dev-a-blws
-
-s-03058-c5f,dev-d-uicpo
-s-03059-c5f,dev-b-blws
+s-03056-c5f,dev-c-uicpo,10.237.135.125
+s-03058-c5f,dev-d-uicpo,10.237.135.127
 
 
 # Staging Servers
 
-s-00724-c5f,stg-cpodeploy
+s-00724-c5f,stg-cpodeploy,
+l-03381-c5f,l-stg-cpodeploy
 s-00716-c5f,stg-wladm
+s-03060-c5f,s-stg-wladm
 
-s-00721-c5f,stg-a-uicpo
+s-00721-c5f,stg-a-uicpo,10.237.135.23
 s-00720-c5f,stg-a-blcpo
-s-00719-c5f,stg-a-bdt
 s-00722-c5f,stg-a-ws
+s-03062-c5f,stg-a-blwscpo
 s-00725-c5f,stg-a-appadm
 
-s-00718-c5f,stg-b-uicpo
+s-00718-c5f,stg-b-uicpo,10.237.135.21
 s-00717-c5f,stg-b-blcpo
-s-00715-c5f,stg-b-bdt
 s-00723-c5f,stg-b-ws
+s-03064-c5f,stg-b-blwscpo
 s-00726-c5f,stg-b-appadm
+
+s-03061-c5f,stg-c-uicpo,10.237.135.128
+s-03063-c5f,stg-d-uicpo,10.237.135.147
 
 s-01044-c5c,stg-a-soaz1
 s-01045-c5c,stg-b-soaz1
@@ -66,32 +69,35 @@ s-03064-c5f,stg-b-blws
 # Production Servers
 
 s-00875-c5a,prd-cpodeploy
+l-03882-c5a,l-prd-cpodeploy
 s-00886-c5a,prd-wladm
+s-03065-c5a,s-prd-wladm
 
-s-00881-c5a,prd-a-uicpo
-s-00879-c5a,prd-d-uicpo
+s-00881-c5a,prd-a-uicpo,10.229.84.101
 s-00880-c5a,prd-a-blcpo
-#s-00879-c5a,prd-a-bdt
 s-00887-c5a,prd-a-ws
+s-03067-c5a,prd-a-blwscpo
 s-00882-c5a,prd-a-appadm
 
-s-00885-c5a,prd-b-uicpo
-s-00883-c5a,prd-e-uicpo
+s-00885-c5a,prd-b-uicpo,10.229.84.103
 s-00884-c5a,prd-b-blcpo
-#s-00883-c5a,prd-b-bdt
 s-00888-c5a,prd-b-ws
+s-03069-c5a,prd-b-blwscpo
 s-00892-c5a,prd-b-appadm
 
-s-00878-c5a,prd-c-uicpo
-s-00876-c5a,prd-f-uicpo
+s-00878-c5a,prd-c-uicpo,10.229.84.61
 s-00877-c5a,prd-c-blcpo
-#s-00876-c5a,prd-c-bdt
 s-00889-c5a,prd-c-ws
+s-03071-c5a,prd-c-blwscpo
 
 s-01222-c5a,prd-a-soaz0
 s-01220-c5a,prd-a-soaz1
 s-01223-c5a,prd-b-soaz0
 s-01221-c5a,prd-b-soaz1
+
+s-03066-c5a,prd-d-uicpo,10.229.84.227
+s-03068-c5a,prd-e-uicpo,10.229.84.229
+s-03070-c5a,prd-f-uicpo,10.229.84.231
 
 s-00890-c5a,prd-data-appmon
 
@@ -110,7 +116,7 @@ s-03070-c5f,prd-f-uicpo
 s-03071-c5f,prd-c-blws
 
 
-# Non CPO Servers
+# Non WebLogic Servers
 
 l-01967-c5c,dev-a-lscs
 
@@ -127,5 +133,11 @@ l-00870-a5a,prd-b-rp
 
 s-00873-d5a,prd-a-ldap
 s-00874-d5a,prd-b-ldap
+
+
+# Desktop testing
+
+UbuntuVirtualBox,dev-wladm
+
 
 # EOF
