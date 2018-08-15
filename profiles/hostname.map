@@ -14,15 +14,15 @@ s-01043-c5c,dev-a-soaz1
 
 s-01957-c5f,dev-a-uicpo,10.237.135.87
 s-01956-c5f,dev-a-blcpo
-s-03057-c5f,dev-a-blwscpo
 s-01955-c5f,dev-a-ws
 s-01958-c5f,dev-a-appadm
+s-03057-c5f,dev-a-blwscpo
 
 s-01962-c5f,dev-b-uicpo,10.237.135.91
 s-01961-c5f,dev-b-blcpo
 s-01960-c5f,dev-b-ws
-s-03059-c5f,dev-b-blwscpo
 s-01973-c5f,dev-b-appadm
+s-03059-c5f,dev-b-blwscpo
 
 s-03056-c5f,dev-c-uicpo,10.237.135.125
 s-03058-c5f,dev-d-uicpo,10.237.135.127
@@ -38,14 +38,14 @@ s-03060-c5f,s-stg-wladm
 s-00721-c5f,stg-a-uicpo,10.237.135.23
 s-00720-c5f,stg-a-blcpo
 s-00722-c5f,stg-a-ws
-s-03062-c5f,stg-a-blwscpo
 s-00725-c5f,stg-a-appadm
+s-03062-c5f,stg-a-blwscpo
 
 s-00718-c5f,stg-b-uicpo,10.237.135.21
 s-00717-c5f,stg-b-blcpo
 s-00723-c5f,stg-b-ws
-s-03064-c5f,stg-b-blwscpo
 s-00726-c5f,stg-b-appadm
+s-03064-c5f,stg-b-blwscpo
 
 s-03061-c5f,stg-c-uicpo,10.237.135.128
 s-03063-c5f,stg-d-uicpo,10.237.135.147
@@ -55,16 +55,6 @@ s-01045-c5c,stg-b-soaz1
 s-01046-c5c,stg-a-soaz0
 s-01047-c5c,stg-b-soaz0
 
-# Solaris 11/RHEL 7 Staging Servers
-
-l-03381-c5f,l-stg-cpodeploy
-s-03060-c5f,s-stg-wladm
-
-s-03061-c5f,stg-c-uicpo
-s-03062-c5f,stg-a-blws
-
-s-03063-c5f,stg-d-uicpo
-s-03064-c5f,stg-b-blws
 
 # Production Servers
 
@@ -76,14 +66,14 @@ s-03065-c5a,s-prd-wladm
 s-00881-c5a,prd-a-uicpo,10.229.84.101
 s-00880-c5a,prd-a-blcpo
 s-00887-c5a,prd-a-ws
-s-03067-c5a,prd-a-blwscpo
 s-00882-c5a,prd-a-appadm
+s-03067-c5a,prd-a-blwscpo
 
 s-00885-c5a,prd-b-uicpo,10.229.84.103
 s-00884-c5a,prd-b-blcpo
 s-00888-c5a,prd-b-ws
-s-03069-c5a,prd-b-blwscpo
 s-00892-c5a,prd-b-appadm
+s-03069-c5a,prd-b-blwscpo
 
 s-00878-c5a,prd-c-uicpo,10.229.84.61
 s-00877-c5a,prd-c-blcpo
@@ -100,20 +90,6 @@ s-03068-c5a,prd-e-uicpo,10.229.84.229
 s-03070-c5a,prd-f-uicpo,10.229.84.231
 
 s-00890-c5a,prd-data-appmon
-
-# Solaris 11/RHEL 7 Production Servers
-
-l-03382-c5f,l-prd-cpodeploy
-s-03065-c5f,s-prd-wladm
-
-s-03066-c5f,prd-d-uicpo
-s-03067-c5f,prd-a-blws
-
-s-03068-c5f,prd-e-uicpo
-s-03069-c5f,prd-b-blws
-
-s-03070-c5f,prd-f-uicpo
-s-03071-c5f,prd-c-blws
 
 
 # Non WebLogic Servers
