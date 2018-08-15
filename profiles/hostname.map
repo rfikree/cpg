@@ -59,7 +59,7 @@ s-01047-c5c,stg-b-soaz0
 # Production Servers
 
 s-00875-c5a,prd-cpodeploy
-l-03882-c5a,l-prd-cpodeploy
+l-03382-c5a,l-prd-cpodeploy
 s-00886-c5a,prd-wladm
 s-03065-c5a,s-prd-wladm
 
