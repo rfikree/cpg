@@ -177,15 +177,19 @@ unset domain domains
 #================================================
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
-BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
-ORACLE_HOME=${BEA_HOME}/oracle_common
-WL_HOME=${BEA_HOME}/${WL_DIR}
-
 if [ -f ${d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)Path *=' \
         ${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
+if [ -d ${beaPath} ]; then
+    BEA_HOME=${beaPath}
+else
+    BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
+fi
 
+WL_HOME=${beaPath}/wlserver*
+ORACLE_HOME=${beaPath}/oracle_common
+[ -d ${ORACLE_HOME} ] || unset ORACLE_HOME
 
 case $(uname -s) in
 SunOS)
