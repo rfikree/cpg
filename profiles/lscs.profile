@@ -41,7 +41,7 @@ SunOS)
     export JAVA_HOME=${INSTALL_DIR}/java/${JAVA_VERSION}
     ;;
 Linux)
-    JAVA_HOME=$(realpath /usr/bin/java)
+    JAVA_HOME=$(readlink -f /usr/bin/java)
     JAVA_HOME=${JAVA_HOME%/jre/bin/java}
     if [[ -n ${JAVA_HOME} ]]; then
         echo JAVA_HOME is ${JAVA_HOME}
