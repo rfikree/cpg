@@ -187,7 +187,7 @@ else
     BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
 fi
 
-WL_HOME=${beaPath}/wlserver*
+WL_HOME=$(echo ${beaPath}/wlserver*)
 ORACLE_HOME=${beaPath}/oracle_common
 [ -d ${ORACLE_HOME} ] || unset ORACLE_HOME
 
