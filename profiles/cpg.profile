@@ -181,14 +181,14 @@ if [ -f ${d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)Path *=' \
         ${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
-if [ -d ${beaPath} ]; then
+if [ -n -d ${beaPath:-xXx} ]; then
     BEA_HOME=${beaPath}
 else
     BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
 fi
 
-WL_HOME=$(echo ${beaPath}/wlserver*)
-ORACLE_HOME=${beaPath}/oracle_common
+WL_HOME=$(echo ${BEA_HOME}/wlserver*)
+ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME} ] || unset ORACLE_HOME
 
 case $(uname -s) in
