@@ -71,16 +71,16 @@ export ENVIRONMENT STACKUSER
 
 #### Default values - may be overriden; DSS project overrides these
 
-for JAVA_VERSION in  $(ls -drt ${INSTALL_DIR}/java/jdk1.7* 2>/dev/null); do
+for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.7* 2>/dev/null); do
     if [ -d ${JAVA_VERSION} ]; then
         JAVA_HOME=${JAVA_VERSION}
     else
         echo ${JAVA_VERSION}
     fi
 done
-if [ -z "${JAVA_VERSION}" ]; then
-    for JAVA_VERSION in  $(ls -drt ${INSTALL_DIR}/java/jdk1.8*); do
-        if [ -d ${JAVA_VERSION} ]; then
+if [ -z ${JAVA_VERSION} ]; then
+    for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.8*); do
+        if [ -d "${JAVA_VERSION}" ]; then
             JAVA_HOME=${JAVA_VERSION}
         fi
     done
@@ -181,7 +181,7 @@ if [ -f ${d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)Path *=' \
         ${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
-if [ -n -d ${beaPath:-xXx} ]; then
+if [ -d ${beaPath:-''} ]; then
     BEA_HOME=${beaPath}
 else
     BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
@@ -189,7 +189,7 @@ fi
 
 WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
-[ -d ${ORACLE_HOME} ] || unset ORACLE_HOME
+[ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 
 case $(uname -s) in
 SunOS)
