@@ -44,19 +44,19 @@ fi
 STACK_NUM=''
 
 case "${OS_USERNAME:0:3}" in
-    prd)
+    prd|l-p|s-p)
         ENVIRONMENT=prd
         STACK_NUM=${OS_USERNAME:3:2}
         ENVIRONMENT_SHORT=p
         STACKUSER=true
         ;;
-    stg)
+    stg|l-s|s-s)
         ENVIRONMENT=stg
         STACK_NUM=${OS_USERNAME:3:2}
         ENVIRONMENT_SHORT=s
         STACKUSER=true
         ;;
-    dev)
+    dev|l-d|s-d)
         ENVIRONMENT=dev
         STACK_NUM=${OS_USERNAME:3:2}
         ENVIRONMENT_SHORT=d
@@ -69,49 +69,38 @@ case "${OS_USERNAME:0:3}" in
 esac
 export ENVIRONMENT STACKUSER
 
-#### Default values - may be overriden; DSS project overrides these
+#### Default values - may be overriden;
 
 for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.7* 2>/dev/null); do
     if [ -d ${JAVA_VERSION} ]; then
         JAVA_HOME=${JAVA_VERSION}
     else
-        echo ${JAVA_VERSION}
+        echo ${JAVA_VERSION} is invalid
     fi
 done
-if [ -z ${JAVA_VERSION} ]; then
+if [[ $(uname) == Linux || -z ${JAVA_VERSION} ]]; then
     for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.8*); do
         if [ -d "${JAVA_VERSION}" ]; then
             JAVA_HOME=${JAVA_VERSION}
+        else
+            echo ${JAVA_VERSION} is invalid
         fi
     done
 fi
 export JAVA_HOME=${JAVA_HOME}
 JAVA_VENDOR=Sun
-unset JAVA_VERSION
 
 MW_DIR=Middleware_Home12c
 WL_DIR=wlserver
 
-##### Overrides by userid
-# Should be able to use new versions for these in most cases
 
-#case "${OS_USERNAME}" in
-    #dev[23]3|stg--)
-    #    JAVA_VERSION=jdk1.7.0_65
-    #    MW_DIR=Middleware_Home
-    #    ;;
-#esac
-
-
-#### Overrides by Project
+#### Configuration by Project
 
 LOB=${STACK_NUM:0:1}
 domains='1'
 case $LOB in
     1)  PROJECT_NAME=CPO
         domains='1 2 9';;
-    2)  PROJECT_NAME=BDT
-        domains='1 9';;
     3)  PROJECT_NAME=WS;;
     5)  PROJECT_NAME=CPC-SOA
         MW_DIR=fmw${STACK_NUM}
@@ -123,6 +112,10 @@ case $LOB in
         ;;
     *)  ;;
 esac
+
+if [[ ${PROJECT_NAME} == CPO && $(uname) == Linux ]]; then
+    domains='1 2'
+fi
 
 if [ "${STACKUSER}" == 'true' ]; then
     STACK=a${LOB}${ENVIRONMENT_SHORT}${STACK_NUM}
@@ -161,6 +154,9 @@ scripts=/cpg/3rdParty/scripts/cpg
 if [ "${STACKUSER}" == 'true' ]; then
     # Handle setup case
     automation=${APP_STACK}/automation
+    if [[ ${PROJECT_NAME} == CPO && $(uname) == Linux ]]; then
+        automation=${APP_STACK}/secure
+    fi
     #Loop through existing domains and export shorthand links
     for domain in ${domains}; do
         eval d${domain}=${APP_STACK}/${STACK}d${domain}
@@ -200,12 +196,12 @@ SunOS)
     fi
     ;;
 Linux)
-    JAVA_HOME=$(readlink -f /usr/bin/java)
-    JAVA_HOME=${JAVA_HOME%/jre/bin/java}
-    if [[ -n ${JAVA_HOME} ]]; then
-        echo JAVA_HOME is ${JAVA_HOME}
+    JAVA_VERSION=$(readlink -f /usr/bin/java)
+    JAVA_VERSION=${JAVA_VERSION%/jre/bin/java}
+    if [[ -n ${JAVA_VERSION} ]]; then
+        echo JAVA_VERSION is ${JAVA_VERSION}
     else
-        echo JAVA_HOME not set
+        echo JAVA_VERSION not set
     fi
     ;;
 *)
@@ -233,7 +229,7 @@ unset MW_DIR WL_DIR
 #================================================
 # Force standard $PATH directory
 PATH=
-for DIR in ${JAVA_HOME}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
+for DIR in ${JAVA_VERSION}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
         /usr/sfw/bin /bin /usr/sbin /sbin/ usr/openwin/bin /usr/local/bin \
         /opt/WANdisco/bin ${ORACLE_HOME}/common/bin ${SQLPLUS_HOME} \
         ${scripts} ${scripts%/*}/bin ${lscripts}; do
