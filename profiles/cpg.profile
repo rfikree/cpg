@@ -90,6 +90,16 @@ fi
 export JAVA_HOME=${JAVA_HOME}
 JAVA_VENDOR=Sun
 
+if [[ $(uname -s) = Linux ]] then
+    JAVA_VERSION=$(readlink -f /usr/bin/java)
+    JAVA_VERSION=${JAVA_VERSION%/jre/bin/java}
+    if [[ -n ${JAVA_VERSION} ]]; then
+        echo JAVA_VERSION is ${JAVA_VERSION}
+    else
+        echo JAVA_VERSION not set
+    fi
+fi
+
 MW_DIR=Middleware_Home12c
 WL_DIR=wlserver
 
@@ -187,31 +197,18 @@ WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 
-case $(uname -s) in
-SunOS)
-    if [[ ${JAVA_HOME} != ${jdkPath} \
-    && -f ${jdkPath:-/XXX}/bin/java ]]; then
-        echo Setting JAVA_HOME from Domain.properties
-        JAVA_HOME=${jdkPath}
-    fi
-    ;;
-Linux)
-    JAVA_VERSION=$(readlink -f /usr/bin/java)
-    JAVA_VERSION=${JAVA_VERSION%/jre/bin/java}
-    if [[ -n ${JAVA_VERSION} ]]; then
-        echo JAVA_VERSION is ${JAVA_VERSION}
-    else
-        echo JAVA_VERSION not set
-    fi
-    ;;
-*)
-    if [[ -z ${JAVA_HOME} ]]; then
-        echo JAVA_HOME not set
-    else
-        echo JAVA_HOME is ${JAVA_HOME}
-    fi
-    ;;
-esac
+if [[ ${JAVA_HOME} != ${jdkPath} \
+&& -f ${jdkPath:-/XXX}/bin/java ]]; then
+    echo Setting JAVA_HOME from Domain.properties
+    JAVA_HOME=${jdkPath}
+fi
+if [[ -z ${JAVA_HOME} ]]; then
+    echo JAVA_HOME not set
+else
+    echo JAVA_HOME is ${JAVA_HOME}
+fi
+;;
+
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 && -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then
