@@ -164,7 +164,7 @@ scripts=/cpg/3rdParty/scripts/cpg
 if [ "${STACKUSER}" == 'true' ]; then
     # Handle setup case
     automation=${APP_STACK}/automation
-    if [[ ${PROJECT_NAME} == CPO && $(uname) == Linux ]]; then
+    if [[ $(uname) == Linux ]]; then
         automation=${APP_STACK}/secure
     fi
     #Loop through existing domains and export shorthand links
