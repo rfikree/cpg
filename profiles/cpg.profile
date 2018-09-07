@@ -90,7 +90,7 @@ fi
 export JAVA_HOME=${JAVA_HOME}
 JAVA_VENDOR=Sun
 
-if [[ $(uname -s) = Linux ]] then
+if [[ $(uname -s) = Linux ]]; then
     JAVA_VERSION=$(readlink -f /usr/bin/java)
     JAVA_VERSION=${JAVA_VERSION%/jre/bin/java}
     if [[ -n ${JAVA_VERSION} ]]; then
