@@ -44,19 +44,19 @@ fi
 STACK_NUM=''
 
 case "${OS_USERNAME:0:3}" in
-    prd|l-p|s-p)
+    prd)
         ENVIRONMENT=prd
         STACK_NUM=${OS_USERNAME:3:2}
         ENVIRONMENT_SHORT=p
         STACKUSER=true
         ;;
-    stg|l-s|s-s)
+    stg)
         ENVIRONMENT=stg
         STACK_NUM=${OS_USERNAME:3:2}
         ENVIRONMENT_SHORT=s
         STACKUSER=true
         ;;
-    dev|l-d|s-d)
+    dev)
         ENVIRONMENT=dev
         STACK_NUM=${OS_USERNAME:3:2}
         ENVIRONMENT_SHORT=d
@@ -304,13 +304,13 @@ fi
 
 
 case "${CPG_HOSTNAME:0:3}" in
-    prd)
+    prd|l-p|s-p)
         USER_PATTERN='prd[1356][01]'
         ;;
-    stg)
+    stg|l-s|s-s)
         USER_PATTERN='stg[1356][012345]'
         ;;
-    dev)
+    dev|l-d|s-d)
         USER_PATTERN='dev[1356][012345]'
         ;;
     *)
@@ -416,7 +416,7 @@ unset OS_USERNAME STACKNUM CPG_TIER
 #==================================================
 # Verify status of the automation directory
 #==================================================
-if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = ???-cpodeploy ]]; then
+if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
     if [ -d ${APP_STACK}/automation ]; then
         svn update ${automation}
         svn status ${automation}
