@@ -417,7 +417,7 @@ unset OS_USERNAME STACKNUM CPG_TIER
 # Verify status of the automation directory
 #==================================================
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
-    if [ -d ${APP_STACK}/automation ]; then
+    if [ -d ${automation} ]; then
         svn update ${automation}
         svn status ${automation}
     else
