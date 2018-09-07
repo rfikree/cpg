@@ -183,9 +183,9 @@ unset domain domains
 #================================================
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
-if [ -f ${d1scripts}/stacks/${STACK}/*d1/Domain.properties ]; then
+if [ -f ${automation}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)Path *=' \
-        ${d1scripts}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
+        ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
 if [ -d ${beaPath:-''} ]; then
     BEA_HOME=${beaPath}
