@@ -207,7 +207,6 @@ if [[ -z ${JAVA_HOME} ]]; then
 else
     echo JAVA_HOME is ${JAVA_HOME}
 fi
-;;
 
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
