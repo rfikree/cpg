@@ -164,9 +164,6 @@ scripts=/cpg/3rdParty/scripts/cpg
 if [ "${STACKUSER}" == 'true' ]; then
     # Handle setup case
     automation=${APP_STACK}/automation
-    if [[ $(uname) == Linux ]]; then
-        automation=${APP_STACK}/secure
-    fi
     #Loop through existing domains and export shorthand links
     for domain in ${domains}; do
         eval d${domain}=${APP_STACK}/${STACK}d${domain}
@@ -413,7 +410,9 @@ unset OS_USERNAME STACKNUM CPG_TIER
 # Verify status of the automation directory
 #==================================================
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
-    if [ -d ${automation} ]; then
+    if [[ -d ${automation}.old && $(uname) == Linux ]]; then
+        : # Do nothing
+    elif [ -d ${automation} ]; then
         svn update ${automation}
         svn status ${automation}
     else
