@@ -32,7 +32,7 @@
 getproparg() {
  val=`svcprop -p $1 $SMF_FMRI`
  [ -n "$val" ] && echo $val
-}
+}1
 
 # Config parameters
 SCRIPT_NAME=$(basename ${0})
@@ -111,6 +111,9 @@ case ${CPG_HOSTNAME:-''} in
 				domain=d1
 				;;
 		*-blcpo)
+				domain=d2
+				;;
+		*-blwscpo)
 				domain=d2
 				;;
 		*-soaz0)
