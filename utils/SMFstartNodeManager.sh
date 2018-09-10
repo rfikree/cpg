@@ -32,7 +32,7 @@
 getproparg() {
  val=`svcprop -p $1 $SMF_FMRI`
  [ -n "$val" ] && echo $val
-}1
+}
 
 # Config parameters
 SCRIPT_NAME=$(basename ${0})
@@ -62,32 +62,32 @@ stack=a${appnum}${appstack}${appid}
 PID=`ps -fu ${username} | awk '/java.*[-]client/ {print $2}'`
 
 waitPid() {
-	if [[ -n ${PID} ]]; then
-		time=0
-		while [[ ${time} -lt ${1:-10} ]]; do
-			sleep 1
-			kill -0 ${PID} 2>/dev/null || break
-			time=$(( time + 1 ))
-		done
-	fi
+    if [[ -n ${PID} ]]; then
+        time=0
+        while [[ ${time} -lt ${1:-10} ]]; do
+            sleep 1
+            kill -0 ${PID} 2>/dev/null || break
+            time=$(( time + 1 ))
+        done
+    fi
 }
 
 if [ -n "${PID}" ]; then
-	if [ "${1}" == stop -o "${1}" == restart ]; then
-		echo Killing process\(es\): ${PID} for ${username}
-		kill ${PID}
-		waitPid 20
-		kill -0 ${PID} 2>/dev/null && exit ${SMF_EXIT_ERR_FATAL}
-		exit ${SMF_EXIT_OK}
-	else
-		echo Already running process\(es\): ${PID} for ${username}
-		exit ${SMF_EXIT_ERR_NOSMF}
-	fi
+    if [ "${1}" == stop -o "${1}" == restart ]; then
+        echo Killing process\(es\): ${PID} for ${username}
+        kill ${PID}
+        waitPid 20
+        kill -0 ${PID} 2>/dev/null && exit ${SMF_EXIT_ERR_FATAL}
+        exit ${SMF_EXIT_OK}
+    else
+        echo Already running process\(es\): ${PID} for ${username}
+        exit ${SMF_EXIT_ERR_NOSMF}
+    fi
 else
-	if [ "${1}" == stop -o "${1}" == restart ]; then
-		echo No processes:${PID} for ${username}
-		exit ${SMF_EXIT_OK}
-	fi
+    if [ "${1}" == stop -o "${1}" == restart ]; then
+        echo No processes:${PID} for ${username}
+        exit ${SMF_EXIT_OK}
+    fi
 fi
 
 
@@ -104,48 +104,48 @@ fi
 # Determine the WL domain this host runs for the user and assign to domain variable
 
 case ${CPG_HOSTNAME:-''} in
-		*-appadm)
-				domain=d9
-				;;
-		*-bdt)
-				domain=d1
-				;;
-		*-blcpo)
-				domain=d2
-				;;
-		*-blwscpo)
-				domain=d2
-				;;
-		*-soaz0)
-				domain=d1
-				;;
-		*-soaz1)
-				domain=d1
-				;;
-		*-uicpo)
-				domain=d1
-				;;
-		*-ws)
-				domain=d1
-				;;
+        *-appadm)
+                domain=d9
+                ;;
+        *-bdt)
+                domain=d1
+                ;;
+        *-blcpo)
+                domain=d2
+                ;;
+        *-blwscpo)
+                domain=d2
+                ;;
+        *-soaz0)
+                domain=d1
+                ;;
+        *-soaz1)
+                domain=d1
+                ;;
+        *-uicpo)
+                domain=d1
+                ;;
+        *-ws)
+                domain=d1
+                ;;
 esac
 
 
 # Define the WL_HOME and JAVA_HOME from the Domain.properties file
 PROPS_FILE=/cpg/cpo_apps/${stack}/automation/stacks/${stack}/*d1/Domain.properties
 if [ -f ${PROPS_FILE} ]; then
-	eval $(egrep '^(jdk|bea)Path *=' ${PROPS_FILE} | tr -d ' ')
+    eval $(egrep '^(jdk|bea)Path *=' ${PROPS_FILE} | tr -d ' ')
 
-	if [[ -n ${beaPath} ]]; then
-		export WL_HOME=${beaPath}/wlserver_10.3
-	fi
+    if [[ -n ${beaPath} ]]; then
+        export WL_HOME=${beaPath}/wlserver_10.3
+    fi
 fi
 if [[ -n ${jdkPath} ]]; then
-	JAVA_HOME=${jdkPath}
+    JAVA_HOME=${jdkPath}
 else	# Fallback to directory search
-	for JAVA_HOME in $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
-		continue
-	done
+    for JAVA_HOME in $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
+        continue
+    done
 fi
 export JAVA_HOME
 
@@ -163,25 +163,25 @@ script="/cpg/cpo_apps/${stack}/${stack}${domain}/bin/startNodeManager.sh"
 
 # The 50 and 60 stack users have a different syntax for starting the node manager that differs from the 10, 20 & 30 stacks
 case ${appid} in
-	5*|6*)
-		# Set the environment to use UTF-8 en_CA
-		export LANG=en_CA.UTF-8
-		export LC_ALL=en_CA.UTF-8
-		export LC_MONETARY=en_CA.UTF-8
-		export LC_NUMERIC=en_CA.UTF-8
-		export LC_ALL=en_CA.UTF-8
-		export LC_MESSAGES=C
-		export LC_COLLATE=en_CA.UTF-8
-		export LC_CTYPE=en_CA.UTF-8
-		export LC_TIME=en_CA.UTF-8
-		#echo "The command to execute would be: $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
-		$script &> /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out &
-		sleep 2
-		;;
-	*)
-		#echo "The command to execute would be: $script"
-		$script &
-		;;
+    5*|6*)
+        # Set the environment to use UTF-8 en_CA
+        export LANG=en_CA.UTF-8
+        export LC_ALL=en_CA.UTF-8
+        export LC_MONETARY=en_CA.UTF-8
+        export LC_NUMERIC=en_CA.UTF-8
+        export LC_ALL=en_CA.UTF-8
+        export LC_MESSAGES=C
+        export LC_COLLATE=en_CA.UTF-8
+        export LC_CTYPE=en_CA.UTF-8
+        export LC_TIME=en_CA.UTF-8
+        #echo "The command to execute would be: $script > /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out 2>&1"
+        $script &> /cpg/cpo_var/${stack}/${stack}${domain}/servers/runtime/${CPG_HOSTNAME}-nodemgr_nohup.out &
+        sleep 2
+        ;;
+    *)
+        #echo "The command to execute would be: $script"
+        $script &
+        ;;
 esac
 
 
