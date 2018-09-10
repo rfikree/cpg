@@ -4,148 +4,106 @@
 <service_bundle type='manifest' name='weblogic'>
 
 <service
-	name='site/weblogic'
-	type='service'
-	version='1'>
+    name='site/weblogic'
+    type='service'
+    version='1'>
 
-	<dependency name='multi-user-server'
-			grouping='require_all'
-			restart_on='refresh'
-			type='service'>
-		<service_fmri value='svc:/milestone/multi-user-server:default'/>
-	</dependency>
+    <dependency name='multi-user-server'
+            grouping='require_all'
+            restart_on='refresh'
+            type='service'>
+        <service_fmri value='svc:/milestone/multi-user-server:default'/>
+    </dependency>
 
-	<dependency name='file-systems'
-			grouping='require_all'
-			restart_on='none'
-			type='path'>
-		<service_fmri value='file://localhost/cpg/3rdParty/.mounted'/>
-		<service_fmri value='file://localhost/cpg/cpo_apps/.mounted'/>
-		<service_fmri value='file://localhost/cpg/cpo_var/.mounted'/>
-	</dependency>
+    <dependency name='file-systems'
+            grouping='require_all'
+            restart_on='none'
+            type='path'>
+        <service_fmri value='file://localhost/cpg/3rdParty/.mounted'/>
+        <service_fmri value='file://localhost/cpg/cpo_apps/.mounted'/>
+        <service_fmri value='file://localhost/cpg/cpo_var/.mounted'/>
+    </dependency>
 
-	<exec_method
-		type='method'
-		name='start'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh start'
-		timeout_seconds='300' >
-	</exec_method>
+    <exec_method
+        type='method'
+        name='start'
+        exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh start'
+        timeout_seconds='300' >
+    </exec_method>
 
-	<exec_method
-		type='method'
-		name='stop'
-		exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh stop'
-		timeout_seconds='300' >
-	</exec_method>
+    <exec_method
+        type='method'
+        name='stop'
+        exec='/cpg/3rdParty/scripts/cpg/utils/SMFWeblogicAdmin.sh stop'
+        timeout_seconds='300' >
+    </exec_method>
 
    <!-- default service model of 'contract' -->
-	<property_group name='startd' type='framework'>
-		<propval name='duration' type='astring' value='contract'/>
-	</property_group>
+    <property_group name='startd' type='framework'>
+        <propval name='duration' type='astring' value='contract'/>
+    </property_group>
 
-	<!--
-	  Both action_authorization and value_authorization are needed
-	  to allow the framework general/enabled property to be changed
-	  when performing action (enable, disable, etc) on the service.
-	-->
-	<property_group name='general' type='framework'>
-		<propval name='value_authorization' type='astring'
-				value='solaris.smf.value.onlinechannel'/>
-		<propval name='action_authorization' type='astring'
-				value='solaris.smf.manage.onlinechannel'/>
-	</property_group>
+    <!--
+      Both action_authorization and value_authorization are needed
+      to allow the framework general/enabled property to be changed
+      when performing action (enable, disable, etc) on the service.
+    -->
+    <property_group name='general' type='framework'>
+        <propval name='value_authorization' type='astring'
+                value='solaris.smf.value.onlinechannel'/>
+        <propval name='action_authorization' type='astring'
+                value='solaris.smf.manage.onlinechannel'/>
+    </property_group>
 
-	<instance name='prd10d1' enabled='true'>
-		<method_context>
-			<method_credential user='prd10' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd10d1' enabled='false'>
+        <method_context>
+            <method_credential user='prd10' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd10d2' enabled='true'>
-		<method_context>
-			<method_credential user='prd10' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd10d2' enabled='false'>
+        <method_context>
+            <method_credential user='prd10' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd10d9' enabled='true'>
-		<method_context>
-			<method_credential user='prd10' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd11d1' enabled='false'>
+        <method_context>
+            <method_credential user='prd11' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd11d1' enabled='true'>
-		<method_context>
-			<method_credential user='prd11' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd11d2' enabled='false'>
+        <method_context>
+            <method_credential user='prd11' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd11d2' enabled='true'>
-		<method_context>
-			<method_credential user='prd11' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd50d1' enabled='false'>
+        <method_context>
+            <method_credential user='prd50' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd11d9' enabled='true'>
-		<method_context>
-			<method_credential user='prd11' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd51d1' enabled='false'>
+        <method_context>
+            <method_credential user='prd51' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd20d9' enabled='true'>
-		<method_context>
-			<method_credential user='prd20' group='prdapps'/>
-		</method_context>
-	</instance>
+    <instance name='prd60d1' enabled='false'>
+        <method_context>
+            <method_credential user='prd60' group='prdapps'/>
+        </method_context>
+    </instance>
 
-	<instance name='prd21d9' enabled='true'>
-		<method_context>
-			<method_credential user='prd21' group='prdapps'/>
-		</method_context>
-	</instance>
+    <stability value='Evolving'/>
 
-	<instance name='prd30d1' enabled='true'>
-		<method_context>
-			<method_credential user='prd30' group='prdapps'/>
-		</method_context>
-	</instance>
-
-	<instance name='prd31d1' enabled='true'>
-		<method_context>
-			<method_credential user='prd31' group='prdapps'/>
-		</method_context>
-	</instance>
-
-	<instance name='prd32d1' enabled='false'>
-		<method_context>
-			<method_credential user='prd32' group='prdapps'/>
-		</method_context>
-	</instance>
-
-	<instance name='prd50d1' enabled='true'>
-		<method_context>
-			<method_credential user='prd50' group='prdapps'/>
-		</method_context>
-	</instance>
-
-	<instance name='prd51d1' enabled='false'>
-		<method_context>
-			<method_credential user='prd51' group='prdapps'/>
-		</method_context>
-	</instance>
-
-	<instance name='prd60d1' enabled='true'>
-		<method_context>
-			<method_credential user='prd60' group='prdapps'/>
-		</method_context>
-	</instance>
-
-	<stability value='Evolving'/>
-
-	<template>
-		<common_name>
-			<loctext xml:lang='C'>WebLogic Admin Server Service</loctext>
-		</common_name>
-	</template>
+    <template>
+        <common_name>
+            <loctext xml:lang='C'>WebLogic Admin Server Service</loctext>
+        </common_name>
+    </template>
 
 </service>
 </service_bundle>

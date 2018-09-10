@@ -55,37 +55,37 @@
                 value='solaris.smf.manage.onlinechannel' />
     </property_group>
 
-    <instance name='dev10' enabled='true'>
+    <instance name='dev10' enabled='false'>
         <method_context>
             <method_credential user='dev10' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev11' enabled='true'>
+    <instance name='dev11' enabled='false'>
         <method_context>
             <method_credential user='dev11' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev12' enabled='true'>
+    <instance name='dev12' enabled='false'>
         <method_context>
             <method_credential user='dev12' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev13' enabled='true'>
+    <instance name='dev13' enabled='false'>
         <method_context>
             <method_credential user='dev13' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev14' enabled='true'>
+    <instance name='dev14' enabled='false'>
         <method_context>
             <method_credential user='dev14' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev15' enabled='true'>
+    <instance name='dev15' enabled='false'>
         <method_context>
             <method_credential user='dev15' group='devapps' />
         </method_context>

@@ -55,150 +55,91 @@
                 value='solaris.smf.manage.onlinechannel' />
     </property_group>
 
-    <instance name='dev10d1' enabled='true'>
+    <instance name='dev10d1' enabled='false'>
         <method_context>
             <method_credential user='dev10' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev10d2' enabled='true'>
+    <instance name='dev10d2' enabled='false'>
         <method_context>
             <method_credential user='dev10' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev10d9' enabled='true'>
-        <method_context>
-            <method_credential user='dev10' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev11d1' enabled='true'>
+    <instance name='dev11d1' enabled='false'>
         <method_context>
             <method_credential user='dev11' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev11d2' enabled='true'>
+    <instance name='dev11d2' enabled='false'>
         <method_context>
             <method_credential user='dev11' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev11d9' enabled='true'>
-        <method_context>
-            <method_credential user='dev11' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev12d1' enabled='true'>
+    <instance name='dev12d1' enabled='false'>
         <method_context>
             <method_credential user='dev12' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev12d2' enabled='true'>
+    <instance name='dev12d2' enabled='false'>
         <method_context>
             <method_credential user='dev12' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev12d9' enabled='true'>
-        <method_context>
-            <method_credential user='dev12' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev13d1' enabled='true'>
+    <instance name='dev13d1' enabled='false'>
         <method_context>
             <method_credential user='dev13' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev13d2' enabled='true'>
+    <instance name='dev13d2' enabled='false'>
         <method_context>
             <method_credential user='dev13' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev13d9' enabled='true'>
-        <method_context>
-            <method_credential user='dev13' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev14d1' enabled='true'>
+    <instance name='dev14d1' enabled='false'>
         <method_context>
             <method_credential user='dev14' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev14d2' enabled='true'>
+    <instance name='dev14d2' enabled='false'>
         <method_context>
             <method_credential user='dev14' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev14d9' enabled='true'>
-        <method_context>
-            <method_credential user='dev14' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev15d1' enabled='true'>
+    <instance name='dev15d1' enabled='false'>
         <method_context>
             <method_credential user='dev15' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev15d2' enabled='true'>
+    <instance name='dev15d2' enabled='false'>
         <method_context>
             <method_credential user='dev15' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev15d9' enabled='true'>
-        <method_context>
-            <method_credential user='dev15' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev30d1' enabled='true'>
-        <method_context>
-            <method_credential user='dev30' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev31d1' enabled='true'>
-        <method_context>
-            <method_credential user='dev31' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev32d1' enabled='true'>
-        <method_context>
-            <method_credential user='dev32' group='devapps' />
-        </method_context>
-    </instance>
-    <instance name='dev33d1' enabled='true'>
-        <method_context>
-            <method_credential user='dev33' group='devapps' />
-        </method_context>
-    </instance>
-
-    <instance name='dev50d1' enabled='true'>
+    <instance name='dev50d1' enabled='false'>
         <method_context>
             <method_credential user='dev50' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev51d1' enabled='true'>
+    <instance name='dev51d1' enabled='false'>
         <method_context>
             <method_credential user='dev51' group='devapps' />
         </method_context>
     </instance>
 
-    <instance name='dev60d1' enabled='true'>
+    <instance name='dev60d1' enabled='false'>
         <method_context>
             <method_credential user='dev60' group='devapps' />
         </method_context>
