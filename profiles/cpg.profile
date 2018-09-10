@@ -198,6 +198,9 @@ if [[ ${JAVA_HOME} != ${jdkPath} \
 && -f ${jdkPath:-/XXX}/bin/java ]]; then
     echo Setting JAVA_HOME from Domain.properties
     JAVA_HOME=${jdkPath}
+    if [ $(uname) = SunOS ]; then
+        JAVA_VERSION=${jdkPath}
+    fi
 fi
 if [[ -z ${JAVA_HOME} ]]; then
     echo JAVA_HOME not set
