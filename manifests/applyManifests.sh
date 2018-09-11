@@ -5,8 +5,8 @@ SOURCE_BASE=/cpg/3rdParty/scripts/cpg/manifests
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
-export CPG_HOSTNAME=${CPG_HOSTNAME##*,}
+CPG_HOSTNAME=$(egrep-i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
+export CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
 
 # Function to update or install configs only if missing or changed
 applyManifest() {
