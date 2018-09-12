@@ -414,12 +414,19 @@ unset OS_USERNAME STACKNUM CPG_TIER
 #==================================================
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
     if [[ -d ${automation}.old && $(uname) == Linux ]]; then
-        : # Do nothing
-    elif [ -d ${automation} ]; then
-        svn update ${automation}
-        svn status ${automation}
-    else
-        svn co ${SVN_REPO}/trunk/secure ${automation}
+        if [ ! -d ${automation} ]; then
+            svn co ${SVN_REPO}/trunk/secure ${automation}
+        elif [ -d ${automation} ]; then
+            svn update ${automation}
+            svn status ${automation}
+        fi
+    elif [[ ! -d ${automation}.old && $(uname) == SunOS ]]; then
+        if [ ! -d ${automation} ]; then
+            svn co ${SVN_REPO}/trunk/secure ${automation}
+        elif [ -d ${automation} ]; then
+            svn update ${automation}
+            svn status ${automation}
+        fi
     fi
 fi
 
