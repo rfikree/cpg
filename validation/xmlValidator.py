@@ -126,7 +126,7 @@ class SimpleHTMLValidator(HTMLParser):
 
 def validateHTML(filename):
     try:
-        parser =  SimpleHTMLValidator()
+        parser = SimpleHTMLValidator()
         parser.setWarnings(options.warnings)
         parser.parse(filename)
         if options.verbose:
@@ -147,9 +147,9 @@ def validateXML(filename):
 
 
 def validateFile(fname):
-    if fname.split('.')[-1] in ('xml', 'xsl', 'xhtml'):
+    if '.xml' in fname or '.xsl' in fname:
         validateXML(fname)
-    elif fname.endswith('.html'):
+    elif fname.endswith('html'):
         validateHTML(fname)
 
 
