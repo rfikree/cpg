@@ -59,7 +59,7 @@ appid=`/usr/bin/echo $username | /usr/bin/cut -c4-5`
 stack=a${appnum}${appstack}${appid}
 
 # Handle stop option
-PID=`ps -fu ${username} | awk '/java.*[-]client/ || /weblogic.NodeManager/ {print $2}'`
+PID=`ps -fu ${username} | awk '/java.*[-]client/ || /weblogic[.]NodeManager/ {print $2}'`
 
 waitPid() {
     if [[ -n ${PID} ]]; then
