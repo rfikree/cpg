@@ -192,15 +192,18 @@ if [ -f ${automation}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)Path *=' \
         ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
+
 if [ -d ${beaPath:-''} ]; then
     BEA_HOME=${beaPath}
 else
     BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
 fi
 
+
 WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
+
 
 if [[ ${JAVA_HOME} != ${jdkPath} \
 && -f ${jdkPath:-/XXX}/bin/java ]]; then
@@ -223,6 +226,15 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
     echo
     WL_HOME=${beaPath}/${WL_DIR}
 fi
+
+if 
+
+if [[ ${PROJECT_NAME} == CPO && $(whoami) == dev12 ]]; then
+	BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
+	ORACLE_HOME=${BEA_HOME}/oracle_common
+	WL_HOME=${BEA_HOME}/${WL_DIR})	
+fi
+
 
 export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME
 unset MW_DIR WL_DIR
