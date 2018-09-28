@@ -201,6 +201,9 @@ fi
 
 
 WL_HOME=$(echo ${BEA_HOME}/wlserver*)
+if [BEA_HOME = "/cpg/3rdParty/installs/Oracle/Middleware_Home" ]; then
+	WL_HOME=${BEA_HOME}/${WL_DIR}
+fi
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 
