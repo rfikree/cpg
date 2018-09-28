@@ -227,11 +227,11 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
     WL_HOME=${beaPath}/${WL_DIR}
 fi
 
-if [[ ${PROJECT_NAME} == CPO && $(whoami) == dev12 ]]; then
-	BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
-	ORACLE_HOME=${BEA_HOME}/oracle_common
-	WL_HOME=${BEA_HOME}/${WL_DIR})	
-fi
+#if [[ ${PROJECT_NAME} == CPO && $(whoami) == dev12 ]]; then
+#	BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
+#	ORACLE_HOME=${BEA_HOME}/oracle_common
+#	WL_HOME=${BEA_HOME}/${WL_DIR})	
+#fi
 
 
 export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME
