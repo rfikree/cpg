@@ -100,6 +100,7 @@ if [[ $(uname -s) = Linux ]]; then
     fi
 fi
 
+
 MW_DIR=Middleware_Home12c
 WL_DIR=wlserver
 
@@ -125,6 +126,13 @@ esac
 
 if [[ ${PROJECT_NAME} == CPO && $(uname) == Linux ]]; then
     domains='1 2'
+fi
+
+if [[ ${PROJECT_NAME} == CPO && $(whoami) == dev12 ]]; then
+    domains='1 2'
+	MW_DIR=Middleware_Home
+	WL_DIR=wlserver_10.3
+	JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.7.0_181
 fi
 
 if [ "${STACKUSER}" == 'true' ]; then
