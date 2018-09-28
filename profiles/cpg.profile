@@ -204,8 +204,6 @@ WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 
-echo $(whoami) has an WL_HOME value of ${WL_HOME}
-
 if [[ ${JAVA_HOME} != ${jdkPath} \
 && -f ${jdkPath:-/XXX}/bin/java ]]; then
     echo Setting JAVA_HOME from Domain.properties
