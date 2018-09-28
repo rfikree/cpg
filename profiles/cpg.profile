@@ -128,7 +128,7 @@ if [[ ${PROJECT_NAME} == CPO && $(uname) == Linux ]]; then
     domains='1 2'
 fi
 
-if [[ ${PROJECT_NAME} == CPO && $(/usr/ucb/whoami) == dev12 ]]; then
+if [[ ${PROJECT_NAME} == CPO && $(id | cut -d "(" -f2 | cut -d ")" -f1) == dev12 ]]; then
     domains='1 2'
 	MW_DIR=Middleware_Home
 	WL_DIR=wlserver_10.3
