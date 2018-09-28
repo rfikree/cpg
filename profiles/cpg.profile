@@ -230,6 +230,10 @@ fi
 if 
 
 if [[ ${PROJECT_NAME} == CPO && $(whoami) == dev12 ]]; then
+	unset BEA_HOME
+	unset ORACLE_HOME
+	unset WL_HOME
+
 	BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
 	ORACLE_HOME=${BEA_HOME}/oracle_common
 	WL_HOME=${BEA_HOME}/${WL_DIR})	
