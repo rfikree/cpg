@@ -201,12 +201,10 @@ fi
 
 
 WL_HOME=$(echo ${BEA_HOME}/wlserver*)
-if [ "${BEA_HOME}" = "/cpg/3rdParty/installs/Oracle/Middleware_Home" ]; then
-	WL_HOME=${BEA_HOME}/${WL_DIR}
-fi
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 
+echo '${STACKUSER} has an ORACLE_HOME value of ${ORACLE_HOME}'
 
 if [[ ${JAVA_HOME} != ${jdkPath} \
 && -f ${jdkPath:-/XXX}/bin/java ]]; then
@@ -229,13 +227,6 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
     echo
     WL_HOME=${beaPath}/${WL_DIR}
 fi
-
-#if [[ ${PROJECT_NAME} == CPO && $(whoami) == dev12 ]]; then
-#	BEA_HOME=${INSTALL_DIR}/Oracle/${MW_DIR}
-#	ORACLE_HOME=${BEA_HOME}/oracle_common
-#	WL_HOME=${BEA_HOME}/${WL_DIR})	
-#fi
-
 
 export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME
 unset MW_DIR WL_DIR
@@ -276,6 +267,7 @@ for DIR in /opt/WANdisco/lib ${SQLPLUS_HOME} ${SAPJCO_HOME} ${SAPSEC_HOME}; do
         fi
     fi
 done
+
 LD_LIBRARY_PATH=${LD_LIBRARY_PATH#:}
 
 export CLASSPATH LD_LIBRARY_PATH PATH
