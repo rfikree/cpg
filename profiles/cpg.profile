@@ -130,7 +130,7 @@ fi
 
 if [[ ${PROJECT_NAME} == CPO && $(id | cut -d "(" -f2 | cut -d ")" -f1) == dev12 ]]; then
     domains='1 2'
-	MW_DIR=Middleware_Home1
+	MW_DIR=Middleware_Home
 	WL_DIR=wlserver_10.3
 	JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.7.0_181
 fi
