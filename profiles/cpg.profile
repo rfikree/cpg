@@ -79,6 +79,7 @@ for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.7* 2>/dev/null); do
     fi
 done
 if [[ $(uname) == Linux || -z ${JAVA_VERSION} ]]; then
+    JAVA7_VERSION=${JAVA_VERSION}
     for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.8*); do
         if [ -d "${JAVA_VERSION}" ]; then
             JAVA_HOME=${JAVA_VERSION}
@@ -163,7 +164,6 @@ export APP_STACK VAR_STACK CONTENT_DIR INSTALL_DIR JAVA_VENDOR
 export SQLPLUS_HOME SAPJCO_HOME SAPSEC_HOME
 
 
-
 #================================================
 # System Shortcuts
 #================================================
@@ -191,6 +191,9 @@ unset domain domains
 if [ -f ${automation}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)Path *=' \
         ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
+    eval $(egrep '^(jdkVer|admURL) *=' \
+        ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
+    export ADM_URL=${admURL}
 fi
 
 if [ -d ${beaPath:-''} ]; then
@@ -217,7 +220,11 @@ if [[ -z ${JAVA_HOME} ]]; then
 else
     echo JAVA_HOME is ${JAVA_HOME}
 fi
-
+# Temporary fix while switching to Java 8
+if [[ $(uname -s) = Linux \
+&& ${JAVA7_VERSION} =~ ${jdkVer:-xx} ]]; then
+    JAVA_VERSION=${JAVA7_VERSION}
+fi
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 && -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then
@@ -227,7 +234,7 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 fi
 
 export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME
-unset MW_DIR WL_DIR
+unset MW_DIR WL_DIR jdkPath beaPath jdkVer admURL JAVA7_VERSION
 
 
 #================================================
