@@ -230,8 +230,8 @@ fi
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 && -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then
-    echo Setting WL_HOME from Domain.properties
-    echo
+    #echo Setting WL_HOME from Domain.properties
+    #echo
     WL_HOME=${beaPath}/${WL_DIR}
 fi
 
