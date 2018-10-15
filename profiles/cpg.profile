@@ -71,7 +71,10 @@ export ENVIRONMENT STACKUSER
 
 #### Default values - may be overriden;
 
-for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.7* 2>/dev/null); do
+JAVA_BASE=${INSTALL_DIR}/java
+[[ $(uname) == Linux ]] && JAVA_BASE=/usr/java
+
+for JAVA_VERSION in $(ls -drt ${JAVA_BASE}/jdk1.7* 2>/dev/null); do
     if [ -d ${JAVA_VERSION} ]; then
         JAVA_HOME=${JAVA_VERSION}
     else
@@ -80,7 +83,7 @@ for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.7* 2>/dev/null); do
 done
 if [[ $(uname) == Linux || -z ${JAVA_VERSION} ]]; then
     JAVA7_VERSION=${JAVA_VERSION}
-    for JAVA_VERSION in $(ls -drt ${INSTALL_DIR}/java/jdk1.8*); do
+    for JAVA_VERSION in $(ls -drt ${JAVA_BASE}/jdk1.8*); do
         if [ -d "${JAVA_VERSION}" ]; then
             JAVA_HOME=${JAVA_VERSION}
         else
