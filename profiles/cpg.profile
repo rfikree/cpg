@@ -220,9 +220,8 @@ if [[ ${JAVA_HOME} != ${jdkPath} \
 fi
 if [[ -z ${JAVA_HOME} ]]; then
     echo JAVA_HOME not set
-else
-    echo JAVA_HOME is ${JAVA_HOME}
 fi
+
 # Temporary fix while switching to Java 8
 if [[ $(uname -s) = Linux \
 && ${JAVA7_VERSION} =~ ${jdkVer:-xx} ]]; then
@@ -411,6 +410,8 @@ if [[ $0 =~ bash ]]; then
     fi
     echo
     echo "   JAVA_HOME = ${JAVA_HOME}"
+    [[ ${JAVA_VERSION} != ${JAVA_VERSION} ]] && \
+    echo "JAVA_VERSION = ${JAVA_VERSION}"
     echo "     WL_HOME = ${WL_HOME}"
     echo
     echo "        PATH = ${PATH}"
