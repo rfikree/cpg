@@ -91,7 +91,7 @@ fi
 export JAVA_HOME=${JAVA_HOME}
 JAVA_VENDOR=Sun
 
-if [[ $(uname -s) = Linux ]]; then
+if [[ -z ${JAVA_VERSION} ]]; then
     JAVA_VERSION=$(readlink -f /usr/bin/java)
     JAVA_VERSION=${JAVA_VERSION%/jre/bin/java}
     if [[ -n ${JAVA_VERSION} ]]; then
@@ -131,9 +131,9 @@ fi
 
 if [[ ${PROJECT_NAME} == CPO && $(id | cut -d "(" -f2 | cut -d ")" -f1) == dev12 ]] || [[ ${PROJECT_NAME} == CPO && $(id | cut -d "(" -f2 | cut -d ")" -f1) == stg12 ]]; then
     domains='1 2'
-	MW_DIR=Middleware_Home1
-	WL_DIR=wlserver_10.3
-	JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.7.0_181
+    MW_DIR=Middleware_Home1
+    WL_DIR=wlserver_10.3
+    JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.7.0_181
 fi
 
 if [ "${STACKUSER}" == 'true' ]; then
