@@ -410,7 +410,7 @@ if [[ $0 =~ bash ]]; then
     fi
     echo
     echo "   JAVA_HOME = ${JAVA_HOME}"
-    [[ ${JAVA_VERSION} != ${JAVA_VERSION} ]] && \
+    [[ ${JAVA_HOME} != ${JAVA_VERSION} ]] && \
     echo "JAVA_VERSION = ${JAVA_VERSION}"
     echo "     WL_HOME = ${WL_HOME}"
     echo
