@@ -192,11 +192,8 @@ unset domain domains
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
 if [ -f ${automation}/stacks/${STACK}/*d1/Domain.properties ]; then
-    eval $(egrep '^(jdk|bea)Path *=' \
+    eval $(egrep '^(jdk|bea)(Path|ver) *=' \
         ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
-    eval $(egrep '^(jdkVer|admURL) *=' \
-        ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
-    export ADM_URL=${admURL}
 fi
 
 if [ -d ${beaPath:-''} ]; then
@@ -236,7 +233,7 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 fi
 
 export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME
-unset MW_DIR WL_DIR jdkPath beaPath jdkVer admURL JAVA7_VERSION
+unset MW_DIR WL_DIR jdkPath beaPath jdkVer JAVA7_VERSION
 
 
 #================================================
