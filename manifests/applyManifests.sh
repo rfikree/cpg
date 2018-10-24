@@ -28,7 +28,8 @@ applyManifest() {
         if ! diff ${manifest_dir}/${manifest_name} ${manifest_mv} >/dev/null; then
             mv /tmp/${manifest_name} ${manifest_mv}
             cd ${manifest_dir}
-            svccfg import ${manifest_name}
+            # svccfg import ${manifest_name}
+            svcadm restart svc:/system/manifest-import
             return 0
         else
             rm /tmp/${manifest_name}
@@ -62,14 +63,6 @@ case ${CPG_HOSTNAME:-''} in
         epa_manifest="epagent.xml"
         wl_manifest="nodemanagerAppAdm.xml nodemanager.xml"
         ;;
-    *-bdt)
-        epa_manifest="epagent.xml"
-        wl_manifest=""
-        ;;
-    *-blcpo)
-        epa_manifest="epagent.xml"
-        wl_manifest="nodemanager1x.xml nodemanager.xml"
-        ;;
     *-blwscpo)
         epa_manifest="epagent.xml"
         wl_manifest="nodemanager1x.xml nodemanager.xml"
@@ -94,10 +87,6 @@ case ${CPG_HOSTNAME:-''} in
         epa_manifest="epagent.xml"
         wl_manifest="weblogicAdmin.xml weblogic.xml"
         ;;
-    *-ws)
-        epa_manifest="epagent.xml"
-        wl_manifest="nodemanager3x.xml nodemanager.xml"
-        ;;
     *)
         echo Unknown host ${HOSTNAME} ${CPG_HOSTNAME}
         exit 99
@@ -120,18 +109,6 @@ elif ! diff ${SOURCE_BASE}/general/olctest /usr/local/bin/olctest >/dev/null; th
     cp ${SOURCE_BASE}/general/olctest /usr/local/bin
 fi
 applyManifest olctest general olctest.xml olctest.xml
-
-# Cleanup olc_services
-for f in  /etc/rc?.d/*olc_services /etc/init.d/olc_services; do
-    if [ -e ${f} ]; then
-        echo Removing ${f}
-        rm ${f}
-    fi
-    if [ -L ${f} ]; then
-        echo Removing ${f}
-        rm ${f}
-    fi
-done
 
 
 # EOF
