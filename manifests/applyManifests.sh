@@ -27,7 +27,7 @@ applyManifest() {
         perl -pi -e "s|/site/|/${1}/|" /tmp/${manifest_name}
         if ! diff ${manifest_dir}/${manifest_name} ${manifest_mv} >/dev/null; then
             mv /tmp/${manifest_name} ${manifest_mv}
-            cd ${manifest_dir}
+            #cd ${manifest_dir}
             # svccfg import ${manifest_name}
             svcadm restart svc:/system/manifest-import
             return 0
