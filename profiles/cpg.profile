@@ -192,7 +192,7 @@ unset domain domains
 # Set WL_HOME and JAVA_HOME from automation directory - if available
 #================================================
 if [ -f ${automation}/stacks/${STACK}/*d1/Domain.properties ]; then
-    eval $(egrep '^(jdk|bea)(Path|ver) *=' \
+    eval $(egrep '^(jdk|bea)(Path|Ver) *=' \
         ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
 
