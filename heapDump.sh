@@ -65,7 +65,7 @@ echo Capturing heap dump. The application server must remain running.
 jmap -J-d64 ${FORCE} -dump:format=b,file=${HOME}/${FILENAME} ${PID}
 chmod 640 ${HOME}/${FILENAME}
 
-echo Capture is complete.  Appliation server may be killed if required.
+echo Capture is complete.  Application server may be killed if required.
 if [[  -d ${VAR_STACK} ]]; then
     echo Moving heap dump to ${VAR_STACK}/${FILENAME}
     mv ${HOME}/${FILENAME} ${VAR_STACK} &
