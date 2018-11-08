@@ -1,48 +1,63 @@
 #!/usr/bin/bash
 #set -x
 
-server_id=$1
+MATCH=${1}
 
 usage() {
-	cat <<EOF
-usage $0 server_id|pid
+    cat <<EOT
+usage $0 pattern|pid [-F]
 
-  server id must be specified the form 'a1p10d1-c1m1ms01'
+  patttern must match only one Java process in the output of ps
 
-  Generate a thread dump using jstack and saves it into the VAR_STACK directory.
+  Generate a heap dump using jmap and saves it into the VAR_STACK directory.
   It must be run from the same server and user id as the process to be dumped.
 
-EOF
-	exit 1
+  Accepts -F as a second option in case force is required.
+
+  Filename will use the weblogicName for the process or the pid to
+  identify the thread dump source
+EOT
+    exit 1
 }
 
-if [ $# -ne 1 ]; then
-	usage
+if [[ -z ${1} ]]; then
+    usage
 fi
 
-if [ "${server_id/a[1-6][dsp][1-6][0-5]d[129]-c[1-9]m[1-4]ms0[1-9]/}" == '' ]; then
-	pid=$(/usr/ucb/ps -axww | grep [w]eblogic.Name=$server_id | \
-					cut -c 1-6 | tr -d ' ' )
-elif [ "${server_id/[0-5]*/}" == '' ]; then
-	pid=${server_id}
-	server_id=pid${server_id}
-else
-	usage
+PS="ps -fu $(id -un)"
+if [ -e /usr/ucb/ps ]; then
+    PS='/usr/ucb/ps awxx'
+fi
+PID=(( $(${PS} | awk -f <(cat - <<EOT
+    /java/ && /${MATCH}/ {print \$1}
+EOT
+)))
+
+if [[ ${#PID[@] -ne 1 ]]; then
+    echo Matced PIDs: ${PID}
+    echo
+    usage
+if
+
+if [ ! -r /proc/${PID} ]; then
+    echo "FATAL: unable to access process ${PID}"
+    echo
+    usage
 fi
 
-if [ ! -d ${VAR_STACK} ]; then
-	usage
+server_id=$( ${PS} | grep ${PID} | tr ' ' '\n' | \
+        grep weblogic.Name | uniq | cut -d= -f 2 )
+if [[ -z ${server_id} ]]; then
+    server_id=pid${server_id}
 fi
+#echo ${server_id}
 
-if [ ! -r /proc/${pid} ]; then
-	echo "FATAL: unable to read data for pid ${pid}"
-	usage
+if [[ -z ${VAR_STACK} || ! -d ${VAR_STACK} ]]; then
+    VAR_STACK=/tmp
 fi
+LOGNAME=${VAR_STACK}/jstack.${server_id}.$(date +%y%m%d_%H%M%S)
 
-pid=$(/usr/ucb/ps -axww | grep [w]eblogic.Name=$server_id | cut -c 1-6)
-logname=${VAR_STACK}/jstack.$server_id.$(date +%y%m%d_%H%M%S)
-
-echo Saving thread_dump to $logname
-jstack -l $pid > $logname
+echo Saving thread_dump to $LOGNAME
+jstack -l ${PID} > $LOGNAME
 
 # EOF
