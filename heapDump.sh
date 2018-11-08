@@ -26,19 +26,21 @@ if [[ -z ${1} ]]; then
 fi
 
 PS="ps -fu $(id -un)"
+FIELD=2
 if [ -e /usr/ucb/ps ]; then
     PS='/usr/ucb/ps awxx'
+    FIELD=1
 fi
-PID=(( $(${PS} | awk -f <(cat - <<EOT
-    /java/ && /${MATCH}/ {print \$1}
+PID=$(${PS} | awk -f <(cat - <<EOT
+    /java/ && /${MATCH}/ {print \$${FIELD}}
 EOT
-)))
+) )
 
-if [[ ${#PID[@] -ne 1 ]]; then
+if [[ ${PID:-x} != ${PID% *} ]]; then
     echo Matced PIDs: ${PID}
     echo
     usage
-if
+fi
 
 if [ ! -r /proc/${PID} ]; then
     echo "FATAL: unable to access process ${PID}"
