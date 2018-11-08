@@ -36,8 +36,8 @@ PID=$(${PS} | awk -f <(cat - <<EOT
 EOT
 ) )
 
-if [[ ${PID:-x} != ${PID% *} ]]; then
-    echo Matced PIDs: ${PID}
+if [[ ${#PID[@]} -ne 1 ]]; then
+    echo Matched PIDs: ${PID[@]}
     echo
     usage
 fi
