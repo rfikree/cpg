@@ -31,10 +31,10 @@ if [ -e /usr/ucb/ps ]; then
     PS='/usr/ucb/ps awxx'
     FIELD=1
 fi
-PID=$(${PS} | awk -f <(cat - <<EOT
+PID=( $(${PS} | awk -f <(cat - <<EOT
     /java/ && /${MATCH}/ {print \$${FIELD}}
 EOT
-) )
+) ) )
 
 if [[ ${#PID[@]} -ne 1 ]]; then
     echo Matched PIDs: ${PID[@]}
