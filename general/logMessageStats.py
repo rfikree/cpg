@@ -97,6 +97,8 @@ exceptionPatterns = [
     ## Application Level Thread Message (CPO)
     "^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) \[\[\w+\].+?\] (?ms)(\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)",
     r"^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) \[\[\w+\].+?\] ([^> \n]+(?: -)?(?: [^-0-9@:;>=' [\n]+){,4})",
+    "^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) (.*? - .*?PIN):",
+    "^\S+ <Notice> <(Stdout)> .+?BEA-000000> <\S{10} \S+ ([a-z]\S+) (ERROR|WARN|INFO) (.*? - .*?) -",
 
     ## Thread Message
     "^\S+ <Notice> <(Stdout)> .+?BEA-000000> <(?:\S{10} )?\d\S+ (ERROR|WARN|INFO) \[\[\w+\].+?\] (?ms)(\S+).+?at ((?:com\.(?:cpc|pur)|cpdt\.)\S+)",
