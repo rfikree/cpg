@@ -3,6 +3,14 @@
 
 . /lib/svc/share/smf_include.sh
 # SMF_FMRI is the name of the target service. This allows multiple instances
+# to use the same script
+
+getproparg() {
+ val=`svcprop -p $1 $SMF_FMRI`
+ [ -n "$val" ] && echo $val
+}
+
+# SMF_FMRI is the name of the target service. This allows multiple instances
 # to use the same script - Expects instance name to be the stackname
 SERVICE=${SMF_FMRI##*:}
 
