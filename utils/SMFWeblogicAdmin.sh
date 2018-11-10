@@ -32,7 +32,7 @@ export LC_MESSAGES LC_COLLATE LC_CTYPE LC_TIME
 
 
 # Find the pid of the running process, if any
-PS="ps -fu ${USERNAME} -o pid,args"
+PS="ps -o pid,args -u ${USERNAME}"
 [ -e /usr/ucb/ps ] && PS='/usr/ucb/ps wxx'
 PID=( $(${PS} | awk "/[j]ava.*${STACK}/ {print \$1}") )
 

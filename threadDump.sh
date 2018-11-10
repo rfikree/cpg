@@ -24,7 +24,7 @@ if [[ -z ${1} ]]; then
     usage
 fi
 
-PS="ps -fu $(id -un) -o pid,args"
+PS="ps -o pid,args -u $(id -un)"
 [ -e /usr/ucb/ps ] && PS='/usr/ucb/ps wxx'
 PID=( $(${PS} | awk "/[j]ava.*${MATCH}/ {print \$1}") )
 
