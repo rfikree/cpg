@@ -32,9 +32,9 @@ export LC_MESSAGES LC_COLLATE LC_CTYPE LC_TIME
 
 
 # Find the pid of the running process, if any
-PS="ps -uf ${USERNAME} -o pid,args"
+PS="ps -fu ${USERNAME} -o pid,args"
 [ -e /usr/ucb/ps ] && PS='/usr/ucb/ps wxx'
-PID=( $(${PS} | awk -f "/[j]ava.*${STACK}/ {print \$1}") )
+PID=( $(${PS} | awk "/[j]ava.*${STACK}/ {print \$1}") )
 
 DOMAIN_HOME=/cpg/cpo_apps/${DOMAIN}/${STACK}
 START_SCRIPT=${DOMAIN_HOME}/bin/startWebLogic.sh
