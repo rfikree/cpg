@@ -43,7 +43,7 @@ CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 export CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
 
 # Get User who is running script
-username=`getproparg method_context/user`
+USERNAME=`getproparg method_context/user`
 #echo "The user running this script is: $username"
 
 # Create variable to store the application number (1=CPO,2=BDT,3=CMSS,5=SOA Common Payment,6=SOA Pulse)
@@ -59,7 +59,7 @@ appid=`/usr/bin/echo $username | /usr/bin/cut -c4-5`
 stack=a${appnum}${appstack}${appid}
 
 # Handle stop option
-PID=`ps -fu ${username} | awk '/java.*[-]client/ || /weblogic[.]NodeManager/ {print $2}'`
+PID=`ps -fu ${USERNAME} | awk '/java.*[-]client/ || /weblogic[.]NodeManager/ {print $2}'`
 
 waitPid() {
     if [[ -n ${PID} ]]; then
@@ -92,7 +92,7 @@ fi
 
 
 ## Wait for file systems to be mounted - randomly 1 to 5 seconds
-#for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
+#for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps/cpg/cpo_var; do
 #	if [[ -d ${DIR} ]]; then
 #		while [[ ! -e ${DIR}/.mounted ]]; do
 #			sleep $(( ${RANDOM} / 6554 + 1 ))

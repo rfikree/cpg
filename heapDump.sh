@@ -25,16 +25,9 @@ if [[ -z ${1} ]]; then
     usage
 fi
 
-PS="ps -fu $(id -un)"
-FIELD=2
-if [ -e /usr/ucb/ps ]; then
-    PS='/usr/ucb/ps awxx'
-    FIELD=1
-fi
-PID=( $(${PS} | awk -f <(cat - <<EOT
-    /java/ && /${MATCH}/ {print \$${FIELD}}
-EOT
-) ) )
+PS="ps -fu $(id -un) -o pid,args"
+[ -e /usr/ucb/ps ] && PS='/usr/ucb/ps wxx'
+PID=( $(${PS} | awk "/[j]ava.&${MATCH}/ {print \$1}") )
 
 if [[ ${#PID[@]} -ne 1 ]]; then
     echo Matched PIDs: ${PID[@]}
@@ -50,9 +43,7 @@ fi
 
 server_id=$( ${PS} | grep ${PID} | tr ' ' '\n' | \
         grep weblogic.Name | uniq | cut -d= -f 2 )
-if [[ -z ${server_id} ]]; then
-    server_id=pid${server_id}
-fi
+[[ -z ${server_id} ]] && server_id=pid${server_id}
 #echo ${server_id}
 
 if [ "${FORCE/-F/}" != '' ]; then
