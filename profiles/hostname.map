@@ -32,7 +32,7 @@ s-03058-c5f,dev-d-uicpo,10.237.135.127
 
 # Staging Servers
 
-s-00724-c5f,stg-cpodeploy,
+s-00724-c5f,stg-cpodeploy
 l-03381-c5f,l-stg-cpodeploy
 s-00716-c5f,stg-wladm
 s-03060-c5f,s-stg-wladm
@@ -99,7 +99,7 @@ s-03068-c5a,prd-e-uicpo,10.229.84.229
 s-03070-c5a,prd-f-uicpo,10.229.84.231
 
 s-00890-c5a,prd-data-appmon
-
+s-00713-c5f,stg-data-appmon
 
 # Non WebLogic Servers
 
