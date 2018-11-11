@@ -26,7 +26,7 @@ if [[ -z ${1} ]]; then
 fi
 
 PS="ps -o pid,args -u $(id -un)"
-[ -e /usr/ucb/ps ] && PS='/usr/ucb/ps wxx'
+[ -e /usr/ucb/ps ] && PS='/usr/ucb/ps axww'
 PID=( $(${PS} | awk "/[j]ava.&${MATCH}/ {print \$1}") )
 
 if [[ ${#PID[@]} -ne 1 ]]; then

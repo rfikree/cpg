@@ -41,7 +41,7 @@ export LC_MESSAGES LC_COLLATE LC_CTYPE LC_TIME
 
 # Find the pid of the running process, if any
 PS="ps -o pid,args -u ${USERNAME}"
-[ -e /usr/ucb/ps ] && PS='/usr/ucb/ps xww'
+[ -e /usr/ucb/ps ] && PS='/usr/ucb/ps axww'
 PID=( $(${PS} | awk "/[j]ava.*${STACK}/ {print \$1}") )
 
 DOMAIN_HOME=/cpg/cpo_apps/${DOMAIN}/${STACK}
