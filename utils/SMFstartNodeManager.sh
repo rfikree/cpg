@@ -44,16 +44,16 @@ export CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE} | cut -d
 
 # Get User who is running script
 USERNAME=`getproparg method_context/user`
-#echo "The user running this script is: $username"
+#echo "The user running this script is: $USERNAME"
 
 # Create variable to store the application number (1=CPO,2=BDT,3=CMSS,5=SOA Common Payment,6=SOA Pulse)
-appnum=`/usr/bin/echo $username | /usr/bin/cut -c4`
+appnum=`/usr/bin/echo $USERNAME | /usr/bin/cut -c4`
 
 # Create a variable for the stack (d=development, s=staging, p=production
-appstack=`/usr/bin/echo $username | /usr/bin/cut -c1`
+appstack=`/usr/bin/echo $USERNAME | /usr/bin/cut -c1`
 
 # Create variable to store the application user ID (ie: dev50/stg50/prd50 = 50, dev10/stg10/prd10 = 10)
-appid=`/usr/bin/echo $username | /usr/bin/cut -c4-5`
+appid=`/usr/bin/echo $USERNAME | /usr/bin/cut -c4-5`
 
 # Create a stack variable
 stack=a${appnum}${appstack}${appid}
@@ -74,18 +74,18 @@ waitPid() {
 
 if [ -n "${PID}" ]; then
     if [ "${1}" == stop -o "${1}" == restart ]; then
-        echo Killing process\(es\): ${PID} for ${username}
+        echo Killing process\(es\): ${PID} for ${USERNAME}
         kill ${PID}
         waitPid 20
         kill -0 ${PID} 2>/dev/null && exit ${SMF_EXIT_ERR_FATAL}
         exit ${SMF_EXIT_OK}
     else
-        echo Already running process\(es\): ${PID} for ${username}
+        echo Already running process\(es\): ${PID} for ${USERNAME}
         exit ${SMF_EXIT_ERR_NOSMF}
     fi
 else
     if [ "${1}" == stop -o "${1}" == restart ]; then
-        echo No processes:${PID} for ${username}
+        echo No processes:${PID} for ${USERNAME}
         exit ${SMF_EXIT_OK}
     fi
 fi
