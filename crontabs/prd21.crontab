@@ -1,9 +1,0 @@
-#! prd21.crontab
-
-# Compress (and delete) log files
-25  1 * * 0  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 5 400
-
-# Reload crontab Monday evening
-25 23 * * 1  crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.crontab
-
-# EOF

@@ -1,0 +1,10 @@
+#! optadm.L-03382-C5A.crontab
+
+# Build-info updates for the WiPro Production Environment
+#
+25,55 * * * * /cpg/3rdParty/scripts/cpg/buildinfo/updateBuildInfo.sh 2>&1
+
+# Reload crontab Monday evening
+10 23 * * 1  crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.`hostname`.crontab
+
+# EOF
