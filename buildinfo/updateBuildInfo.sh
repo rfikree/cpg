@@ -1,9 +1,20 @@
 #! /bin/bash
 
 # Update here if JAVA or WebLogic is updated
-for JAVA_HOME in  $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
-    continue
-done
+case $(uname) in
+SunOS)
+    for JAVA_HOME in  $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
+        continue
+    done
+    ;;
+Linux)
+    for JAVA_HOME in  $(ls -drt /usr/java/jdk1.7*); do
+        continue
+    done
+    ;;
+esac
+
+
 export JAVA_HOME
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 

@@ -104,7 +104,6 @@ if [[ -z ${JAVA_VERSION} ]]; then
     fi
 fi
 
-
 MW_DIR=Middleware_Home12c
 WL_DIR=wlserver
 
@@ -115,7 +114,7 @@ LOB=${STACK_NUM:0:1}
 domains='1'
 case $LOB in
     1)  PROJECT_NAME=CPO
-        domains='1 2 9';;
+        domains='1 2';;
     3)  PROJECT_NAME=WS;;
     5)  PROJECT_NAME=CPC-SOA
         MW_DIR=fmw${STACK_NUM}
@@ -207,22 +206,24 @@ WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 
-if [[ ${JAVA_HOME} != ${jdkPath} \
-&& -f ${jdkPath:-/XXX}/bin/java ]]; then
-    echo Setting JAVA_HOME from Domain.properties
-    JAVA_HOME=${jdkPath}
-    if [ $(uname) = SunOS ]; then
-        JAVA_VERSION=${jdkPath}
-    fi
-fi
-if [[ -z ${JAVA_HOME} ]]; then
-    echo JAVA_HOME not set
-fi
-
 # Temporary fix while switching to Java 8
 if [[ $(uname -s) = Linux \
 && ${JAVA7_VERSION} =~ ${jdkVer:-xx} ]]; then
     JAVA_VERSION=${JAVA7_VERSION}
+fi
+
+if [[ ${JAVA_HOME} != ${jdkPath} \
+&& -f ${jdkPath:-/XXX}/bin/java ]]; then
+    if [[ $(uname) = SunOS ]]; then
+        echo Setting JAVA_HOME from Domain.properties
+        JAVA_HOME=${jdkPath}
+        JAVA_VERSION=${jdkPath}
+    elif [[ $(uname) = Linux ]]; then
+        JAVA_HOME=${JAVA_VERSION}
+    fi
+fi
+if [[ -z ${JAVA_HOME} ]]; then
+    echo JAVA_HOME not set
 fi
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
