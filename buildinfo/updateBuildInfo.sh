@@ -13,9 +13,9 @@ Linux)
     done
     ;;
 esac
+JAVA_VENDOR=Sun
 
-
-export JAVA_HOME
+export JAVA_HOME JAVA_VENDOR
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # Make everything visible
@@ -44,7 +44,8 @@ PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
 CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
 CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
-CPG_ENV=${CPG_HOSTNAME%%-*}
+CPG_ENV=${CPG_HOSTNAME%-*}
+CPG_ENV=${CPG_ENV#*-}
 
 
 # Generate reports
