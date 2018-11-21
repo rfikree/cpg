@@ -432,21 +432,16 @@ unset OS_USERNAME STACKNUM CPG_TIER
 #==================================================
 # Verify status of the automation directory
 #==================================================
+SVN_WD_VER=$(sqlite3 ${automation}/.svn/wc.db "PRAGMA user_version")
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
-    if [[ -d ${automation}.old && $(uname) == Linux ]]; then
-        if [ ! -d ${automation} ]; then
-            svn co ${SVN_REPO}/trunk/secure ${automation}
-        elif [ -d ${automation} ]; then
-            svn update ${automation}
-            svn status ${automation}
-        fi
-    elif [[ ! -d ${automation}.old && $(uname) == SunOS ]]; then
-        if [ ! -d ${automation} ]; then
-            svn co ${SVN_REPO}/trunk/secure ${automation}
-        elif [ -d ${automation} ]; then
-            svn update ${automation}
-            svn status ${automation}
-        fi
+     if [[ $(uname) == Linux &&  ! -d ${automation}  ]]; then
+         svn co ${SVN_REPO}/trunk/secure ${automation}
+    elif [[ $(uname) = Linux && ${SVN_WD_VER} -eq 29 ]]; then
+        svn update ${automation}
+        svn status ${automation}
+    elif [[ $(uname) = SunOS && ${SVN_WD_VER} -eq 31 ]]; then
+        svn update ${automation}
+        svn status ${automation}
     fi
 fi
 
