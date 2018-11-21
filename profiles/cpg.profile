@@ -428,7 +428,7 @@ fi
 
 unset OS_USERNAME STACKNUM CPG_TIER
 
-r
+
 #==================================================
 # Verify status of the automation directory
 #==================================================
