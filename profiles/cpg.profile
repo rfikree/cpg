@@ -435,7 +435,7 @@ unset OS_USERNAME STACKNUM CPG_TIER
 if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
     SVN_WD_VER=$(sqlite3 ${automation}/.svn/wc.db "PRAGMA user_version" 2>/dev/null)
     if [[ $(uname) == Linux &&  ! -d ${automation}  ]]; then
-         svn co ${SVN_REPO}/trunk/secure ${automation}
+         echo -e '\ny' || svn co ${SVN_REPO}/trunk/secure ${automation}
     elif [[ $(uname) = Linux && ${SVN_WD_VER} -eq 29 ]]; then
         svn update ${automation}
         svn status ${automation}
