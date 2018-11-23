@@ -95,7 +95,7 @@ esac
 
 
 # Apply the standard manifests
-if [[ ${CPG_HOSTNAME%%-*} != dev ]]; then
+if [[ ${CPG_HOSTNAME%%-*} != l-dev ]]; then
     applyManifest introscope general ${epa_manifest} "epagent.xml"
 fi
 if [[ -n ${wl_manifest} ]]; then
