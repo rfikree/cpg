@@ -1,4 +1,4 @@
-#! dev30.crontab
+## dev30.crontab
 
 # Compress (and delete) log files
 30  1   * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 3 35

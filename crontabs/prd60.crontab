@@ -1,4 +1,4 @@
-#! prd60.crontab
+## prd60.crontab
 
 # Compress (and delete) log files
 55  1 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 5 400

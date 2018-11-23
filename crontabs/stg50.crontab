@@ -1,4 +1,4 @@
-#! stg50.crontab
+## stg50.crontab
 
 # Compress (and delete) log files
 50  1 * * *  /cpg/3rdParty/scripts/cpg/utils/logManagement_run.sh 2 35
