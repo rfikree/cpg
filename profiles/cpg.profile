@@ -220,7 +220,6 @@ if [[ ${JAVA_HOME} != ${jdkPath} \
         JAVA_HOME=${jdkPath}
         JAVA_VERSION=${jdkPath}
     elif [[ $(uname) = Linux ]]; then
-        JAVA_HOME2=${JAVA_HOME}
         JAVA_HOME=${JAVA_VERSION}
     fi
 fi
