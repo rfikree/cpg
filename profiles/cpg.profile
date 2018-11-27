@@ -194,6 +194,7 @@ if [ -f ${automation}/stacks/${STACK}/*d1/Domain.properties ]; then
     eval $(egrep '^(jdk|bea)(Path|Ver) *=' \
         ${automation}/stacks/${STACK}/*d1/Domain.properties | tr -d ' ')
 fi
+JAVA_HOME2=${jdkPath}
 
 if [ -d ${beaPath:-''} ]; then
     BEA_HOME=${beaPath}
@@ -226,7 +227,6 @@ fi
 if [[ -z ${JAVA_HOME} ]]; then
     echo JAVA_HOME not set
 fi
-[[ -z ${JAVA_HOME2} ]] && JAVA_HOME=${JAVA_HOME2}
 
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
@@ -236,7 +236,7 @@ if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
     WL_HOME=${beaPath}/${WL_DIR}
 fi
 
-export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME
+export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME JAVA_HOME2
 unset MW_DIR WL_DIR jdkPath beaPath jdkVer JAVA7_VERSION
 
 
