@@ -219,12 +219,15 @@ if [[ ${JAVA_HOME} != ${jdkPath} \
         JAVA_HOME=${jdkPath}
         JAVA_VERSION=${jdkPath}
     elif [[ $(uname) = Linux ]]; then
+        JAVA_HOME2=${JAVA_HOME}
         JAVA_HOME=${JAVA_VERSION}
     fi
 fi
 if [[ -z ${JAVA_HOME} ]]; then
     echo JAVA_HOME not set
 fi
+[[ -z ${JAVA_HOME2} ]] && JAVA_HOME=${JAVA_HOME2}
+
 
 if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
 && -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then
