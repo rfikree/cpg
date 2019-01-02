@@ -1,13 +1,18 @@
 #!/usr/bin/bash
 
 MANIFEST_BASE=/var/svc/manifest
-SOURCE_BASE=/cpg/3rdParty/scripts/cpg/manifests
+SCRIPT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" ${0})
+SOURCE_BASE=$(dirname ${SCRIPT})
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-export CPG_HOSTNAME=$(egrep    -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
-CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
-CPG_HOSTNAME=${CPG_HOSTNAME#?-}
+if [ -f ${CPG_ALIAS_LOOKUP_FILE} ]; then
+    export CPG_HOSTNAME=$(egrep    -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
+    CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
+    CPG_HOSTNAME=${CPG_HOSTNAME#?-}
+else                # Not an OLC host ??
+    export CPG_HOSTNAME=$(hostname | tr 'A-Z' 'a-z')
+fi
 
 # Function to update or install configs only if missing or changed
 applyManifest() {
@@ -58,6 +63,7 @@ applyManifest() {
 
 
 # Define the manifests to apply
+# CPG_HOSTNAME will be the hostname if the map file does not exist.
 case ${CPG_HOSTNAME:-''} in
     *-appadm)
         epa_manifest="epagent.xml"
