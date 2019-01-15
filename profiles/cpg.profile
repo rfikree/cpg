@@ -350,7 +350,7 @@ export PS1
 
 # Fix for
 alias wlps="ps -fu ${LOGNAME} | grep [w]eblogic"
-if [[ $(uname -r) == '5.10' ]]
+if [[ $(uname -r) == '5.10' ]]; then
     alias wlps="/usr/ucb/ps -axww | grep [w]eblogic."
 fi
 
