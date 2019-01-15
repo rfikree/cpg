@@ -26,8 +26,6 @@ VISUAL=vi
 
 export PROJECT_NAME STACK SVN_REPO VISUAL
 
-alias wlps="/usr/ucb/ps -axww | grep [w]eblogic."
-
 #================================================
 # Default image umask is 0077
 #================================================
@@ -349,6 +347,12 @@ else
     PS1="${LOGNAME}@${CPG_HOSTNAME} \w\n> "
 fi
 export PS1
+
+# Fix for
+alias wlps="ps -fu ${LOGNAME} | grep [w]eblogic"
+if [[ $(uname -r) == '5.10' ]]
+    alias wlps="/usr/ucb/ps -axww | grep [w]eblogic."
+fi
 
 if [ $(uname) == SunOS ]; then
     memuse() {
