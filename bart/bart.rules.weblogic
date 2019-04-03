@@ -1,0 +1,36 @@
+## SysteMajik Standard BART Rules
+##      bill@systemajik.com - 2017-11-22
+## Derived from Cuddletech Standard BART Rules <benr@cuddletech.com>
+#
+# Attributes: acl, all, contents, dest, devnode, dirmtime,
+#              gid, lnmtime, mode, mtime, size, type, uid
+
+
+## GLOBAL:  These parameters apply to all other checks
+##		unless otherwise overridden.
+CHECK all
+IGNORE dirmtime lmtime mtime
+
+
+## Directory Checks: Specify directory structure to check followed
+##    by applicable CHECK/IGNORE's, or accept the GLOBAL above.
+
+## WARN: Avoid including files twice.
+##    They may get included twice if updated during the run.
+
+## Standard hierarchy - exclude dynamic files or directories
+##    recursion does not cross file system type boundaries
+
+
+# Check xml and properties files for the applications
+# Separate entries beause exclusion included.
+# Don't check files for managed servers (these are copies)
+
+/cpg/cpg_app  	!servers/a*/ *.xml
+
+/cpg/cpg_app	!servers/a*/ *.properties
+
+CHECK
+
+
+# EOF	:indentSize=8:tabSize=8:noTabs=false:mode=properties:
