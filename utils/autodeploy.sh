@@ -69,8 +69,6 @@ EOF
 ## Functions
 
 # Handle copies
-
-
 # Params: FQ_Source, FQ_Destination; FQ = full file path
 doCopy() {
     debug doCopy ${1} ${2}
@@ -196,7 +194,15 @@ invokeDispatcher() {
         mkdir -p ${JYTHON_CACHE}
     fi
 
-    eval $(egrep '^jdkVer *=' ${DOMAIN_PROP_DIR}/Domain.properties | tr -d ' ')
+    export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
+    -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
+    -Dweblogic.security.SSL.enableJSSE=true
+    -Dweblogic.ssl.JSSEEnabled=true
+    -Dweblogic.security.SSL.minimumProtocolVersion=TLSv1.2
+    -Dweblogic.security.allowCryptoJDefaultJCEVerification=true
+    -Dweblogic.security.allowCryptoJDefaultPRNG=true
+    -Dweblogic.security.SSL.ignoreHostnameVerification=true
+    -Djdk.tls.client.protocols=TLSv1,TLSv1.1,TLSv1.2"
 
     # Using JDK version as a proxy for WebLogic version
     case ${jdkVer:-x} in
@@ -206,20 +212,25 @@ invokeDispatcher() {
         PROP_ARG=${PROP_ARG},${DOMAIN_PROP_DIR}/Domain.properties
 
         WLST=${WL_HOME}/../oracle_common/common/bin/wlst.sh
-        CLASSPATH=${CLASSPATH}:${JAVA_HOME}/lib/tools.jar
+        export CLASSPATH=${JAVA_HOME}/lib/tools.jar
         CLASSPATH=${CLASSPATH}:${WL_HOME}/modules/features/wlst.wls.classpath.jar
         CLASSPATH=${CLASSPATH}:${WL_HOME}/common/wlst/modules/jython-modules.jar
         CLASSPATH=${CLASSPATH}:${WL_HOME}/common/wlst/modules/jython-modules.jar/Lib
         CLASSPATH=${CLASSPATH}:${automation}
-        CLASSPATH=${CLASSPATH}:${automation}/wlst
-        CLASSPATH=${CLASSPATH}:${automation}/wlst/modules
+        #CLASSPATH=${CLASSPATH}:${automation}/wlst
+        #CLASSPATH=${CLASSPATH}:${automation}/wlst/modules
+        # TODO: evaluate
+
+        #Dweblogic.wlstHome=<another-directory containing common/wlst>
+        #oracle_common/plugins/fmwplatform/actions/standardactions.jar
+        #wlserver/modules/com.oracle.webligc.management.scripting.jar
 
         #WLST="java -Dpython.path=${CLASSPATH}
-        WLST="java -Dpython.path=${CLASSPATH}
+        WLST="${JAVA_HOME}/bin/java -Dpython.path=${CLASSPATH}
             -Dwlst.offline.log=${HOME}/wlst_offline.log
             -Dweblogic.security.allowCryptoJDefaultJCEVerification=true
             -Dweblogic.security.allowCryptoJDefaultPRNG=true
-            -DORACLE_HOME=${WL_HOME}/../oracle_common
+            -DORACLE_HOME=${BEA_HOME}/oracle_common
             ${WLST_PROPERTIES} weblogic.WLST"
         DISPATCHER=${automation}/wlst/cpo_dispatcher.py
         #   -Dwlst.offline.log=stdout
@@ -238,11 +249,13 @@ invokeDispatcher() {
         for module in ${WLST_MODULES}; do
             WLST_PATH=${WLST_PATH}:${WL_HOME}/common/wlst/modules/${module}
         done
-        CLASSPATH=${SERVER_PATH#:}${WLST_PATH}
+
+        export CLASSPATH=${JAVA_HOME}/lib/tools.jar
+        CLASSPATH=$CLASSPATH}:${SERVER_PATH#:}${WLST_PATH}
         PYTHON_PATH=${CLASSPATH}:${SCRIPT_DIR}
 
         #WLST="java -Dpython.path=${automation}/wlst/modules
-        WLST="java -cp ${CLASSPATH} -Dpython.path=${PYTHON_PATH} \
+        WLST="${JAVA_HOME}/bin/java -Dpython.path=${PYTHON_PATH} \
             -Dwlst.offline.log=${JYTHON_LOG} \
             -Dpython.cachedir=${JYTHON_CACHE} \
             ${WLST_PROPERTIES} weblogic.WLST"
@@ -290,6 +303,27 @@ processAppEnv() {
         echo 'Required variable(s) "envDirectory" and/or "envTarget"'
         echo 'have not been specified'
     fi
+}
+
+
+# Configure the environment: Set BEA_HOME, JAVA_HOME, WL_HOME
+configureEnvironment() {
+    eval $(egrep '^(jdk|bea)(Path|Ver) *=' \
+        ${DOMAIN_PROP_DIR}/Domain.properties | tr -d ' ')
+    export BEA_HOME=${beaPath}
+    #JAVA_HOME2=${jdkPath}
+    local JAVA_BASE=/usr/java
+    for JAVA_HOME in $(ls -drt ${JAVA_BASE}/${jdkVer}* 2>/dev/null); do
+        : Just finding latest JAVA version
+    done
+    if [ ! -d ${JAVA_HOME} ]; then
+        echo FATAL: ${JAVA_VERSION} is invalid
+        exit 2 # No such file or directory
+    fi
+    export WL_HOME=$(echo ${BEA_HOME}/wlserver*)
+    export automation=${DOMAIN_HOME}/automation
+    export JAVA_HOME jdkVer
+    unset beaPath jdkPath
 }
 
 
@@ -395,6 +429,10 @@ function processStacks {
 
         if grep -q [[]${SELECTED_TARGET}] ${DOMAIN_PROP_DIR}/Deploy.properties; then
             echo INFO: Deploying to ${STACK}${domain}
+
+            # Configure Environment
+            debug Calling configureEnvironment
+            configureEnvironment
 
             # Process the request
             debug Calling processRequest
