@@ -46,6 +46,7 @@ IGNORE dirmtime
 /opt/nimsoft		!niscache/ !pids/ !state !tmp/ !probes/ !robot/
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log !system/cdm/cdm.cfg
 /opt/nimsoft/robot	!*.log !*.rdb !robot.cfg !robot_env.sds
+/opt/snow	!data/
 
 /packages
 /platform
