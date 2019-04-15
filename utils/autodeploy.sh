@@ -252,7 +252,7 @@ invokeDispatcher() {
 
         export CLASSPATH=${JAVA_HOME}/lib/tools.jar
         CLASSPATH=$CLASSPATH}:${SERVER_PATH#:}${WLST_PATH}
-        PYTHON_PATH=${CLASSPATH}:${SCRIPT_DIR}
+        PYTHON_PATH=${CLASSPATH}:${automation}
 
         #WLST="java -Dpython.path=${automation}/wlst/modules
         WLST="${JAVA_HOME}/bin/java -Dpython.path=${PYTHON_PATH} \
