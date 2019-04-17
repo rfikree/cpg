@@ -61,8 +61,14 @@ case "${OS_USERNAME:0:3}" in
         STACKUSER=true
         ;;
     *)
-        STACKUSER=false
-        USER_PATTERN=''
+        if [ -d /cpg/cpo_apps/a1l10 ]; then
+            ENVIRONMENT=lcl
+            STACK_NUM=10
+            ENVIRONMENT_SHORT=l
+            STACKUSER=true
+        else
+            STACKUSER=false
+        fi
         ;;
 esac
 export ENVIRONMENT STACKUSER
@@ -71,6 +77,7 @@ export ENVIRONMENT STACKUSER
 
 JAVA_BASE=${INSTALL_DIR}/java
 [[ $(uname) == Linux ]] && JAVA_BASE=/usr/java
+[[ $(uname -v) =~ Ubuntu ]] && JAVA_BASE=/usr/lib/jvm
 
 for JAVA_VERSION in $(ls -drt ${JAVA_BASE}/jdk1.7* 2>/dev/null); do
     if [ -d ${JAVA_VERSION} ]; then
@@ -311,24 +318,28 @@ if [ ${CPG_HOSTNAME_COUNT} -gt 1 ]; then
     echo 'ERROR in PROFILE:  Found more than 1 match of HOSTNAME in'
     echo "  ${CPG_ALIAS_LOOKUP_FILE}"
     echo
-else
+elif [ ${CPG_HOSTNAME_COUNT} -eq 1 ]; then
     CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
     CPG_TIER=${CPG_HOSTNAME##*-}
+elif [[ ${STACKUSER} == true ]]; then
+    CPG_HOSTNAME=localhost
+    CPG_TIER=Local
 fi
-
 
 case "${CPG_HOSTNAME:0:3}" in
     prd|l-p|s-p)
-        USER_PATTERN='prd[1356][01]'
+        USER_PATTERN='prd[156][01]'
         ;;
     stg|l-s|s-s)
-        USER_PATTERN='stg[1356][012345]'
+        USER_PATTERN='stg[156][012345]'
         ;;
     dev|l-d|s-d)
-        USER_PATTERN='dev[1356][012345]'
+        USER_PATTERN='dev[156][012345]'
+        ;;
+    localhost)
+        USER_PATTERN=${LOGNAME}
         ;;
     *)
-        STACKUSER=false
         USER_PATTERN=''
         ;;
 esac
