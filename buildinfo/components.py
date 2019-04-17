@@ -31,7 +31,7 @@ def _getStates(entry, targets):
         #print 'xxxx', entry, target
         state=appStateRuntime.getCurrentState(entry, target)
         if state:
-            state=state.split('_')[1]
+            state=state.split('_')[-1]
         else:
             print '%s has no state for %s' % (entry, target)
             state='Unknown'
