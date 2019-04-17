@@ -12,6 +12,7 @@ def _getEnvConfig():
         for filename in listdir(directory):
             if filename.endswith('.id'):
                 parts = filename.split('-')
+                print 'parts:', parts
                 config = ('-').join(parts[:-1])
                 version = parts[-1][:-3]
                 configs.append((config, version, 'Config', 'environment'))
