@@ -29,7 +29,12 @@ def _getStates(entry, targets):
     states = []
     for target in targets:
         #print 'xxxx', entry, target
-        state=appStateRuntime.getCurrentState(entry, target).split('_')[1]
+        state=appStateRuntime.getCurrentState(entry, target)
+        if state:
+            state=state[1]
+        else:
+            print '%s has no state for %s' % (entry, target)
+            state='Unknown'
         if state not in states:
             states.append(state)
     states.sort()
