@@ -4,6 +4,22 @@
 from os import listdir
 from wlstModule import *
 
+def _getEnvConfig():
+    domainDir = get('RootDirectory')
+    path = '/'.join(domainDir, 'classpath-ext/resources')
+    configs = []
+    try:
+        for filename in listdir(directory):
+            if filename.endswith('.id'):
+                parts = filename.split('-')
+                config = ('-').join(parts[:-])
+                version = parts[-1][:-3]
+                configs.append((config, version, 'Config', 'environment'))
+    except OSError:
+        pass
+    return configs
+
+
 def _getWLdetails(category, entry):
     if '#' in entry:
         (name, version) = entry.split('#')
@@ -90,6 +106,8 @@ def getArtifacts(adminurl, user='Deployment Monitor', passwd='yIHj6oSGoRpl66muev
         print 'Getting artifacts from', adminurl, 'failed'
         print e
         pass
+
+    artifactList.extend(_getEnvConfig())
 
     try:
         artifactList.extend(_getLibJars())
