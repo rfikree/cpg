@@ -1,14 +1,17 @@
 #! /bin/env wlst.sh
-#
+'''generateReport.py - Generate a report for the build info functionality
+'''
 
-import os
+# pylint: disable=duplicate-code
+
+#import os
 import sys
 import time
-sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
+#sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
-from components import getArtifacts
+from components import get_artifacts
 
-pageHeader = '''<!DOCTYPE html>
+PAGE_HEADER = '''<!DOCTYPE html>
 <HTML>
 <HEAD>
 <link rel="stylesheet" type="text/css" href="/build-info/style1.css">
@@ -22,67 +25,67 @@ pageHeader = '''<!DOCTYPE html>
 <h1 style="text-align: center; color: black"> %s Artifacts Information</h1>
 '''
 
-applicationHeader = '''
+APPLICATION_HEADER = '''
 <h3 align=center>Server:%s  Port:%s </h3>
 <table class="sortable" align=center>
 <tr><th>Application</th><th>Build Number</th><th>State</th><th>TargetName</th></tr>
 '''
 
-libraryHeader = '''
+LIBRARY_HEADER = '''
 <table class="sortable" align=center>
 <tr><th>Library</th><th>Build Number</th><th>State</th><th>TargetName</th></tr>
 '''
 
-tableRow = '''<tr><td> %s </td><td> %s </td><td> %s </td><td> %s </td></tr>
+TABLE_ROW = '''<tr><td> %s </td><td> %s </td><td> %s </td><td> %s </td></tr>
 '''
 
-tableFooter = '''</table>
+TABLE_FOOTER = '''</table>
 <br>
 '''
 
-pageFooter = '''
+PAGE_FOOTER = '''
 <p align=center>Generated: %s</p>
 </body>
 </HTML>'''
 
 
-def genBody(server, port, artifacts):
+def gen_body(server, port, artifacts):
     '''	Generate the body portion for a single url
         - a report may contain multiple bodies (tables)
     '''
     applications, libraries = artifacts
 
-    content = applicationHeader % (server, port)
+    content = APPLICATION_HEADER % (server, port)
     for artifact in applications:
-        content += tableRow % artifact
-    content += tableFooter
+        content += TABLE_ROW % artifact
+    content += TABLE_FOOTER
 
     if libraries:
-        content += libraryHeader
+        content += LIBRARY_HEADER
         for artifact in libraries:
-            content += tableRow % artifact
-        content += tableFooter
+            content += TABLE_ROW % artifact
+        content += TABLE_FOOTER
 
     return content
 
-def genReport(reportid, reportComponents):
+def gen_report(report_id, report_components):
     ''' Generate a report with the specified report id
         given a list of of url, artificats '''
-    report = pageHeader % (reportid, reportid)
+    report = PAGE_HEADER % (report_id, report_id)
 
-    for (adminurl, artifacts) in reportComponents:
-        (protocol, server, port) = adminurl.split(':')
+    for (adminurl, artifacts) in report_components:
+        (_protocol, server, port) = adminurl.split(':')
         server = server.lstrip('/')
-        body = genBody(server, port, artifacts)
+        body = gen_body(server, port, artifacts)
         report += body
 
     now = time.localtime()
     now = time.strftime('%Y-%m-%d %H:%M', now)
 
-    report += pageFooter % (now,)
+    report += PAGE_FOOTER % (now,)
     return report
 
-def _testReport():
+def _test_report():
     if len(sys.argv) not in [2, 4]:
         print
         print 'usage: wlst.sh', sys.argv[0], 'adminurl'
@@ -94,22 +97,22 @@ def _testReport():
 
     if len(sys.argv) == 2:
         #print adminurl
-        artifacts = getArtifacts(adminurl)
+        artifacts = get_artifacts(adminurl)
     else:
         user = sys.argv[2]
         passwd = sys.argv[3]
         #print adminurl, user, passwd
-        artifacts = getArtifacts(adminurl, user, passwd)
+        artifacts = get_artifacts(adminurl, user, passwd)
 
     if artifacts:
-        (protocol, server, port) = adminurl.split(':')
+        (_protocol, server, port) = adminurl.split(':')
         server = server.lstrip('/')
         userid = server.split('-')[0] + port[:2]
-        print 'calling genReport'
-        print genReport(userid, [(adminurl, artifacts)])
+        print 'calling gen_report'
+        print gen_report(userid, [(adminurl, artifacts)])
 
 if __name__ == "main":
-    _testReport()
+    _test_report()
 
 
 # jedit	:tabSize=4:indentSize=4:noTabs=true:mode=python:

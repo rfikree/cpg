@@ -49,7 +49,7 @@ CPG_ENV=${CPG_ENV#*-}
 
 
 # Generate reports
-$(dirname ${0})/buildReports.py -e ${CPG_ENV} &> buildReports.log
+$(dirname ${0})/build_reports.py -e ${CPG_ENV} &> buildReports.log
 
 # Copy reports to reporting server
 scp ${CPG_ENV}*.html \
