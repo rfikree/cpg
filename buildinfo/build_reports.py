@@ -83,7 +83,7 @@ def save_state(stack_name, stack_components):
         add_state_section(state, 'artifacts', artifacts)
         add_state_section(state, 'libraries', libaries)
 
-    filename = ''.join((stack_name, 'properties'))
+    filename = ''.join((stack_name, '.properties'))
     _f = open(filename, 'w')
     state.write(_f)
     _f.close()
