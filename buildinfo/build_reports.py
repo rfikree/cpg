@@ -6,10 +6,10 @@ WebLogic Admin Servers to connect to.
 '''
 
 import getopt
-#import os
-import sys
+import os
+import sysls
 import ConfigParser
-#sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
+sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from components import get_artifacts
 from generate_report import gen_report
@@ -68,7 +68,7 @@ def save_report(report_name, report):
     _f.close()
 
 
-def add_state_section(state, section, states)
+def add_state_section(state, section, states):
     state.add_section(section)
     for item, version, _state, _targets in states:
         state.set(section, item, state)
