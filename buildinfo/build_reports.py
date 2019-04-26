@@ -7,7 +7,7 @@ WebLogic Admin Servers to connect to.
 
 import getopt
 import os
-import sysls
+import sys
 import ConfigParser
 sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
