@@ -69,16 +69,17 @@ def save_report(report_name, report):
 
 
 def add_state_section(state, section, states):
-    state.add_section(section)
+    if not state.has_section(section):
+        state.add_section(section)
     for item, version, _state, _targets in states:
-        state.set(section, item, state)
+        state.set(section, item, version)
 
 
 def save_state(stack_name, stack_components):
     '''Save the state (artifacts and versions) to a file'''
     state = ConfigParser.ConfigParser()
     for (adminurl, components) in stack_components:
-        artifacts, libaries = stack_components
+        artifacts, libaries = components
         add_state_section(state, 'artifacts', artifacts)
         add_state_section(state, 'libraries', libaries)
 
