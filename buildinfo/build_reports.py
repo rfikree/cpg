@@ -68,6 +68,25 @@ def save_report(report_name, report):
     _f.close()
 
 
+def add_state_section(state, section, states)
+    state.add_section(section)
+    for item, version, _state, _targets in states:
+        state.set(section, item, state)
+
+
+def save_state(stack_name, stack_components):
+    '''Save the state (artifacts and versions) to a file'''
+    artifacts, libaries = stack_components
+    state = ConfigParser.ConfigParser()
+    add_state_section(state, 'artifacts', artifacts)
+    add_state_section(state, 'libraries', libaries)
+
+    filename = ''.join((stack_name, 'properties'))
+    _f = open(filename, 'w')
+    state.write(_f)
+    _f.close()
+
+
 def create_reports(property_file, environment, user, passwd):
     '''Create the reports for the selected environment'''
     all_components = []
@@ -84,6 +103,7 @@ def create_reports(property_file, environment, user, passwd):
     for (stack_name, urls) in stacks:
         #print 'stack_name:', stack_name, ' - urls:', urls
         stack_components = get_components(urls, user, passwd)
+        save_state(stack_name, stack_components)
         if stack_components:
             #print 'stack_components:', stack_components
             report = gen_report(stack_name, stack_components)
