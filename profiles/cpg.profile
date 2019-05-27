@@ -186,9 +186,10 @@ if [ "${STACKUSER}" == 'true' ]; then
         eval d${domain}scripts=${APP_STACK}/${STACK}d${domain}/automation
         export d${domain} d${domain}logs d${domain}scripts
     done
+    PYTHONPATH=${automation}/secure
 fi
 
-export automation scripts
+export automation scripts PYTHONPATH
 unset domain domains
 
 
