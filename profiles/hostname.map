@@ -9,10 +9,8 @@ l-03380-c5f,l-dev-cpodeploy
 s-01316-c5f,dev-wladm
 s-03055-c5f,s-dev-wladm
 
-s-01042-c5c,dev-a-soaz0
-s-01043-c5c,dev-a-soaz1
-s-03445-c5c,dev-b-soaz0
-s-03446-c5c,dev-b-soaz1
+s-03445-c5c,dev-a-soaz0
+s-03446-c5c,dev-a-soaz1
 
 s-01957-c5f,dev-a-uicpo,10.237.135.87
 s-01956-c5f,dev-a-blcpo
@@ -52,14 +50,10 @@ s-03064-c5f,stg-b-blwscpo
 s-03061-c5f,stg-c-uicpo,10.237.135.128
 s-03063-c5f,stg-d-uicpo,10.237.135.147
 
-s-01044-c5c,stg-a-soaz1
-s-01045-c5c,stg-b-soaz1
-s-01046-c5c,stg-a-soaz0
-s-01047-c5c,stg-b-soaz0
-s-03447-c5c,stg-c-soaz0
-s-03448-c5c,stg-d-soaz0
-s-03449-c5c,stg-c-soaz1
-s-03450-c5c,stg-d-soaz1
+s-03447-c5c,stg-a-soaz0
+s-03448-c5c,stg-b-soaz0
+s-03449-c5c,stg-a-soaz1
+s-03450-c5c,stg-b-soaz1
 
 # Production Servers
 
