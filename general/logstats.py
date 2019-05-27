@@ -18,9 +18,10 @@ Options:
     --hits (-h) <hits> : Min hits to report line (default: 100)
     --time (-t) <seconds>:  Report only path patterns which exceeded time.
     --contents (-c) <pathSubstring>: Report only paths containing string
+    --context: (-a) Report stats by content root (first item in path)
     --regex (-r) <regex>: Report only if path matches regex
     --format (-f) [1,2,3]: Select format to use (default: 1)
-    --limits: Report limits (min, median, 95%, max) for response times
+    --limits: (-l) Report limits (min, median, 95%, max) for response times
 
 Output includes
   - count: number of hits for the specified pattern
@@ -52,7 +53,7 @@ def openLogFile(fileName):
         return open(fileName, 'r')
 
 
-def parseLog(fileName, data, contents, regex, format):
+def parseLog(fileName, data, contents, regex, format, context):
     ''' parse a named access log file updating
         statistics dictionary "data" is updated for each row
     '''
@@ -86,7 +87,7 @@ def parseLog(fileName, data, contents, regex, format):
                 continue
             if regex is not None and not regex.search(path):
                 continue
-            key = parsePath(path)
+            key = parsePath(path, context)
             try:
               timeTaken = float(timeTaken) / divisor
             except ValueError:
@@ -104,7 +105,7 @@ def parseLog(fileName, data, contents, regex, format):
 
     return data
 
-def parsePath(path):
+def parsePath(path, context=False):
     ''' parse a path converting to standard format.
         returning a normalized path (pattern)
     '''
@@ -112,9 +113,17 @@ def parsePath(path):
     fileExt = re.compile('[^.]+\.(?!page|jsf)\w+$')
     pathChanged = False
 
+    if context:
+        parts = path.split('/', 2)
+        if len(parts):
+            return = '/'.join(parts[:-1])
+        else:
+           return = path
+
     parts = path.split('/')
 
-    # Replace numeric or uppercase path componentss (rest services, etc.)
+
+    # Replace numeric or uppercase path components (rest services, etc.)
     for i in range(1, len(parts)):
          if allUpperCase.match(parts[i]):
             parts[i] = '*'
@@ -199,15 +208,18 @@ def main():
     regex = None
     rptTime = None
     pathContents = None
+    context = False
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:f:h:lo:r:t:',
-            ['contents=', 'format=', 'hits=', 'limits', 'output=',
-             'regex=', 'time=', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'ac:f:h:lo:r:t:',
+            ['contents=', 'context', 'format=', 'hits=', 'limits',
+             'output=', 'regex=', 'time=', 'help'])
 
         for opt, arg in opts:
             if opt in ('-c', '--contents'):
                 pathContents = arg
+            elif opt in ('-a', '--context'):
+                context = True
             elif opt in ('-f', '--format'):
                 format = int(arg)
                 if 1 > format or format > 3:
@@ -239,7 +251,7 @@ def main():
 
     data = {}
     for fileName in args:
-        data = parseLog(fileName, data, pathContents, regex, format)
+        data = parseLog(fileName, data, pathContents, regex, format, context)
         #if outputSet:
         #    print ('Parsed:', fileName, len(data), file=output)
         print ('Parsed:', fileName, len(data), file=sys.stderr)
