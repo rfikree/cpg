@@ -3,7 +3,16 @@
 
 MATCH=${1}
 
-PATH=/usr/xpg4/bin:${PATH}
+for JAVA_VERSION in $(ls -drt /cpg/3rdParty/installs/java/jdk1.8* 2>/dev/null); do
+    if [ -d ${JAVA_VERSION} ]; then
+        JAVA_HOME=${JAVA_VERSION}
+    else
+        echo ${JAVA_VERSION} is invalid
+        exit 1
+    fi
+done
+
+PATH=${JAVA_HOME}/bin:/usr/xpg4/bin:${PATH}
 
 
 usage() {
