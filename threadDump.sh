@@ -3,6 +3,9 @@
 
 MATCH=${1}
 
+PATH=/usr/xpg4/bin:${PATH}
+
+
 usage() {
     cat <<EOT
 usage $0 pattern|pid [-F]
