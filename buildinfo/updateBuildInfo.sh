@@ -55,4 +55,8 @@ $(dirname ${0})/build_reports.py -e ${CPG_ENV} &> buildReports.log
 scp ${CPG_ENV}*.html \
     optadm@cpowiki.cpggpc.ca:/cpg/cpo_apps/build-info/wipro &> scp.log
 
+# Copy the profiles to NFS - new functionality
+cp ${CPG_ENV}*.profiles \
+    /cpg/repos/maven/release_repo/deployment_manifests &> scp.log
+
 # EOF
