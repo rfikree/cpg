@@ -1,5 +1,7 @@
 #! /bin/bash
 
+umask 022
+
 # Update here if JAVA or WebLogic is updated
 case $(uname) in
 SunOS)
@@ -56,7 +58,7 @@ scp ${CPG_ENV}*.html \
     optadm@cpowiki.cpggpc.ca:/cpg/cpo_apps/build-info/wipro &> scp.log
 
 # Copy the profiles to NFS - new functionality
-cp ${CPG_ENV}*.profiles \
+cp ${CPG_ENV}*.properties \
     /cpg/repos/maven/release_repo/deployment_manifests &> scp.log
 
 # EOF
