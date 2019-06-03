@@ -59,6 +59,6 @@ scp ${CPG_ENV}*.html \
 
 # Copy the profiles to NFS - new functionality
 cp ${CPG_ENV}*.properties \
-    /cpg/repos/maven/release_repo/deployment_manifests &> scp.log
+    /cpg/repos/maven/release_repo/deployment_manifests &> copy.log
 
 # EOF

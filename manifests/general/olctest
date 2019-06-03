@@ -3,16 +3,20 @@
 . /lib/svc/share/smf_include.sh
 echo $(date) Starting ${SMF_FMRI}
 
+# Grab the NFS entries in case they have been broken
+ls -l /etc/vfstab
+grep nfs /etc/vfstab
+
 # Wait for file systems to be mounted - randomly 1 to 5 seconds
 for DIR in /cpg/3rdParty /cpg/content /cpg/cpo_apps /cpg/cpo_var; do
-	if [[ -d ${DIR} ]]; then
-		while [[ ! -e ${DIR}/.mounted ]]; do 
-			sleep 1
-		done
-		echo $(date) ${DIR} mounted
-	else
-		echo ${DIR} not found
-	fi
+    if [[ -d ${DIR} ]]; then
+        while [[ ! -e ${DIR}/.mounted ]]; do
+            sleep 1
+        done
+        echo $(date) ${DIR} mounted
+    else
+        echo ${DIR} not found
+    fi
 done
 
 echo $(date) Done
