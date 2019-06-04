@@ -48,7 +48,7 @@ CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
 CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
 CPG_ENV=${CPG_HOSTNAME%-*}
 CPG_ENV=${CPG_ENV#*-}
-[[ -z ${CPO_ENV} ]] && CPG_ENV=loc
+[[ -z ${CPG_ENV} ]] && CPG_ENV=loc
 
 
 # Generate reports
