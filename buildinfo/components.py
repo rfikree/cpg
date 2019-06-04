@@ -7,8 +7,9 @@ Return a list of compments in a WebLogic domain as tuples in the form
 
 # pylint:disable=duplicate-code,broad-except,global-statement,import-error
 
+import os
 import sys
-from os import listdir
+#from os import listdir
 from wlstModule import connect, disconnect, getMBean, serverConfig, get
 
 __app_state_runtime__ = None
@@ -18,7 +19,7 @@ def _get_env_config():
     directory = '/'.join((domain_dir, 'classpath-ext/resources'))
     configs = []
     try:
-        for filename in listdir(directory):
+        for filename in os.listdir(directory):
             if filename.endswith('.id'):
                 parts = filename.split('-')
                 config = ('-').join(parts[:-1])
@@ -29,12 +30,39 @@ def _get_env_config():
     return configs
 
 
-def _get_wl_details(category, entry):
-    if '#' in entry:
-        (name, version) = entry.split('#')
-        version = version.split('@')[0]
+def _get_version_from_file(category, entry):
+    #print entry
+    fname = get('serverConfig:/' + category + '/' + entry + '/SourcePath')
+    _, fname = os.path.split(fname)
+    components = fname.split('.')
+    #print components
+    if len(components) == 3:
+        name = fname.replace('.', '-')
+        version = entry.split('#')[-1].split('@')[0]
+    elif len(components) == 4 and '-' in fname:
+        ncomponents = components[0].split('-')
+        components[0] = ncomponents[-1]
+        name = '-'.join(ncomponents[:-1])
+        version = '.'.join(components[:-1])
     else:
-        (name, version) = (entry, 'none')
+        name = entry
+        components[0] = components[0][len(entry) + 1:]
+        version = '.'.join(components[:-1])
+
+    #print name, version
+    return (name, version)
+
+
+def _get_wl_details(category, entry):
+    if category == 'AppDeployments':
+        if '#' in entry:
+            name, version = entry.split('#')
+            version = version.split('@')[0]
+        else:
+            name, version = (entry, 'none')
+            name, version = _get_version_from_file(category, entry)
+    else:
+        name, version = _get_version_from_file(category, entry)
     targets = _get_names('/'.join((category, entry, 'Targets')))
     states = _get_states(entry, targets)
     for i in range(1, len(targets)):
@@ -74,7 +102,7 @@ def _get_lib_jars():
         directory = '/'.join((domain_dir, subdir))
         #print 'directory', directory
         try:
-            for filename in listdir(directory):
+            for filename in os.listdir(directory):
                 if filename.endswith('.jar'):
                     components = filename[:-4].split('-')
                     name = '-'.join(components[:-1])
