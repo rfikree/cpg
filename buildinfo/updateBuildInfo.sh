@@ -10,7 +10,7 @@ SunOS)
     done
     ;;
 Linux)
-    for JAVA_HOME in  $(ls -drt /usr/java/jdk1.8*); do
+    for JAVA_HOME in  $(ls -drt /usr/java/jdk1.7*); do
         continue
     done
     ;;
@@ -19,13 +19,15 @@ JAVA_VENDOR=Sun
 
 export JAVA_HOME JAVA_VENDOR
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home12c/wlserver
+export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # Make everything visible
 umask 022
 
 # Setup the environment
 export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar
-export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${WL_HOME}/common/bin:${PATH}
+export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${PATH}
+export PATH=${JAVA_HOME}/bin:${WL_HOME}/common/bin:${PATH}
 export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
     -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
     -Dweblogic.ThreadPoolPercentSocketReaders=75
