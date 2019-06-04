@@ -8,11 +8,12 @@ WebLogic Admin Servers to connect to.
 import getopt
 import os
 import sys
-import ConfigParser
-sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
+#import ConfigParser
+#sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from components import get_artifacts
 from generate_report import gen_report
+from ordered_config_parser import ConfigParser
 
 def usage(status):
     '''Print the usage documentation for this application'''
@@ -36,7 +37,7 @@ def get_stacks(config, environment):
     stack_list = config.options(environment)
     #print 'stack_list:', stack_list
     if not stack_list:
-        print 'FATAL: Environment', environment, 'has no stacks.'
+        #print 'FATAL: Environment', environment, 'has no stacks.'
         sys.exit(2)
 
     stacks = []
@@ -71,13 +72,15 @@ def save_report(report_name, report):
 def add_state_section(state, section, states):
     if not state.has_section(section):
         state.add_section(section)
-    for item, version, _state, _targets in states:
+    _states = states[:]
+    _states.sort()
+    for item, version, _state, _targets in _states:
         state.set(section, item, version)
 
 
 def save_state(stack_name, stack_components):
     '''Save the state (artifacts and versions) to a file'''
-    state = ConfigParser.ConfigParser()
+    state = ConfigParser()
     for (adminurl, components) in stack_components:
         artifacts, libaries = components
         add_state_section(state, 'artifacts', artifacts)
@@ -92,7 +95,7 @@ def save_state(stack_name, stack_components):
 def create_reports(property_file, environment, user, passwd):
     '''Create the reports for the selected environment'''
     all_components = []
-    config = ConfigParser.ConfigParser()
+    config = ConfigParser()
     config.read(property_file)
     if not config.has_section(environment):
         print 'FATAL: Invalid environment', environment, 'selected.'
