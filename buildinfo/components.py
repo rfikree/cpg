@@ -38,7 +38,7 @@ def _get_version_from_file(category, entry):
     #print components
     if len(components) == 3:
         name = fname.replace('.', '-')
-        version = entry.split('#')[-1].split('@')[0]
+        version = entry.split('#')[-1].split('@')[-1]
     elif len(components) == 4 and '-' in fname:
         ncomponents = components[0].split('-')
         components[0] = ncomponents[-1]
