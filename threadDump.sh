@@ -57,12 +57,21 @@ server_id=$( ${PS} | grep ${PID} | tr ' ' '\n' | \
 [[ -z ${server_id} ]] && server_id=pid${server_id}
 #echo ${server_id}
 
-if [[ -z ${VAR_STACK} || ! -d ${VAR_STACK} ]]; then
+if [[ -z ${VAR_STACK} ]]
+    VAR_STACK=/cpg/cpo_var/a${LOGNAME:3:1}${LOGNAME:0:1}${LOGNAME:3:2}
+fi
+if  -d ${VAR_STACK} ]]; then
     VAR_STACK=/tmp
 fi
 LOGNAME=${VAR_STACK}/jstack.${server_id}.$(date +%y%m%d_%H%M%S)
 
 echo Saving thread_dump to $LOGNAME
 jstack -l ${PID} > $LOGNAME
+cmdStatus=$?
+if [[ ${cmdStatus} -ne 0 ]];
+    echo jstack failed with status ${cmdStatus}
+fi
+exit ${cmdStatus}
+
 
 # EOF
