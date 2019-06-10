@@ -60,7 +60,7 @@ server_id=$( ${PS} | grep ${PID} | tr ' ' '\n' | \
 if [[ -z ${VAR_STACK} ]]; then
     VAR_STACK=/cpg/cpo_var/a${LOGNAME:3:1}${LOGNAME:0:1}${LOGNAME:3:2}
 fi
-if [[ -d ${VAR_STACK} ]]; then
+if [[ ! -d ${VAR_STACK} ]]; then
     VAR_STACK=/tmp
 fi
 LOGNAME=${VAR_STACK}/jstack.${server_id}.$(date +%y%m%d_%H%M%S)
