@@ -212,6 +212,10 @@ fi
 WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
+SOA_ORACLE_HOME=${BEA_HOME}/soa
+[ -d ${SOA_ORACLE_HOME:-''} ] || SOA_ORACLE_HOME=${BEA_HOME}/Oracle_SOA1
+[ -d ${SOA_ORACLE_HOME:-''} ] || unset SOA_ORACLE_HOME
+echo SOA_ORACLE_HOME 4SOA_ORACLE_HOME
 
 # Temporary fix while switching to Java 8
 if [[ $(uname -s) = Linux \
@@ -252,7 +256,8 @@ unset MW_DIR WL_DIR jdkPath beaPath jdkVer JAVA7_VERSION
 PATH=
 for DIR in ${JAVA_VERSION}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
         /usr/sfw/bin /bin /usr/sbin /sbin/ usr/openwin/bin /usr/local/bin \
-        /opt/WANdisco/bin ${ORACLE_HOME}/common/bin ${SQLPLUS_HOME} \
+        /opt/WANdisco/bin ${SOA_ORACLE_HOME}/common/bin \
+        ${ORACLE_HOME}/common/bin ${WL_HOME}/common/bin ${SQLPLUS_HOME} \
         ${scripts} ${scripts%/*}/bin ${lscripts}; do
     if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
         PATH=${PATH}:${DIR}
