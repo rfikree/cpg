@@ -28,11 +28,28 @@ SVN_UPDATE=${SVN_UPDATE:-$SVN_CMD update}
 # Respoitory setup
 REPO_DIR=/cpg/repos/maven/release_repo
 
-
 # Application globals
-SELECTED_ACTION=${3:-deploy}    # Hardcoded action
-SELECTED_TARGET=${1}            # Target section in Deploy.properties
-SELECTED_REL=${2}               # Release to delpoy (e.g. 1902.0.8)
+case ${1} in
+  deploy|envonly|undeploy)
+    SELECTED_ACTION=${1}
+    shift
+    SELECTED_OPTIONS="-t ${1} -v ${2}"
+    shift; shift
+    ;;
+  migrate)
+    SELECTED_ACTION=${1}
+    shift
+    SELECTED_OPTIONS="-s ${1}"
+    shift
+    ;;
+  *)
+    SELECTED_ACTION=deploy
+    SELECTED_OPTIONS="-t ${1} -v ${2}"
+    shift; shift
+    ;;
+esac
+
+EXTRA_OPTIONS=${@}              # Save remaining command line options
 STACK=a1${LOGNAME:0:1}${LOGNAME:3:2}
 STACK_DIR=/cpg/cpo_apps/${STACK}
 
@@ -53,6 +70,14 @@ This sript should be run from the domain's automation directory.
 
   usage:
     ${0} Deploy_Section Release_Version
+    ${0} [deploy|envonly|undeploy] Deploy_Section Release_Version
+    ${0} migrate Source_Stack
+
+    First option is action which defaults to deploy.
+
+    Deploy_section is a section from Deploy.properties
+    Release_Version is the version being deployed 1907.0.99
+    Source_Stack is the user_id from which deployments are being copied
 
 EOF
     exit ${1:-99}
@@ -90,7 +115,7 @@ if [[ ! -w ${STACK_DIR} ]]; then
     usage    # EACCES Permission denied
 fi
 
-if [[ -z {SELECTED_ACTION} || -z ${SELECTED_TARGET} ]]; then
+if [[ -z ${SELECTED_ACTION} || -z ${SELECTED_OPTIONS} ]]; then
     usage
 fi
 
@@ -98,7 +123,7 @@ fi
 # Execute the deployer script
 cd ${STACK_DIR}
 automation/run_wlst.sh automation/wlst/deployer.py -a ${SELECTED_ACTION} \
-    -t ${SELECTED_TARGET} -v ${SELECTED_REL}
+    ${SELECTED_OPTIONS} ${EXTRA_OPTIONS}
 
 
 # Cleanup old deploys from the managed server exploded artifact directories
