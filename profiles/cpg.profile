@@ -21,7 +21,7 @@ PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 PROJECT_NAME=USER
 STACK=a1l10
 SVN_REPO=http://cposvn.cpggpc.ca/configuration_repo/automation
-
+DERBY_FLAG=false
 VISUAL=vi
 
 export PROJECT_NAME STACK SVN_REPO VISUAL
@@ -213,9 +213,9 @@ WL_HOME=$(echo ${BEA_HOME}/wlserver*)
 ORACLE_HOME=${BEA_HOME}/oracle_common
 [ -d ${ORACLE_HOME:-''} ] || unset ORACLE_HOME
 SOA_ORACLE_HOME=${BEA_HOME}/soa
+# */soa is WebLogic 12c; Oracle_SOA1 is WebLogic 10
 [ -d ${SOA_ORACLE_HOME:-''} ] || SOA_ORACLE_HOME=${BEA_HOME}/Oracle_SOA1
 [ -d ${SOA_ORACLE_HOME:-''} ] || unset SOA_ORACLE_HOME
-echo SOA_ORACLE_HOME 4SOA_ORACLE_HOME
 
 # Temporary fix while switching to Java 8
 if [[ $(uname -s) = Linux \
