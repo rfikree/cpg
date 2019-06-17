@@ -51,16 +51,14 @@ s-03452-c5a,prd-b-soaz0
 s-03453-c5a,prd-a-soaz1
 s-03454-c5a,prd-b-soaz1
 
-# Need new servers ??
+# TODO: Need new servers ??
+#s-00713-c5f,stg-data-appmon
 s-00890-c5a,prd-data-appmon
-s-00713-c5f,stg-data-appmon
 
 
 # Non WebLogic Servers
 
 l-01967-c5c,dev-a-lscs
-
-s-00714-c5f,stg-sellonline
 
 l-00685-c5c,stg-a-lscs
 l-00696-c5c,stg-b-lscs
