@@ -99,7 +99,7 @@ function cleanOldDeployments {
             if grep -q ${app_base}.${app_version} ${config}; then
                 debug Found ${app_path}
                 continue
-            elif [[ -d {app_path} ]]; then
+            elif [[ -d ${app_path} ]]; then
                 echo INFO: removing ${app_path}
                 rm -rf ${app_path}
             fi
@@ -124,12 +124,17 @@ fi
 cd ${STACK_DIR}
 automation/run_wlst.sh automation/wlst/deployer.py -a ${SELECTED_ACTION} \
     ${SELECTED_OPTIONS} ${EXTRA_OPTIONS}
+STATUS=$?
 
 
 # Cleanup old deploys from the managed server exploded artifact directories
 for DOMAIN_HOME in /cpg/cpo_apps/${STACK}/${STACK}d?; do
     cleanOldDeployments
 done
+
+
+# Exit with status
+exit ${STATUS}
 
 
 # EOF
