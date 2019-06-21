@@ -52,7 +52,7 @@ checkMachineName
 checkLogFile
 FULL_NAME=$STACK-$MACH_NAME-$DOMAIN_NAME
 
-ssh -v $STACK_NAME@$FULL_NAME-mgnt.cpggpc.ca "/cpg/3rdParty/scripts/cpg/threadDump.sh $SERVER_NAME" 2>&1 | tee /tmp/ThreadDumpLogs_$(date "+%Y-%m-%d").txt
+ssh -v $STACK_NAME@$FULL_NAME-mgnt.cpggpc.ca "/cpg/3rdParty/scripts/cpg/threadDump.sh $SERVER_NAME" 2>&1 | tee /tmp/ThreadDumpLogs_$(date "+%Y-%m-%d")_$STACK_NAME.txt
 
 #scp dev10@s-03059-c5f-mgnt.cpggpc.ca:/tmp/jstack* ./
 
