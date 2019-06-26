@@ -3,7 +3,7 @@
 VERSION='$Revision$'
 VERSION=$(echo ${VERSION} | awk '{print $2}')
 
-if [[ $0 =~ bash ]]; then
+if tty -s; then
     echo
     echo '------------------------------------------------------------'
     echo '                   Welcome to CPG Server'
@@ -19,12 +19,11 @@ fi
 INSTALL_DIR=/cpg/3rdParty/installs
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 PROJECT_NAME=USER
-STACK=a1l10
 SVN_REPO=http://cposvn.cpggpc.ca/configuration_repo/automation
 DERBY_FLAG=false
 VISUAL=vi
 
-export PROJECT_NAME STACK SVN_REPO VISUAL
+export PROJECT_NAME SVN_REPO VISUAL DERBY_FLAG
 
 #================================================
 # Default image umask is 0077
@@ -34,44 +33,50 @@ umask 027
 #================================================
 # OS / User - Automatically Determine
 #================================================
-if [ -z ${CPG_USER} ]; then
-    OS_USERNAME=${LOGNAME}
-else
-    OS_USERNAME=${CPG_USER}
+if [ -z ${CPG_LOGNAME} ]; then
+    if [ -z ${CPG_USER} ]; then
+        CPG_LOGNAME=${LOGNAME}
+    else
+        CPG_LOGNAME=${CPG_USER}
+    fi
 fi
-STACK_NUM=''
 
-case "${OS_USERNAME:0:3}" in
-    prd)
-        ENVIRONMENT=prd
-        STACK_NUM=${OS_USERNAME:3:2}
-        ENVIRONMENT_SHORT=p
+case "${CPG_LOGNAME:0:3}" in
+    dev|loc|stg|prd)
+        ENVIRONMENT=${CPG_LOGNAME:0:3}
+        STACK_NUM=${CPG_LOGNAME:3:2}
+        ENVIRONMENT_SHORT=${CPG_LOGNAME:0:1}
         STACKUSER=true
-        ;;
-    stg)
-        ENVIRONMENT=stg
-        STACK_NUM=${OS_USERNAME:3:2}
-        ENVIRONMENT_SHORT=s
-        STACKUSER=true
-        ;;
-    dev)
-        ENVIRONMENT=dev
-        STACK_NUM=${OS_USERNAME:3:2}
-        ENVIRONMENT_SHORT=d
-        STACKUSER=true
+        STACK=a${STACK_NUM:0:1}${ENVIRONMENT_SHORT}${STACK_NUM}
         ;;
     *)
-        if [ -d /cpg/cpo_apps/a1l10 ]; then
-            ENVIRONMENT=lcl
-            STACK_NUM=10
-            ENVIRONMENT_SHORT=l
-            STACKUSER=true
-        else
-            STACKUSER=false
-        fi
+        ENVIRONMENT=
+        STACK_NUM=
+        ENVIRONMENT_SHORT=
+        STACKUSER=
+        STACK=
+        CPG_LOGNAME=
         ;;
 esac
-export ENVIRONMENT STACKUSER
+export ENVIRONMENT STACKUSER CPG_LOGNAME STACK
+
+
+#### Configuration by Project
+
+domains='1'
+case ${STACK_NUM:0:1} in
+    1)  PROJECT_NAME=CPO
+        domains='1 2';;
+    5)  PROJECT_NAME=CPC-SOA
+        MW_DIR=fmw${STACK_NUM}
+        ;;
+    6)  PROJECT_NAME=PULSE
+        MW_DIR=fmw${STACK_NUM}
+        ;;
+    *)  ;;
+esac
+unset ENVIRONMENT_SHORT STACK_NUM
+
 
 #### Default values - may be overriden;
 
@@ -109,46 +114,6 @@ if [[ -z ${JAVA_VERSION} ]]; then
     fi
 fi
 
-MW_DIR=Middleware_Home12c
-WL_DIR=wlserver
-
-
-#### Configuration by Project
-
-LOB=${STACK_NUM:0:1}
-domains='1'
-case $LOB in
-    1)  PROJECT_NAME=CPO
-        domains='1 2';;
-    3)  PROJECT_NAME=WS;;
-    5)  PROJECT_NAME=CPC-SOA
-        MW_DIR=fmw${STACK_NUM}
-        WL_DIR=wlserver_10.3
-        ;;
-    6)  PROJECT_NAME=PULSE
-        MW_DIR=fmw${STACK_NUM}
-        WL_DIR=wlserver_10.3
-        ;;
-    *)  ;;
-esac
-
-if [[ ${PROJECT_NAME} == CPO && $(uname) == Linux ]]; then
-    domains='1 2'
-fi
-
-if [[ ${PROJECT_NAME} == CPO && $(id | cut -d "(" -f2 | cut -d ")" -f1) == dev12 ]] || [[ ${PROJECT_NAME} == CPO && $(id | cut -d "(" -f2 | cut -d ")" -f1) == stg12 ]]; then
-    domains='1 2'
-    MW_DIR=Middleware_Home1
-    WL_DIR=wlserver_10.3
-    JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.7.0_181
-fi
-
-if [ "${STACKUSER}" == 'true' ]; then
-    STACK=a${LOB}${ENVIRONMENT_SHORT}${STACK_NUM}
-fi
-
-unset LOB ENVIRONMENT_SHORT STACK_NUM
-
 
 #================================================
 # NFS Mounts
@@ -176,7 +141,7 @@ export SQLPLUS_HOME SAPJCO_HOME SAPSEC_HOME
 #================================================
 scripts=/cpg/3rdParty/scripts/cpg
 
-if [ "${STACKUSER}" == 'true' ]; then
+if [[ -n ${STACK} ]]; then
     # Handle setup case
     automation=${APP_STACK}/automation
     #Loop through existing domains and export shorthand links
@@ -238,15 +203,8 @@ if [[ -z ${JAVA_HOME} ]]; then
 fi
 
 
-if [[ "${WL_HOME}" != "${beaPath}/${WL_DIR}" \
-&& -f "${beaPath}/${WL_DIR}/server/lib/weblogic.jar" ]]; then
-    #echo Setting WL_HOME from Domain.properties
-    #echo
-    WL_HOME=${beaPath}/${WL_DIR}
-fi
-
 export JAVA_HOME WL_HOME BEA_HOME ORACLE_HOME JAVA_HOME2
-unset MW_DIR WL_DIR jdkPath beaPath jdkVer JAVA7_VERSION
+unset MW_DIR jdkPath beaPath jdkVer JAVA7_VERSION
 
 
 #================================================
@@ -265,7 +223,6 @@ for DIR in ${JAVA_VERSION}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
 done
 PATH=${PATH#:}
 
-#CLASSPATH=$WL_HOME/server/lib/weblogic.jar:$CLASSPATH
 for FILE in ${WL_HOME}/server/lib/weblogic.jar; do
     if [ -e ${FILE} ]; then
         if [[ ! "${CLASSPATH}:" == "${FILE}:"* ]]; then
@@ -317,19 +274,20 @@ fi
 CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
 CPG_HOSTNAME_COUNT=$(echo ${CPG_HOSTNAME} | fgrep ',' | wc -l)
 
-CPG_TIER=None
-
 if [ ${CPG_HOSTNAME_COUNT} -gt 1 ]; then
     echo
     echo 'ERROR in PROFILE:  Found more than 1 match of HOSTNAME in'
     echo "  ${CPG_ALIAS_LOOKUP_FILE}"
     echo
-elif [ ${CPG_HOSTNAME_COUNT} -eq 1 ]; then
+fi
+if [ ${CPG_HOSTNAME_COUNT} -ge 1 ]; then
     CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
     CPG_TIER=${CPG_HOSTNAME##*-}
-elif [[ ${STACKUSER} == true ]]; then
+elif [[ -n ${STACK} ]]; then
     CPG_HOSTNAME=localhost
     CPG_TIER=Local
+else
+    CPG_TIER=None
 fi
 
 case "${CPG_HOSTNAME:0:3}" in
@@ -379,9 +337,12 @@ if [ $(uname) == SunOS ]; then
     }
 
     swapuse() {
-        swap -l | \
-        awk '$NF ~ /^[0-9]+$/ { blocks = blocks + $(NF-1); free = free + $NF; }
-            END { print "Swap utilization:", int((blocks-free+1024)/2048), "MB" }'
+        swap -lk | tr -d -c '0123456789 s' |\
+        awk 'BEGIN { blocks = 8; free = 8; }
+            $NF ~ /^[0-9]+$/ { blocks = blocks + $(NF-1); free = free + $NF; }
+            END { print "Swap utilization:",
+                    int( ( ( 512 + blocks - free ) / blocks ) * 100 ) "%",
+                    "of", int(blocks/1048576), "GB"}'
     }
 fi
 
@@ -408,7 +369,7 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
 -Dweblogic.security.SSL.enableJSSE=true
 -Dweblogic.ssl.JSSEEnabled=true
--Dweblogic.security.SSL.minimumProtocolVersion=TLSv1
+-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1.2
 -Dweblogic.security.allowCryptoJDefaultJCEVerification=true
 -Dweblogic.security.allowCryptoJDefaultPRNG=true
 -Dweblogic.security.SSL.ignoreHostnameVerification=true
@@ -420,9 +381,9 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
 #==================================================
 # Show settings
 #==================================================
-if [[ $0 =~ bash ]]; then
+if tty -s; then
     echo "    HOSTNAME = ${CPG_HOSTNAME}"
-    echo "    USERNAME = ${OS_USERNAME}"
+    echo "    USERNAME = ${CPG_LOGNAME:=$LOGNAME}"
     if [ "${PROJECT_NAME}" != 'USER' ]; then
         echo "     PROJECT = ${PROJECT_NAME}"
         echo "        TIER = ${CPG_TIER}"
@@ -449,23 +410,15 @@ if [[ $0 =~ bash ]]; then
     echo
 fi
 
-unset OS_USERNAME STACKNUM CPG_TIER
+unset STACKNUM PROJECT CPG_TIER
 
 
 #==================================================
-# Verify status of the automation directory
+# Update and verify status of the automation directory
 #==================================================
-if [[ ${STACKUSER} == true && -z ${CPG_USER} && ${CPG_HOSTNAME} = *-cpodeploy ]]; then
-    SVN_WD_VER=$(sqlite3 ${automation}/.svn/wc.db "PRAGMA user_version" 2>/dev/null)
-    if [[ $(uname) == Linux &&  ! -d ${automation}  ]]; then
-         echo -e '\ny' || svn co ${SVN_REPO}/trunk/secure ${automation}
-    elif [[ $(uname) = Linux && ${SVN_WD_VER} -eq 29 ]]; then
-        svn update ${automation}
-        svn status ${automation}
-    elif [[ $(uname) = SunOS && ${SVN_WD_VER} -eq 31 ]]; then
-        svn update ${automation}
-        svn status ${automation}
-    fi
+if [[ ${CPG_HOSTNAME} = *-cpodeploy && ${CPG_LOGNAME} == ${USER} ]]; then
+    svn update ${automation}
+    svn status ${automation}
 fi
 
 
