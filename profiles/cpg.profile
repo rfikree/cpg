@@ -92,7 +92,7 @@ for JAVA_VERSION in $(ls -drt ${JAVA_BASE}/jdk1.7* 2>/dev/null); do
     fi
 done
 if [[ $(uname) == Linux || -z ${JAVA_VERSION} ]]; then
-    JAVA7_VERSION=${JAVA_VERSION}
+    JAVA7_VERSION=${JAVA_VERSION:-''}
     for JAVA_VERSION in $(ls -drt ${JAVA_BASE}/jdk1.8*); do
         if [ -d "${JAVA_VERSION}" ]; then
             JAVA_HOME=${JAVA_VERSION}
@@ -214,9 +214,9 @@ unset MW_DIR jdkPath beaPath jdkVer JAVA7_VERSION
 PATH=
 for DIR in ${JAVA_VERSION}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
         /usr/sfw/bin /bin /usr/sbin /sbin/ usr/openwin/bin /usr/local/bin \
-        /opt/WANdisco/bin ${SOA_ORACLE_HOME}/common/bin \
+        /opt/WANdisco/bin ${SOA_ORACLE_HOME:-xxxx}/common/bin \
         ${ORACLE_HOME}/common/bin ${WL_HOME}/common/bin ${SQLPLUS_HOME} \
-        ${scripts} ${scripts%/*}/bin ${lscripts}; do
+        ${scripts} ${scripts%/*}/bin ${lscripts:-''}; do
     if [[ -d ${DIR} && -r ${DIR} && ! -L ${DIR} ]]; then
         PATH=${PATH}:${DIR}
     fi
