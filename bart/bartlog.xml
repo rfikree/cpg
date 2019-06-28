@@ -1,0 +1,34 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+
+<service_bundle type="manifest" name="bartlog">
+    <service name="site/bartlog" type="service" version="1">
+
+    <dependency name="multi-user" grouping="require_all"
+                restart_on="error" type="service">
+      <service_fmri value="svc:/milestone/multi-user:default"/>
+    </dependency>
+
+    <instance name='defauilt' enabled='false'>
+        <schedule_method
+            schedule='day'
+            hour='7'
+            minute='15'
+            exec='/user/local/sbin/bartlog'
+            timeout_seconds='900'>
+            <method-context>
+                <method_credential user='root' group='root' />
+            </method-context>
+        </schedule_method>
+    </instance>
+
+    <stability value="Evolving" />
+
+    <template>
+      <common_name>
+        <loctext xml:lang="C">Run bartlog periodically</loctext>
+      </common_name>
+    </template>
+
+    </service>
+</service_bundle>
