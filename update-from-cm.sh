@@ -59,9 +59,11 @@ if [[ -d .git ]]; then
     git pull
     git status -s
 elif [[ -d .svn ]]; then
-    cd ..
-    SCRIPT_DIR=$(dirname ${SCRIPT})
-    ${SCRIPT_DIR}/switch-to-git.sh ${DIRECTORY}
+    svn update
+    svn status
+    #cd ..
+    #SCRIPT_DIR=$(dirname ${SCRIPT})
+    #${SCRIPT_DIR}/switch-to-git.sh ${DIRECTORY}
 else
     usage WARNING: Directory ${DIRECTORY} is not using a configuration manager
 fi

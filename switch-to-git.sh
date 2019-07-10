@@ -66,6 +66,7 @@ fi
 DIRECTORY=$(python -c "import os,sys; print os.path.abspath(sys.argv[1])" ${DIRECTORY})
 PARENT=$(dirname ${DIRECTORY})
 REPO_DIR=$(basename ${DIRECTORY})
+GIT_URL=${GIT_URL_BASE}/${REPO_DIR}.git
 
 
 # Ensure we have GIT installed
@@ -73,6 +74,13 @@ if ! which git >/dev/null; then
     echo
     echo WARN: Unable to locate git
     echo
+fi
+
+
+# Ensure we can access git repoisitoy
+if ! git ls-remote -q -h ${GIT_URL} > /dev/null; then
+    echo FATAL: Can not reach GIT repository
+    exit
 fi
 
 
@@ -101,7 +109,7 @@ fi
 # Process the requested directory, if possible
 if [[ ! -d ${REPO_DIR} ]]; then
     echo INFO: Doing initial checkout of ${REPO_DIR}
-    ${CLONE} ${GIT_URL_BASE}/${REPO_DIR}.git ./${REPO_DIR}
+    ${CLONE} ${GIT_URL} ./${REPO_DIR}
     chmod go-rwx ${REPO_DIR}/.git ${REPO_DIR}/.git/config
 
 elif [[ -d ${REPO_DIR}/.git ]]; then
@@ -112,7 +120,7 @@ elif [[ -d ${REPO_DIR}/.svn ]]; then
     echo
     echo INFO: Replacing ${REPO_DIR} with version from GIT
 
-    if ${CLONE} ${GIT_URL_BASE}/${REPO_DIR}.git ./${REPO_DIR}.new; then
+    if ${CLONE} ${GIT_URL} ./${REPO_DIR}.new; then
         mv ${REPO_DIR}{,.svn}
         mv ${REPO_DIR}{.new,}
         chmod go-rwx ${REPO_DIR}/.git ${REPO_DIR}/.git/config
