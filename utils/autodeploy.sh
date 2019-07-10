@@ -1,66 +1,20 @@
 #!/bin/bash
 #set -x
 
-
-# Report errors
-error_report() {
-    rc=$?
-    echo FATAL: Error at line ${1}: status ${rc}
-    exit ${rc}
-}
-
-# Debug function
-debug() {
-    : echo DEBUG: $@
-}
-
-trap 'error_report ${LINENO}' ERR
-
 # Parse out environment
 SCRIPT=$(python -c "import os,sys; print os.path.abspath(sys.argv[1])" ${0})
 SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 SCRIPT_NAME=$(basename ${SCRIPT})
 
-# Define and verify version control commands
-SVN_CMD=${SVN_CMD:-svn}
-SVN_UPDATE=${SVN_UPDATE:-$SVN_CMD update}
 
-# Respoitory setup
-REPO_DIR=/cpg/repos/maven/release_repo
-
-# Application globals
-case ${1} in
-  deploy|envonly|undeploy)
-    SELECTED_ACTION=${1}
-    shift
-    SELECTED_OPTIONS="-t ${1} -v ${2}"
-    shift; shift
-    ;;
-  migrate)
-    SELECTED_ACTION=${1}
-    shift
-    SELECTED_OPTIONS="-s ${1}"
-    shift
-    ;;
-  *)
-    SELECTED_ACTION=deploy
-    SELECTED_OPTIONS="-t ${1} -v ${2}"
-    shift; shift
-    ;;
-esac
-
-EXTRA_OPTIONS=${@}              # Save remaining command line options
-STACK=a1${LOGNAME:0:1}${LOGNAME:3:2}
-STACK_DIR=/cpg/cpo_apps/${STACK}
-
-DEPLOY_TIMEOUT_MILLISECONDS=900000
+#### Ensure we are running the latest version of the script
+if ! ${SCRIPT_DIR}/update-from-cm.sh ${SCRIPT_DIR} ${SCRIPT}; then
+    ${SCRIPT} $@
+    exit $?
+fi
 
 
-# Update configurations
-${SVN_UPDATE} ${STACK_DIR}/automation
-
-
-# Other Utilities
+# Usage function
 
 usage() {
     cat <<EOF
@@ -82,6 +36,107 @@ This sript should be run from the domain's automation directory.
 EOF
     exit ${1:-99}
 }
+
+
+# Report errors
+error_report() {
+    rc=$?
+    echo FATAL: Error at line ${1}: status ${rc}
+    exit ${rc}
+}
+
+# Debug function
+debug() {
+    : echo DEBUG: $@
+}
+
+trap 'error_report ${LINENO}' ERR
+
+
+# Default source and branch for stg10 through stg13
+setupSource() {
+    if ! [[ ${LOGNAME} =~ stg1[0-3] ]]; then
+        echo FATAL: Default migrate source is valid only for Staging 10-13
+        usage 1
+    fi
+
+    local source=dev${LOGNAME:3:2}
+    if ! [[ -d /cpg/repos/deployment_manifests/${source}.properties ]]; then
+        local branch=$(awk '/=/ && $NF ~/[0-9]{4,4}\.[0-9]/ {print $NF}' \
+                       /cpg/repos/deployment_manifests/${source}.properties | \
+                       sort -u | tail -1)
+       branch=${branch%.*}
+       SELECTED_OPTIONS="-s ${source} -b ${branch}"
+    else
+        echo FATAL: Properties file not found for ${source}
+        usage 1
+    fi
+}
+
+
+# Respoitory setup
+REPO_DIR=/cpg/repos/maven/release_repo
+
+# Application globals
+case ${1} in
+  deploy|envonly|undeploy)
+    SELECTED_ACTION=${1}
+    shift
+    SELECTED_OPTIONS="-t ${1} -v ${2}"
+    shift; shift
+    ;;
+  migrate)
+    SELECTED_ACTION=${1}
+    shift
+    if [[ ${#} -eq 0 || ${1:-} =~ ^- ]]; then
+        setupSource
+    else
+        SELECTED_OPTIONS="-s ${1}"
+        shift
+    fi
+    ;;
+  h*|H*)
+    usage
+    ;;
+  *)
+    SELECTED_ACTION=deploy
+    SELECTED_OPTIONS="-t ${1} -v ${2}"
+    shift; shift
+    ;;
+esac
+
+EXTRA_OPTIONS=${@}              # Save remaining command line options
+
+# Ensure CPG_LOGINAME is configured
+if [[ -z ${CPG_LOGNAME:-''} ]]; then
+    if [[ ${LOGNAME} =~ ^(dev|stg|prd|loc)[156][0-9]$ ]]; then
+        export CPG_LOGNAME=${LOGNAME}
+    else
+        DEFAULTS="loc10:a1l10 dev11:a1d11 stg11:a1s11 prd10:a1p10"
+        for default in ${DEFAULTS}; do
+            if [[ -r /cpg/cpo_apps/${default#*:} ]]; then
+                echo INFO: Using default stack ${default%:*} '('${default#*:}')'
+                export CPG_LOGNAME=${default%:*}
+                break
+            fi
+        done
+        unset default DEFAULTS
+    fi
+fi
+if [[ -z ${CPG_LOGNAME:-''} ]]; then
+    echo "WARNING: unable to find usable stack"
+    usage
+fi
+
+
+STACK=a1${CPG_LOGNAME:0:1}${CPG_LOGNAME:3:2}
+STACK_DIR=/cpg/cpo_apps/${STACK}
+automation=${STACK_DIR}/automation
+
+if [[ -z ${automation} || ! -w ${automation} ]]; then
+    echo 'FATAL: This script must be run as a stack user'
+    exit 99
+fi
 
 
 # Remove old exploded applications from server directories
