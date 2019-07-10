@@ -30,6 +30,60 @@ export PROJECT_NAME SVN_REPO VISUAL DERBY_FLAG
 #================================================
 umask 027
 
+#==================================================
+# OS / Host - Determine CPG Hostname and Tier
+#==================================================
+CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
+
+if [ ! -f ${CPG_ALIAS_LOOKUP_FILE} ]; then
+    echo
+    echo 'ERROR in PROFILE:  CPG Hostname mapping file NOT found:'
+    echo "                   ${CPG_ALIAS_LOOKUP_FILE}"
+    echo
+fi
+
+CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
+CPG_HOSTNAME_COUNT=$(echo ${CPG_HOSTNAME} | fgrep ',' | wc -l)
+
+if [ ${CPG_HOSTNAME_COUNT} -gt 1 ]; then
+    echo
+    echo 'ERROR in PROFILE:  Found more than 1 match of HOSTNAME in'
+    echo "  ${CPG_ALIAS_LOOKUP_FILE}"
+    echo
+fi
+if [ ${CPG_HOSTNAME_COUNT} -ge 1 ]; then
+    CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
+    CPG_TIER=${CPG_HOSTNAME##*-}
+elif [[ -n ${STACK} ]]; then
+    CPG_HOSTNAME=localhost
+    CPG_TIER=Local
+else
+    CPG_TIER=None
+fi
+
+# TODO - This appears to be unused
+case "${CPG_HOSTNAME:0:3}" in
+    prd|l-p|s-p)
+        USER_PATTERN='prd[156][01]'
+        ;;
+    stg|l-s|s-s)
+        USER_PATTERN='stg[156][012345]'
+        ;;
+    dev|l-d|s-d)
+        USER_PATTERN='dev[156][012345]'
+        ;;
+    localhost)
+        USER_PATTERN=${LOGNAME}
+        ;;
+    *)
+        USER_PATTERN=''
+        ;;
+esac
+
+export CPG_HOSTNAME
+unset CPG_HOSTNAME_COUNT CPG_ALIAS_LOOKUP_FILE DASH_COUNT
+
+
 #================================================
 # OS / User - Automatically Determine
 #================================================
@@ -255,59 +309,6 @@ if [ $ULIMIT == 'unlimited' ]; then
     echo NOTE: Setting ulimit to 65535 due to an unlimited setting
     ulimit -Hn 65535
 fi
-
-
-#==================================================
-# OS / Host - Determine CPG Hostname and Tier
-#==================================================
-CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-
-if [ ! -f ${CPG_ALIAS_LOOKUP_FILE} ]; then
-    echo
-    echo 'ERROR in PROFILE:  CPG Hostname mapping file NOT found:'
-    echo "                   ${CPG_ALIAS_LOOKUP_FILE}"
-    echo
-fi
-
-CPG_HOSTNAME=$(egrep -i "^${HOSTNAME}," ${CPG_ALIAS_LOOKUP_FILE})
-CPG_HOSTNAME_COUNT=$(echo ${CPG_HOSTNAME} | fgrep ',' | wc -l)
-
-if [ ${CPG_HOSTNAME_COUNT} -gt 1 ]; then
-    echo
-    echo 'ERROR in PROFILE:  Found more than 1 match of HOSTNAME in'
-    echo "  ${CPG_ALIAS_LOOKUP_FILE}"
-    echo
-fi
-if [ ${CPG_HOSTNAME_COUNT} -ge 1 ]; then
-    CPG_HOSTNAME=$(echo ${CPG_HOSTNAME} | cut -d, -f2)
-    CPG_TIER=${CPG_HOSTNAME##*-}
-elif [[ -n ${STACK} ]]; then
-    CPG_HOSTNAME=localhost
-    CPG_TIER=Local
-else
-    CPG_TIER=None
-fi
-
-case "${CPG_HOSTNAME:0:3}" in
-    prd|l-p|s-p)
-        USER_PATTERN='prd[156][01]'
-        ;;
-    stg|l-s|s-s)
-        USER_PATTERN='stg[156][012345]'
-        ;;
-    dev|l-d|s-d)
-        USER_PATTERN='dev[156][012345]'
-        ;;
-    localhost)
-        USER_PATTERN=${LOGNAME}
-        ;;
-    *)
-        USER_PATTERN=''
-        ;;
-esac
-
-export CPG_HOSTNAME
-unset CPG_HOSTNAME_COUNT CPG_ALIAS_LOOKUP_FILE DASH_COUNT
 
 
 #==================================================
