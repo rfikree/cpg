@@ -50,12 +50,12 @@ case "${CPG_LOGNAME:0:3}" in
         STACK=a${STACK_NUM:0:1}${ENVIRONMENT_SHORT}${STACK_NUM}
         ;;
     *)
-        ENVIRONMENT=
-        STACK_NUM=
-        ENVIRONMENT_SHORT=
-        STACKUSER=
-        STACK=
-        CPG_LOGNAME=
+        ENVIRONMENT=loc
+        STACK_NUM=10
+        ENVIRONMENT_SHORT=l
+        STACKUSER=false
+        STACK=a1l10
+        CPG_LOGNAME=loc10
         ;;
 esac
 export ENVIRONMENT STACKUSER CPG_LOGNAME STACK
@@ -223,17 +223,15 @@ for DIR in ${JAVA_VERSION}/bin /usr/xpg6/bin /usr/xpg4/bin /usr/bin \
 done
 PATH=${PATH#:}
 
-for FILE in ${WL_HOME}/server/lib/weblogic.jar; do
-    if [ -e ${FILE} ]; then
-        if [[ ! "${CLASSPATH}:" == "${FILE}:"* ]]; then
-            CLASSPATH=${FILE}:${CLASSPATH%:}
+CLASSPATH=
+for FILE in ${WL_HOME}/server/lib/weblogic.jar \
+    	    /cpg/3rdParty/scripts/cpg/testing .; do
+    if [[ -e ${FILE} ]]; then
+        if ! [[ :${CLASSPATH}: =~  :${FILE}: ]]; then
+            CLASSPATH=${CLASSPATH#:}:${FILE}
         fi
     fi
 done
-
-if [[ ! ${CLASSPATH} =~ /cpg/3rdParty/scripts/cpg/testing ]]; then
-    CLASSPATH=${CLASSPATH%:}:/cpg/3rdParty/scripts/cpg/testing
-fi
 
 for DIR in /opt/WANdisco/lib ${SQLPLUS_HOME} ${SAPJCO_HOME} ${SAPSEC_HOME}; do
     if [ -d ${DIR} ]; then
