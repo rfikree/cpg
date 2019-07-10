@@ -7,31 +7,26 @@ SCRIPT_DIR=$(cd $(dirname $0) >/dev/null; echo ${PWD})
 SCRIPT_NAME=$(basename ${SCRIPT})
 
 
-#### Ensure we are running the latest version of the script
-if ! ${SCRIPT_DIR}/update-from-cm.sh ${SCRIPT_DIR} ${SCRIPT}; then
-    ${SCRIPT} $@
-    exit $?
-fi
-
-
 # Usage function
 
 usage() {
     cat <<EOF
 
 Application deployment script with command line access.
-This sript should be run from the domain's automation directory.
+This script will automatically select he domain's automation directory.
 
   usage:
-    ${0} Deploy_Section Release_Version
-    ${0} [deploy|envonly|undeploy] Deploy_Section Release_Version
-    ${0} migrate Source_Stack
+    ${0} Deploy_Section Release_Version [Deploy_Options]
+    ${0} [deploy|envonly|undeploy] Deploy_Section Release_Version [Deploy_Options]
+    ${0} migrate [Source_Stack/Release] [Deploy_Options]
 
     First option is action which defaults to deploy.
 
-    Deploy_section is a section from Deploy.properties
+    Deploy_Section is a section from Deploy.properties
     Release_Version is the version being deployed 1907.0.99
-    Source_Stack is the user_id from which deployments are being copied
+    Source_Stack is the user_id from which deployments are being applied
+    Relase is the release for which deployments are being applied
+    Deploy_Options are additional options to pass to the deployer application
 
 EOF
     exit ${1:-99}
@@ -137,6 +132,7 @@ if [[ -z ${automation} || ! -w ${automation} ]]; then
     echo 'FATAL: This script must be run as a stack user'
     exit 99
 fi
+${SCRIPT_DIR}/update-from-cm.sh ${automation}
 
 
 # Remove old exploded applications from server directories
