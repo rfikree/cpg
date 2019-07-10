@@ -50,12 +50,12 @@ case "${CPG_LOGNAME:0:3}" in
         STACK=a${STACK_NUM:0:1}${ENVIRONMENT_SHORT}${STACK_NUM}
         ;;
     *)
-        ENVIRONMENT=loc
-        STACK_NUM=10
-        ENVIRONMENT_SHORT=l
+        ENVIRONMENT=
+        STACK_NUM=
+        ENVIRONMENT_SHORT=
         STACKUSER=false
-        STACK=a1l10
-        CPG_LOGNAME=loc10
+        STACK=a1${CPG_HOSTNAME:0:1}10
+        CPG_LOGNAME=
         ;;
 esac
 export ENVIRONMENT STACKUSER CPG_LOGNAME STACK
@@ -225,7 +225,7 @@ PATH=${PATH#:}
 
 CLASSPATH=
 for FILE in ${WL_HOME}/server/lib/weblogic.jar \
-    	    /cpg/3rdParty/scripts/cpg/testing .; do
+            /cpg/3rdParty/scripts/cpg/testing .; do
     if [[ -e ${FILE} ]]; then
         if ! [[ :${CLASSPATH}: =~  :${FILE}: ]]; then
             CLASSPATH=${CLASSPATH#:}:${FILE}
@@ -414,9 +414,8 @@ unset STACKNUM PROJECT CPG_TIER
 #==================================================
 # Update and verify status of the automation directory
 #==================================================
-if [[ ${CPG_HOSTNAME} = *-cpodeploy && ${CPG_LOGNAME} == ${USER} ]]; then
-    svn update ${automation}
-    svn status ${automation}
+if [[ -n ${automation} && -w ${automation} ]]; then
+    ${SCRIPTS}/utils/update-from-cm.sh
 fi
 
 
