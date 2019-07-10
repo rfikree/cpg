@@ -56,10 +56,10 @@ fi
 
 # Do the update and display the status
 if [[ -d .git ]]; then
-    git pull
+    git pull -q
     git status -s
 elif [[ -d .svn ]]; then
-    svn update
+    svn -q update
     svn status
     #cd ..
     #SCRIPT_DIR=$(dirname ${SCRIPT})
