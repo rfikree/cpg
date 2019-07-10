@@ -23,12 +23,6 @@ EOF
 }
 
 # Ensure we have GIT installed
-if ! which git >/dev/null; then
-    echo
-    echo WARN: Unable to locate git
-    echo
-    exit
-fi
 
 # Checksum the script, if specified, before we update.
 if [[ -n ${SUMFILE:-''} ]]; then
@@ -56,8 +50,14 @@ fi
 
 # Do the update and display the status
 if [[ -d .git ]]; then
-    git pull -q
-    git status -s
+    if ! which git >/dev/null; then
+        echo
+        echo WARN: Unable to locate git
+        echo
+    else
+        git pull -q
+        git status -s
+    fi
 elif [[ -d .svn ]]; then
     svn -q update
     svn status
