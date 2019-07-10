@@ -2,6 +2,9 @@ from __future__ import generators
 
 """Configuration file parser.
 
+WARNING: This module is copied from the automation project.
+  Please make any required changes there and copy back to this application
+
 A setup file consists of sections, lead by a "[section]" header,
 and followed by "name: value" entries, with continuations and such in
 the style of RFC 822.
