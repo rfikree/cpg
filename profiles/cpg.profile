@@ -416,7 +416,7 @@ unset STACKNUM PROJECT CPG_TIER
 # Update and verify status of the automation directory
 #==================================================
 if [[ -n ${automation} && -w ${automation} ]]; then
-    ${SCRIPTS}/utils/update-from-cm.sh
+    ${scripts}/utils/update-from-cm.sh
 fi
 
 
