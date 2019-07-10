@@ -116,9 +116,9 @@ def parsePath(path, context=False):
     if context:
         parts = path.split('/', 2)
         if len(parts):
-            return = '/'.join(parts[:-1])
+            return '/'.join(parts[:-1])
         else:
-           return = path
+           return path
 
     parts = path.split('/')
 
