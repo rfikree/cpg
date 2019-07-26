@@ -347,7 +347,7 @@ fi
 
 if [[ "${STACKUSER}" != 'true' || -n "${CPG_USER}" ]]; then
     use() {
-        CPG_USER=${1} source ${PROFILE_DIR}/cpg.profile
+        CPG_LOGNAME=${1} source ${PROFILE_DIR}/cpg.profile
     }
 fi
 
@@ -398,7 +398,7 @@ if tty -s; then
     echo "        PATH = ${PATH}"
     echo "   CLASSPATH = ${CLASSPATH}"
 
-    if [ $(uname) == SunOS ]; then
+    if [[ $(uname) == SunOS ]]; then
         echo
         echo "      MEMORY = $(memuse | cut -d\  -f3)"
         echo "        SWAP = $(swapuse | cut -d\  -f3-)"
@@ -416,7 +416,7 @@ unset STACKNUM PROJECT CPG_TIER
 # Update and verify status of the automation directory
 #==================================================
 if [[ -n ${automation} && -w ${automation} ]]; then
-    ${scripts}/utils/update-from-cm.sh
+    ${scripts}/utils/update-from-cm.sh ${automation}
 fi
 
 
