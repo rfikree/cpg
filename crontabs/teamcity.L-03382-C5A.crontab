@@ -6,9 +6,7 @@
 # remove rsync.logs over 7 days old
 29 19 * * * /usr/bin/find $HOME/rsync.logs/rsync* -ctime +7 -exec rm {} +
 
-25,55 * * * * /cpg/3rdParty/scripts/cpg/buildinfo/updateBuildInfo.sh 2>&1
-
 # Reload crontab Monday evening
-10 23 * * 1  crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.`hostname`.crontab
+11 23 * * 1  crontab /cpg/3rdParty/scripts/cpg/crontabs/${LOGNAME}.`hostname`.crontab
 
 # EOF
