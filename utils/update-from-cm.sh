@@ -14,9 +14,11 @@ usage() {
 
     cat <<EOF
 
-Usage: ${0} [directoty [script-to-rub]
+Usage: ${0} [directoty [script-to-run]
 
 Updates the-directory from the configuration manager it uses one.
+
+Returns false if script-to-run is specified and gets updated.
 
 EOF
     exit
