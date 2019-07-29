@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_FILE=${HOME}/rsync_logs-$(date +%Y%m%d%-H%M)
+LOG_FILE=${HOME}/rsync.logs/rsync-$(date +%Y%m%d%-H%M).log
 
 
 # Synchronize production manifests back to dev/staging
