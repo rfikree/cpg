@@ -1,8 +1,8 @@
 #!/bin/bash
 
-LOG_FILE=/${HOME}/rsync_logs/$(date +%Y%m%d%-H%M)
+LOG_FILE=${HOME}/rsync_logs/$(date +%Y%m%d%-H%M)
 
-(
+$(
 # Synchronize production manifests back to dev/staging
 /usr/bin/rsync -azi /cpg/repos/deployment_manifests/prd*properties \
     10.237.116.162:/cpg/repos/deployment_manifests
