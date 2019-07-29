@@ -8,7 +8,7 @@ $(
     10.237.116.162:/cpg/repos/deployment_manifests
 
 # Synchoronize all manifiests fron dev/staging
-/usr/bin/rsync -azi 10.237.116.162:/cpg/repos/deployment_manifests/ \
+/usr/bin/rsync -azi --no-owner 10.237.116.162:/cpg/repos/deployment_manifests/ \
      /cpg/repos/deployment_manifests
 
 # Sychronize the artifacts from staging/prodution
