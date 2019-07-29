@@ -1,7 +1,7 @@
 #!/usr/bin/crontab -u teamcity
 
 # rsync release repo from staging to prd cpodeploy:/cpg/repos
-6,16,26,36,46,56 * * * * /cpg/3rdParty/scripts/cpg/utils/migrate_repos
+6,16,26,36,46,56 * * * * /cpg/3rdParty/scripts/cpg/utils/migrate_repos.sh
 
 # remove rsync.logs over 7 days old
 29 19 * * * /usr/bin/find $HOME/rsync.logs/rsync* -ctime +7 -exec rm {} +
