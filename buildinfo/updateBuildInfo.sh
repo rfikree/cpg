@@ -35,7 +35,7 @@ umask 022
 # Setup the environment
 export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar:$(dirname ${0})
 #export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${PATH}
-export PATH=${JAVA_HOME}/bin:${WL_HOME}/common/bin:${PATH}
+export PATH=${JAVA_HOME}/bin:${WL_HOME}/oracle_common/common/bin:${WL_HOME}/common/bin:${PATH}
 export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
     -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
     -Dweblogic.ThreadPoolPercentSocketReaders=75
