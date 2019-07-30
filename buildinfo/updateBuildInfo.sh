@@ -5,12 +5,12 @@ umask 022
 # Update here if JAVA or WebLogic is updated
 case $(uname) in
 SunOS)
-    for JAVA_HOME in  $(ls -dt /cpg/3rdParty/installs/java/jdk1.7*); do
+    for JAVA_HOME in  $(ls -dt /cpg/3rdParty/installs/java/jdk1.7* 2>/dev/null); do
         break
     done
     ;;
 Linux)
-    for JAVA_HOME in  $(ls -dt /usr/java/jdk1.7*); do
+    for JAVA_HOME in  $(ls -dt /usr/java/jdk1.7* 2>/dev/null); do
         break
     done
     ;;
@@ -21,9 +21,9 @@ export JAVA_HOME JAVA_VENDOR
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # WebLogic 12c if possible
-for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver); do
+for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver 2>/dev/null); do
     if [[ -f ${WL12_HOME}/../oracle_common/common/bin/wlst.sh ]]; then
-        for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8*); do
+        for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8* 2>/dev/null); do
             break
         done
         WL_HOME=${WL12_HOME}
@@ -31,7 +31,7 @@ for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver); do
     fi
 done
 
-# Make everything visible
+# Make new files visible to everyone
 umask 022
 
 # Setup the environment
@@ -65,6 +65,9 @@ CPG_ENV=${CPG_ENV#*-}
 
 # Generate reports
 $(dirname ${0})/build_reports.py -e ${CPG_ENV} &> buildReports.log
+
+# Make new property files visible to everyone
+chmod o=g *.properties
 
 # Copy reports to reporting server
 scp ${CPG_ENV}*.html \
