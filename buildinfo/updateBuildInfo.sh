@@ -21,13 +21,15 @@ export JAVA_HOME JAVA_VENDOR
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # WebLogic 12c if possible
-for WL_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver); do
-    for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8*); do
+for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver); do
+    if [[ -f ${WL12_HOME}/../oracle_common/common/bin/wlst.sh ]]; then
+        for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8*); do
+            break
+        done
+        WL_HOME=${WL12_HOME}
         break
-    done
-    break
+    fi
 done
-#export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home12c/wlserver
 
 # Make everything visible
 umask 022
@@ -35,7 +37,7 @@ umask 022
 # Setup the environment
 export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar:$(dirname ${0})
 #export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${PATH}
-export PATH=${JAVA_HOME}/bin:${WL_HOME}/oracle_common/common/bin:${WL_HOME}/common/bin:${PATH}
+export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${WL_HOME}/common/bin:${PATH}
 export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
     -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
     -Dweblogic.ThreadPoolPercentSocketReaders=75
