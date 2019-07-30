@@ -8,8 +8,9 @@ LOG_FILE=${HOME}/rsync.logs/rsync-$(date +%Y%m%d%-%H%M).log
     10.237.116.162:/cpg/repos/deployment_manifests 2>&1 >> ${LOG_FILE}
 
 # Synchoronize all manifiests fron staging
-/usr/bin/rsync -azi --no-owner 10.237.116.162:/cpg/repos/deployment_manifests/*s \
-     /cpg/repos/deployment_manifests 2>&1 >> ${LOG_FILE}
+/usr/bin/rsync -azi --no-owner --exclude 'prd*properties' \
+    10.237.116.162:/cpg/repos/deployment_manifests/*properties \
+    /cpg/repos/deployment_manifests 2>&1 >> ${LOG_FILE}
 
 # Sychronize the artifacts from staging
 /usr/bin/rsync -azi --delete 10.237.116.162:/cpg/repos/maven/release_repo/ \
