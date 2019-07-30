@@ -11,7 +11,7 @@ import getopt
 import os
 import sys
 #import filecmp
-#sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
+sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from components import get_artifacts
 from generate_report import gen_report
