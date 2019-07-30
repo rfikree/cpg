@@ -14,7 +14,7 @@ LOG_FILE=${HOME}/rsync.logs/rsync-$(date +%Y%m%d%-%H%M).log
 
 # Sychronize the artifacts from staging
 /usr/bin/rsync -azi --delete 10.237.116.162:/cpg/repos/maven/release_repo/ \
-    /cpg/repos/mave1n/release_repo 2>&1 >> ${LOG_FILE}
+    /cpg/repos/maven/release_repo 2>&1 >> ${LOG_FILE}
 
 
 # Remove the log file if empty
