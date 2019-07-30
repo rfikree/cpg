@@ -1,19 +1,19 @@
 #!/bin/bash
 
-LOG_FILE=${HOME}/rsync.logs/rsync-$(date +%Y%m%d%-H%M).log
+LOG_FILE=${HOME}/rsync.logs/rsync-$(date +%Y%m%d%-$H%M).log
 
 
-# Synchronize production manifests back to dev/staging
+# Synchronize production manifests back to staging
 /usr/bin/rsync -azi --no-owner /cpg/repos/deployment_manifests/prd*properties \
     10.237.116.162:/cpg/repos/deployment_manifests 2>&1 >> ${LOG_FILE}
 
-# Synchoronize all manifiests fron dev/staging
-/usr/bin/rsync -azi --no-owner 10.237.116.162:/cpg/repos/deployment_manifests/ \
+# Synchoronize all manifiests fron staging
+/usr/bin/rsync -azi --no-owner 10.237.116.162:/cpg/repos/deployment_manifests/*s \
      /cpg/repos/deployment_manifests 2>&1 >> ${LOG_FILE}
 
-# Sychronize the artifacts from staging/prodution
+# Sychronize the artifacts from staging
 /usr/bin/rsync -azi --delete 10.237.116.162:/cpg/repos/maven/release_repo/ \
-    /cpg/repos/maven/release_repo/ &> /$HOME/rsync.logs/rsync-log`2>&1 >> ${LOG_FILE}`
+    /cpg/repos/maven/release_repo 2>&1 >> ${LOG_FILE}`
 
 
 # Remove the log file if empty
