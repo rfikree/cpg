@@ -5,11 +5,13 @@ Uses the buildReports.properties file to identify the URLs for the
 WebLogic Admin Servers to connect to.
 '''
 
+# pylint: disable=wrong-import-position
+
 import getopt
 import os
 import sys
-#import ConfigParser
-sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
+#import filecmp
+#sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from components import get_artifacts
 from generate_report import gen_report
@@ -70,10 +72,13 @@ def save_report(report_name, report):
 
 
 def add_state_section(state, section, states):
+    '''Add properties to a section, creating section if needed'''
+    _states = states[:]
+    if not _states:
+        return
+    _states.sort()
     if not state.has_section(section):
         state.add_section(section)
-    _states = states[:]
-    _states.sort()
     for item, version, _state, _targets in _states:
         state.set(section, item, version)
 
@@ -81,15 +86,20 @@ def add_state_section(state, section, states):
 def save_state(stack_name, stack_components):
     '''Save the state (artifacts and versions) to a file'''
     state = ConfigParser()
-    for (adminurl, components) in stack_components:
+    for (dummy, components) in stack_components:
         artifacts, libaries = components
         add_state_section(state, 'artifacts', artifacts)
         add_state_section(state, 'libraries', libaries)
 
-    filename = ''.join((stack_name, '.properties'))
+    filename = ''.join((stack_name, '.tmp'))
+    propfile = ''.join((stack_name, '.properties'))
     _f = open(filename, 'w')
     state.write(_f)
     _f.close()
+    if _file_cmp(filename, propfile):
+        os.remove(filename)
+    else:
+        os.rename(filename, propfile)
 
 
 def create_reports(property_file, environment, user, passwd):
@@ -160,6 +170,27 @@ def main():
             create_reports(property_file, _a, user, passwd)
         elif _o in ('-e', '--enviroment'):
             usage(2)
+
+def _file_cmp(file1, file2):
+    ''' File cmp based on library module '''
+    bufsize = 8192
+    status = False
+    try:
+        _fp1 = open(file1, 'rb')
+        _fp2 = open(file2, 'rb')
+        while True:
+            _b1 = _fp1.read(bufsize)
+            _b2 = _fp2.read(bufsize)
+            if _b1 != _b2:
+                break
+            if not _b1:
+                status = True
+                break
+    except:     # pylint: disable=bare-except
+        pass
+    _fp1.close()
+    _fp2.close()
+    return status
 
 
 if __name__ == 'main':

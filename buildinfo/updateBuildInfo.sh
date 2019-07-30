@@ -5,27 +5,35 @@ umask 022
 # Update here if JAVA or WebLogic is updated
 case $(uname) in
 SunOS)
-    for JAVA_HOME in  $(ls -drt /cpg/3rdParty/installs/java/jdk1.7*); do
-        continue
+    for JAVA_HOME in  $(ls -dt /cpg/3rdParty/installs/java/jdk1.7*); do
+        break
     done
     ;;
 Linux)
-    for JAVA_HOME in  $(ls -drt /usr/java/jdk1.7*); do
-        continue
+    for JAVA_HOME in  $(ls -dt /usr/java/jdk1.7*); do
+        break
     done
     ;;
 esac
 JAVA_VENDOR=Sun
 
 export JAVA_HOME JAVA_VENDOR
-#export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home12c/wlserver
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
+
+# WebLogic 12c if possible
+for WL_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver); do
+    for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8*); do
+        break
+    done
+    break
+done
+#export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home12c/wlserver
 
 # Make everything visible
 umask 022
 
 # Setup the environment
-export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar
+export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar:$(dirname ${0}
 #export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${PATH}
 export PATH=${JAVA_HOME}/bin:${WL_HOME}/common/bin:${PATH}
 export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
