@@ -9,7 +9,7 @@ Return a list of compments in a WebLogic domain as tuples in the form
 
 import os
 import sys
-#from os import listdir
+
 from wlstModule import connect, disconnect, getMBean, serverConfig, get
 
 __app_state_runtime__ = None

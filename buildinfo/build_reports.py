@@ -5,13 +5,10 @@ Uses the buildReports.properties file to identify the URLs for the
 WebLogic Admin Servers to connect to.
 '''
 
-# pylint: disable=wrong-import-position
-
 import getopt
 import os
 import sys
-#import filecmp
-sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
+#import filecmp     # Need to be on WebLogic 12c - see end of file.
 
 from components import get_artifacts
 from generate_report import gen_report

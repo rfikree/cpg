@@ -4,10 +4,8 @@
 
 # pylint: disable=duplicate-code
 
-#import os
 import sys
 import time
-#sys.path.append(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 from components import get_artifacts
 

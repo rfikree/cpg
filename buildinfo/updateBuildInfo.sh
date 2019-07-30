@@ -22,7 +22,7 @@ export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # WebLogic 12c if possible
 for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver 2>/dev/null); do
-    if [[ -f ${WL12_HOME}/../oracle_common/common/bin/wlst.sh ]]; then
+    if [[ -f ${WL12_HOME%/*}/oracle_common/common/bin/wlst.sh ]]; then
         for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8* 2>/dev/null); do
             break
         done
@@ -31,13 +31,12 @@ for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver 2>/dev/null);
     fi
 done
 
-# Make new files visible to everyone
+# Make new files visible to everyone - doesn't seem to work with Java
 umask 022
 
-# Setup the environment
-export CLASSPATH=${WL_HOME}/server/lib/weblogic.jar:$(dirname ${0})
-#export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${PATH}
-export PATH=${JAVA_HOME}/bin:${WL_HOME}/../oracle_common/common/bin:${WL_HOME}/common/bin:${PATH}
+# Setup the environment - Add script directory to python path
+export WLST_EXT_CLASSPATH=${WL_HOME}/server/lib/weblogic.jar
+export PATH=${JAVA_HOME}/bin:${WL_HOME%/*}/oracle_common/common/bin:${WL_HOME}/common/bin:${PATH}
 export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
     -Dweblogic.security.CustomTrustKeyStoreFileName=/cpg/3rdParty/security/CPGTrust.jks
     -Dweblogic.ThreadPoolPercentSocketReaders=75
@@ -51,7 +50,8 @@ export WLST_PROPERTIES="-Dweblogic.security.TrustKeyStore=CustomTrust
     -Dweblogic.security.allowCryptoJDefaultJCEVerification=true
     -Dweblogic.security.allowCryptoJDefaultPRNG=true
     -Dweblogic.security.SSL.ignoreHostnameVerification=true
-    -Djdk.tls.client.protocols=TLSv1.2"
+    -Djdk.tls.client.protocols=TLSv1.2
+    -Dpython.path=$(dirname ${0})"
 
 # Determine the environment to run reports for
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
@@ -66,8 +66,8 @@ CPG_ENV=${CPG_ENV#*-}
 # Generate reports
 $(dirname ${0})/build_reports.py -e ${CPG_ENV} &> buildReports.log
 
-# Make new property files visible to everyone
-chmod o=g *.properties
+# Make new property files visible to everyone - this works.
+chmod o=g *.properties *.html
 
 # Copy reports to reporting server
 scp ${CPG_ENV}*.html \
