@@ -71,7 +71,7 @@ scp ${CPG_ENV}*.html \
     optadm@cpowiki.cpggpc.ca:/cpg/cpo_apps/build-info/wipro &> scp.log
 
 # Copy the profiles to NFS - new functionality
-cp ${CPG_ENV}*.properties \
+rsync -a ${CPG_ENV}*.properties \
     /cpg/repos/deployment_manifests &> copy.log
 
 # EOF

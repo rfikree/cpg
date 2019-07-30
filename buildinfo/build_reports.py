@@ -91,7 +91,7 @@ def save_state(stack_name, stack_components):
         add_state_section(state, 'artifacts', artifacts)
         add_state_section(state, 'libraries', libaries)
 
-    filename = ''.join((stack_name, '.tmp'))
+    filename = ''.join((stack_name, '.properties.new'))
     propfile = ''.join((stack_name, '.properties'))
     _f = open(filename, 'w')
     state.write(_f)
@@ -186,10 +186,10 @@ def _file_cmp(file1, file2):
             if not _b1:
                 status = True
                 break
+        _fp1.close()
+        _fp2.close()
     except:     # pylint: disable=bare-except
         pass
-    _fp1.close()
-    _fp2.close()
     return status
 
 
