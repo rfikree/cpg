@@ -25,6 +25,11 @@ EOF
 }
 
 # Ensure we have GIT installed
+if ! which git >/dev/null; then
+    echo
+    echo WARN: Unable to locate git
+    echo
+fi
 
 # Checksum the script, if specified, before we update.
 if [[ -n ${SUMFILE:-''} ]]; then
@@ -52,17 +57,12 @@ fi
 
 # Do the update and display the status
 if [[ -d .git ]]; then
-    if ! which git >/dev/null; then
-        echo
-        echo WARN: Unable to locate git
-        echo
-    else
-        git pull -q
-        git status -s
-    fi
+    git pull | egrep '^ [^ ]'
+    git status -s
 elif [[ -d .svn ]]; then
-    svn -q update
+    svn update | egrep -v '^(Up|At)'
     svn status
+    # TODO - Enable this once we have GIT installed
     #cd ..
     #SCRIPT_DIR=$(dirname ${SCRIPT})
     #${SCRIPT_DIR}/switch-to-git.sh ${DIRECTORY}
