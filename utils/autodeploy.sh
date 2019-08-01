@@ -90,7 +90,7 @@ case ${1} in
         shift
     fi
     ;;
-  h*|H*)
+  [Hh]|[Hh][Ee]|Hh][Ee][Ll]|[Hh][Ee][Ll][Pp])
     usage
     ;;
   *)
