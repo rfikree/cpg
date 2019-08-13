@@ -1,0 +1,7 @@
+
+# /buildinfo/
+/buildinfo/*.class
+
+# /testing/
+/testing/Test.java
+/testing/Test.class
