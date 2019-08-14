@@ -1,3 +1,8 @@
+# backup files
+*~
+
+# Version file
+git_version
 
 # /buildinfo/
 /buildinfo/*.class
@@ -5,3 +10,5 @@
 # /testing/
 /testing/Test.java
 /testing/Test.class
+
+# EOF

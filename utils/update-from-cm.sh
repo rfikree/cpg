@@ -59,6 +59,13 @@ fi
 if [[ -d .git ]]; then
     git pull | egrep '^ [^ ]'
     git status -s
+    # Update the version file
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    shorthash=$(git log --pretty=format:'%h' -n 1)
+    revcount=$(git log --oneline | wc -l)
+    latesttag=$(git describe --tags --abbrev=0 --always)
+    echo "${branch}-${latesttag}-${revcount}-${shorthash}" > git_version
+
 elif [[ -d .svn ]]; then
     svn update | egrep -v '^(Up|At)'
     svn status
