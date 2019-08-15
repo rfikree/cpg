@@ -100,7 +100,7 @@ fi
 # Setup clone command
 if ! [[ ${CPO_HOSTNAME:-''} =~ (stg|prd)-cpodeploy ]]; then
     echo INFO: Cloning dev branch
-    CLONE='git clone -q --branch dev'
+    CLONE='git clone -q --branch develop'
 else
     CLONE='git clone -q --branch master'
 fi
