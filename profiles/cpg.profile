@@ -416,7 +416,9 @@ unset STACKNUM PROJECT CPG_TIER
 # Update and verify status of the automation directory
 #==================================================
 if [[ -n ${automation} && -w ${automation} ]]; then
-    ${scripts}/utils/update-from-cm.sh ${automation}
+    if [[ ${CPG_HOSTNAME} =~ cpodeploy ]]; then
+        ${scripts}/utils/update-from-cm.sh ${automation}
+    fi
 fi
 
 
