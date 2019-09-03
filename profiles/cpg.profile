@@ -25,10 +25,12 @@ VISUAL=vi
 
 export PROJECT_NAME SVN_REPO VISUAL DERBY_FLAG
 
+
 #================================================
 # Default image umask is 0077
 #================================================
 umask 027
+
 
 #==================================================
 # OS / Host - Determine CPG Hostname and Tier
