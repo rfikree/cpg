@@ -27,8 +27,9 @@ EOF
 # Ensure we have GIT installed
 if ! which git >/dev/null; then
     echo
-    echo WARN: Unable to locate git
+    echo FATAL: Unable to locate git
     echo
+    exit 2 # File not found
 fi
 
 # Checksum the script, if specified, before we update.
@@ -36,9 +37,9 @@ if [[ -n ${SUMFILE:-''} ]]; then
     # Ensure we have CkSum installed
     if ! which cksum >/dev/null; then
         echo
-        echo WARN: Unable to locate cksum
+        echo FATAL: Unable to locate cksum
         echo
-        exit
+        exit 2 # File not found
     fi
 
     CHKSUM_1=$(cksum ${SCRIPT})

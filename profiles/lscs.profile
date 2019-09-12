@@ -106,7 +106,6 @@ if [[ ${LOGNAME} =~ s00* ]]; then
 fi
 
 
-
 #================================================
 # Configure Paths
 #================================================
@@ -147,7 +146,6 @@ export PS1
 
 # Make wget work with HTTPS connections
 alias wget='\wget --no-check-certificate'
-
 
 
 #==================================================
