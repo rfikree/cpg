@@ -19,6 +19,8 @@ This script will automatically select he domain's automation directory.
     ${0} Deploy_Section Release_Version [Deploy_Options]
     ${0} [deploy|envonly|undeploy] Deploy_Section Release_Version [Deploy_Options]
     ${0} migrate [Source_Stack/Release] [Deploy_Options]
+    help
+    --help or -h
 
     First option is action which defaults to deploy.
 
@@ -61,7 +63,16 @@ setupSource() {
                        /cpg/repos/deployment_manifests/${source}.properties | \
                        sort -u | tail -1)
        branch=${branch%.*}
-       SELECTED_OPTIONS="-s ${source} -b ${branch}"
+       if diff -q /cpg/repos/deployment_manifests/${source}.properties \
+                  /cpg/repos/deployment_manifests/${LOGNAME}.properties \
+                  > /dev/null; then
+           echo NOTICE: Nothing to migrate - exiting
+           exit
+       else
+           cp -p -f /cpg/repos/deployment_manifests/${source}.properties \
+                    /cpg/repos/deployment_manifests/${branch}.properties
+       fi
+       SELECTED_OPTIONS="-s ${branch}"
     else
         echo FATAL: Properties file not found for ${source}
         usage 1
@@ -92,6 +103,11 @@ case ${1} in
     ;;
   [Hh]|[Hh][Ee]|Hh][Ee][Ll]|[Hh][Ee][Ll][Pp])
     usage
+    ;;
+  -*)
+    SELECTED_ACTION=deploy
+    SELECTED_OPTIONS="${1}"
+    shift
     ;;
   *)
     SELECTED_ACTION=deploy
