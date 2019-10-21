@@ -19,6 +19,7 @@ public class URLReader {
 		catch (MalformedURLException e) {
 			System.err.println("Malformed URL: " + URL);
 			e.printStackTrace();
+			System.exit(-1);
 		}
 
 		try {
@@ -27,6 +28,7 @@ public class URLReader {
 		catch ( IOException e ) {
 			System.err.println("Failed to open URL: " + URL);
 			e.printStackTrace();
+			System.exit(-1);
 		}
 
 		try {
@@ -43,6 +45,7 @@ public class URLReader {
 		catch ( IOException e ) {
 			System.err.println("Failed reading URL: " + URL);
 			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 }
