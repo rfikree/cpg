@@ -1,10 +1,20 @@
 #! /bin/bash
 
-URL_PATH='/web/iw/admin/JCS.jsp?action=clearAllRegions'
+if [[ $1 == cpc || $2 == web ]]; then
+    URL_PATH='/$1/iw/admin/JCS.jsp?action=clearAllRegions'
+else
+    cat <<EOF
+
+    Usage: $0 cpc|web
+
+    Clears the cache content for all producton servers for the
+    specified context root.
+
+
+EOF
+fi
 
 export CLASSPATH=/cpg/3rdParty/scripts/cpg/testing
-for JAVA_BIN in $(ls -drt /cpg/3rdParty/installs/java/jdk1*/bin); do continue; done
-PATH=$JAVA_BIN:$PATH
 
 if [[ ${CPG_HOSTNAME} != prd-cpodeploy ]]; then
     echo
@@ -33,8 +43,8 @@ for ms in {1..6}; do
     for host in prd-a-uicpo prd-b-uicpo prd-c-uicpo; do
         for stack in 10 11; do
             port=${stack}30${ms}
-            java URLReader http://${host}.cpggpc.ca:${port}${URL_PATH}
-            sleep 20
+            java URLReader http://${host}.cpggpc.ca:${port}${URL_PATH} \
+                &> /dev/null && sleep 10
         done
     done
 done
