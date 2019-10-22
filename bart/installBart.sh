@@ -78,17 +78,13 @@ updateChanged ${SOURCE_BASE}/${rules_file} ${INSTALL_BASE}/etc/bart.rules
 updateChanged ${SOURCE_BASE}/bartlog ${INSTALL_BASE}/sbin/bartlog
 updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 
-
-if [[ ! -f /var/svc/manifest/site/${SMF_MANIFEST} ]]; then
-	updateChanged ${SOURCE_BASE}/${SMF_MANIFEST} /var/svc/manifest/site/${SMF_MANIFEST}
-	svccfg import /var/svc/manifest/site/${SMF_MANIFEST}
-elif updateChanged ${SOURCE_BASE}/${SMF_MANIFEST} /var/svc/manifest/site/${SMF_MANIFEST}; then
-	svccfg import /var/svc/manifest/site/${SMF_MANIFEST}
+if updateChanged ${SOURCE_BASE}/${SMF_MANIFEST} /var/svc/manifest/site/${SMF_MANIFEST}; then
+	svcadm restart svc:/system/manifest-import
 fi
 
 
 # Do initial run if required in background - disown process
-if [ ! -f $BART_MANIFEST; then
+if [ ! -f ${BART_MANIFEST} ]; then
 	${INSTALL_BASE}/sbin/bartlog &
 	disown
 fi
