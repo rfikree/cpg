@@ -4,7 +4,7 @@
 INSTALL_BASE=/usr/local
 SOURCE_BASE=$(dirname ${0})
 BART_MANIFEST=/var/tmp/bart_manifest_$(hostname).0
-SNF_MANIFEST=bartlog.xml
+SMF_MANIFEST=bartlog.xml
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
