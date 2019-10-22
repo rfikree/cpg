@@ -2,33 +2,40 @@
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 
 <service_bundle type="manifest" name="bartlog">
-    <service name="site/bartlog" type="service" version="1">
+  <service name="site/bartlog" type="service" version="1">
+
+    <create_default_instance enabled="true"/>
+    <single_instance/>
 
     <dependency name="multi-user" grouping="require_all"
                 restart_on="error" type="service">
       <service_fmri value="svc:/milestone/multi-user:default"/>
     </dependency>
 
-    <instance name='defauilt' enabled='false'>
-        <schedule_method
-            schedule='day'
-            hour='7'
-            minute='15'
-            exec='/user/local/sbin/bartlog'
-            timeout_seconds='900'>
-            <method-context>
-                <method_credential user='root' group='root' />
-            </method-context>
-        </schedule_method>
-    </instance>
+
+    <scheduled_method interval='day' hour='22' minute='22'
+                      exec='/usr/local/sbin/bartlog'
+                      timeout_seconds='0'>
+                      <method_context>
+                        <method_credential user="root"/>
+                      </method_context>
+    </scheduled_method>
+
+    <!-- default service model is 'contract' which monitors service processes
+         use 'transient' if service does not run continuously, or
+         'child' if the servicd does not detach
+    -->
+    <property_group name="startd" type="framework">
+      <propval name="duration" type="astring" value="child"/>
+    </property_group>
 
     <stability value="Evolving" />
 
     <template>
       <common_name>
-        <loctext xml:lang="C">Run bartlog periodically</loctext>
+        <loctext xml:lang="C">Service tp run bartlog periodically</loctext>
       </common_name>
     </template>
 
-    </service>
+  </service>
 </service_bundle>
