@@ -24,7 +24,6 @@ IGNORE dirmtime
 # First level only; add lower levels below
 /       !/*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst !/S-*.nmon
 
-/.ssh
 /boot
 /cpg	!ReportData/*/
 
@@ -48,7 +47,6 @@ IGNORE dirmtime
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log !system/cdm/cdm.cfg
 /opt/nimsoft/robot	!*.log !*.rdb !robot.cfg !robot_env.sds
 
-/packages
 /platform
 /sbin
 
