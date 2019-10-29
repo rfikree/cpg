@@ -58,7 +58,7 @@ case ${CPG_HOSTNAME:-'unknown'} in
 		rules_file=bart.rules.local
 		;;
 	*-wladm)
-		rules_file=bart.rules.weblogic
+		rules_file=bart.rules.wladm
 		;;
 	*-ws)
 		rules_file=bart.rules.local

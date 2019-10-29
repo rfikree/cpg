@@ -9,7 +9,7 @@
 ## GLOBAL:  These parameters apply to all other checks
 ##		unless otherwise overridden.
 CHECK all
-IGNORE dirmtime lmtime mtime
+IGNORE dirmtime lnmtime mtime
 
 
 ## Directory Checks: Specify directory structure to check followed

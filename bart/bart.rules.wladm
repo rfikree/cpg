@@ -65,7 +65,7 @@ IGNORE dirmtime
 
 /cpg/3rdParty				!.etc/ !downloads/ !installs/ !scripts/
 /cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/ !.settings/ !*.db !*.log
-/cpg/3rdParty/scripts 			!.svn/
+/cpg/3rdParty/scripts 			!.git/
 
 CHECK
 
