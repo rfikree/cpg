@@ -8,8 +8,7 @@ SMF_MANIFEST=bartlog.xml
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
-export CPG_HOSTNAME=${CPG_HOSTNAME##*,}
+CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
 
 
 # Function to update or install configs only if missing or changed
