@@ -24,7 +24,6 @@ IGNORE dirmtime
 # First level only; add lower levels below
 /       !/*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst !/S-*.nmon
 
-/.ssh
 /cpg
 
 # Exclude volatile configuration files
@@ -48,7 +47,6 @@ IGNORE dirmtime
 /opt/nimsoft/robot	!*.log !*.rdb !robot.cfg !robot_env.sds
 /opt/snow/data	!*.log ! *.properties !*.snowpack !tempdata.ser
 
-/packages
 /platform
 /sbin
 
