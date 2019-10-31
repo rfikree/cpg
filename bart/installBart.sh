@@ -36,13 +36,13 @@ updateChanged() {
 rules_file=bart.rules.full
 case ${CPG_HOSTNAME:-'unknown'} in
 	*-appadm)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	*-bdt)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	*-blcpo)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		 ;;
 	*-cpodeploy)
 		rules_file=bart.rules.cpodeploy
@@ -54,13 +54,13 @@ case ${CPG_HOSTNAME:-'unknown'} in
 		rules_file=bart.rules.full
 		;;
 	*-uicpo)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	*-wladm)
 		rules_file=bart.rules.wladm
 		;;
 	*-ws)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	unknown)
 		rules_file=bart.rules.full
