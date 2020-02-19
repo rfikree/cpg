@@ -13,9 +13,11 @@
 #                       temporarily disable logging.
 # Modified 10/23/17: Upgrades to bash syntax; reeable logging
 # Modified 12/15/17: Fix logger calls and use -f option to log diff details.
+# Modified 10/22/19: Add hostname to manifest name; Syntax  changes;
+#                       Temorarily send only to me - testing Solaris 11
 
 BART_MAIL=/usr/local/sbin/bartMail.py
-BART_MANIFESTS=/var/tmp
+BART_MANIFEST_BASE=/var/tmp/bart_manifest_$(hostname)
 BART_RULES=/usr/local/etc/bart.rules
 SYSLOG_PRIORITY=audit.info
 
@@ -42,9 +44,9 @@ fi
 #
 # Check for rules:
 #
-if [ ! -f $BART_RULES ]
+if [ ! -f ${ES} ]
 then
-	echo "$BART_RULES Not Found.  Exiting."
+	echo "${BART_RULES} Not Found.  Exiting."
 	exit
 fi
 
@@ -52,12 +54,12 @@ fi
 # If an initial manifest exists, create a new one for diff,
 #       otherwise, create the initial and exit.
 #
-if [ -f $BART_MANIFESTS/bart.manifest.0 ]; then
-	/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.1
+if [ -f ${BART_MANIFEST_BASE}.0 ]; then
+	/usr/bin/bart create -r ${BART_RULES} > ${BART_MANIFEST_BASE}.1
 else
 	echo "Creating initial manifest."
-	/bin/logger -i -p $SYSLOG_PRIORITY -t bartlog "Creating initial bart manifest"
-	/usr/bin/bart create -r $BART_RULES > $BART_MANIFESTS/bart.manifest.0
+	/bin/logger -i -p ${SYSLOG_PRIORITY} -t bartlog "Creating initial bart manifest"
+	/usr/bin/bart create -r ${BART_RULES} > ${BART_MANIFEST_BASE}.0
 	exit $?
 fi
 
@@ -65,7 +67,7 @@ fi
 # Compare "control" (.0) manifest against new "test" (.1) manifest and log the changes
 #
 
-/usr/bin/bart compare -r $BART_RULES -p $BART_MANIFESTS/bart.manifest.{0,1} &> ${BART_DIFFS}
+/usr/bin/bart compare -r ${BART_RULES} -p ${BART_MANIFEST_BASE}.{0,1} &> ${BART_DIFFS}
 
 #
 #  Process diffs file reporting changes if any.
@@ -73,7 +75,7 @@ fi
 
 if [ -s ${BART_DIFFS} ]; then
 	# Log the changes to syslog (line by line)
-	/bin/logger -i -p $SYSLOG_PRIORITY -t bartlog "bart found differences in manifest"
+	/bin/logger -i -p ${SYSLOG_PRIORITY} -t bartlog "bart found differences in manifest"
 
 	# Email the changes - use custom mail client
 	${BART_MAIL} -f 'Bart <no-reply@innovapost.ca>' \
@@ -85,10 +87,10 @@ if [ -s ${BART_DIFFS} ]; then
 #		-c olc_techteam@innovapost.com \
 
 	# Finally, rotate for the next run
-	mv $BART_MANIFESTS/bart.manifest.{1,0}
+	mv ${BART_MANIFEST_BASE}.{1,0}
 else
 	# Retain original to indicate last known change date
-	rm $BART_MANIFESTS/bart.manifest.1
+	rm ${BART_MANIFEST_BASE}.1
 fi
 
 #

@@ -24,7 +24,6 @@ IGNORE dirmtime
 # First level only; add lower levels below
 /       !/*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst !/S-*.nmon
 
-/.ssh
 /boot
 
 # Exclude volatile configuration files
@@ -42,12 +41,13 @@ IGNORE dirmtime
 # /opt - Exclude directories with dynamic content, add back related static content
 /opt	!SUNWexplo/output/ !sun/n1gc/etc/diskinfo_auto.properties \
 	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
-	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
+	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/ \
+	!show/data
 /opt/nimsoft		!niscache/ !pids/ !state !tmp/ !probes/ !robot/
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log !system/cdm/cdm.cfg
 /opt/nimsoft/robot	!*.log !*.rdb !robot.cfg !robot_env.sds
+/opt/snow/data		!*.log ! *.properties !*.snowpack !tempdata.ser
 
-/packages
 /platform
 /sbin
 

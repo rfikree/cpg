@@ -24,18 +24,18 @@ public class URLReaderAny {
 			  public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
 			  }
-	
+
 			  public void checkClientTrusted(X509Certificate[] certs, String authType) {  }
-	
+
 			  public void checkServerTrusted(X509Certificate[] certs, String authType) {  }
-	
+
 		   }
 		};
-	
+
 		SSLContext sc = SSLContext.getInstance("SSL");
 		sc.init(null, trustAllCerts, new java.security.SecureRandom());
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-	
+
 		// Create all-trusting host name verifier
 		HostnameVerifier allHostsValid = new HostnameVerifier() {
 			public boolean verify(String hostname, SSLSession session) {
@@ -47,33 +47,35 @@ public class URLReaderAny {
 		/*
 		 * end of the fix
 		 */
-	
+
 		String URL = "file:/etc/hosts";
 		URL myURL = null;
 		URLConnection urlConn = null;
-	
+
 		if (  args.length > 0 ) {
 			URL = args[0];
 		} else {
 			System.out.println("URL: " + URL);
 		}
-		
+
 		try {
 			myURL = new URL(URL);
 		}
 		catch (MalformedURLException e) {
 			System.err.println("Malformed URL: " + URL);
 			e.printStackTrace();
+			System.exit(-1);
 		}
-		
+
 		try {
 			urlConn = myURL.openConnection();
 		}
 		catch ( IOException e ) {
 			System.err.println("Failed to open URL: " + URL);
 			e.printStackTrace();
+			System.exit(-1);
 		}
-	
+
 		//URL url = new URL("https://securewebsite.com");
 		//URLConnection con = url.openConnection();
 		try {
@@ -89,6 +91,7 @@ public class URLReaderAny {
 		catch ( IOException e ) {
 			System.err.println("Failed reading URL: " + URL);
 			e.printStackTrace();
+			System.exit(-1);
 		}
 	}
 }

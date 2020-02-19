@@ -3,12 +3,12 @@
 
 INSTALL_BASE=/usr/local
 SOURCE_BASE=$(dirname ${0})
-BART_MANIFESTS=/var/tmp
+BART_MANIFEST=/var/tmp/bart_manifest_$(hostname).0
+SMF_MANIFEST=bartlog.xml
 
 PROFILE_DIR=/cpg/3rdParty/scripts/cpg/profiles
 CPG_ALIAS_LOOKUP_FILE=${PROFILE_DIR}/hostname.map
-CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE})
-export CPG_HOSTNAME=${CPG_HOSTNAME##*,}
+CPG_HOSTNAME=$(egrep -i "^$(hostname)," ${CPG_ALIAS_LOOKUP_FILE} | cut -d, -f2)
 
 
 # Function to update or install configs only if missing or changed
@@ -36,13 +36,13 @@ updateChanged() {
 rules_file=bart.rules.full
 case ${CPG_HOSTNAME:-'unknown'} in
 	*-appadm)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	*-bdt)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	*-blcpo)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		 ;;
 	*-cpodeploy)
 		rules_file=bart.rules.cpodeploy
@@ -54,13 +54,13 @@ case ${CPG_HOSTNAME:-'unknown'} in
 		rules_file=bart.rules.full
 		;;
 	*-uicpo)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	*-wladm)
-		rules_file=bart.rules.weblogic
+		rules_file=bart.rules.wladm
 		;;
 	*-ws)
-		rules_file=bart.rules.local
+		rules_file=bart.rules.olc
 		;;
 	unknown)
 		rules_file=bart.rules.full
@@ -77,35 +77,15 @@ updateChanged ${SOURCE_BASE}/${rules_file} ${INSTALL_BASE}/etc/bart.rules
 updateChanged ${SOURCE_BASE}/bartlog ${INSTALL_BASE}/sbin/bartlog
 updateChanged ${SOURCE_BASE}/bartMail.py ${INSTALL_BASE}/sbin/bartMail.py
 
-
-# Choose the manifest based on Solaris version
-if [[ $(uname -r) == '5.11' ]]; then # Run bartlog on abn SMF schedule
-	MANIFEST=bartlog.xml
-else	# Need to wait for run times.
-	MANIFEST=bart_runner.xml
-fi
-
-if [[ $(uname -r) == '5.11' ]]; then # Solaris 11
-	if [[ ! -f /var/svc/manifest/site/${MANIFEST} ]]; then
-		updateChanged ${SOURCE_BASE}/${MANIFEST} /var/svc/manifest/site/${MANIFEST}
-		svccfg apply site:${MANIFEST}
-	elif updateChanged ${SOURCE_BASE}/${MANIFEST} /var/svc/manifest/site/${MANIFEST}; then
-		svccfg refresh site:${MANIFEST}
-	fi
-else	# Solaris 10
-	if [[ ! -f /var/svc/manifest/site/${MANIFEST} ]]; then
-		updateChanged ${SOURCE_BASE}/${MANIFEST} /var/svc/manifest/site/${MANIFEST}
-		svccfg import /var/svc/manifest/site/${MANIFEST}
-		svcadm start  site:${MANIFEST}
-	elif updateChanged ${SOURCE_BASE}/bart_runner.xml /var/svc/manifest/site/bart_runner.xml; then
-		svcadm restart  site:${MANIFEST}
-	fi
+if updateChanged ${SOURCE_BASE}/${SMF_MANIFEST} /var/svc/manifest/site/${SMF_MANIFEST}; then
+	svcadm restart svc:/system/manifest-import
 fi
 
 
-# Do initial run if required
-if [ ! -f $BART_MANIFESTS/bart.manifest.0 ]; then
+# Do initial run if required in background - disown process
+if [ ! -f ${BART_MANIFEST} ]; then
 	${INSTALL_BASE}/sbin/bartlog &
+	disown
 fi
 
 

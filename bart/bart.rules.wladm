@@ -24,8 +24,8 @@ IGNORE dirmtime
 # First level only; add lower levels below
 /       !/*/* !*/*/ !home/ !tmp/ !.bash_history !.lesshst !/S-*.nmon
 
-/.ssh
-/cpg
+/boot
+/cpg	!ReportData/*/
 
 # Exclude volatile configuration files
 /etc	!devices/snapshot_cache !etc/mnttab \
@@ -42,13 +42,15 @@ IGNORE dirmtime
 # /opt - Exclude directories with dynamic content, add back related static content
 /opt	!SUNWexplo/output/ !sun/n1gc/etc/diskinfo_auto.properties \
 	!nimsoft/ !nsr/dedup/ !nsr/logs/ !nsr/res/ !nsr/run/ !nsr/tmp/ \
-	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/
+	!CA/CCAAgent/runAgent.*	!CA/CCAAgent/tmp/ !McAfee/cma/scratch/ \
+	!evolven_enlight/agent/ !snow/data/
+
+/opt/evolven_enlight/agent	!log/*.log* !watchdog.pid
 /opt/nimsoft		!niscache/ !pids/ !state !tmp/ !probes/ !robot/
 /opt/nimsoft/probes	!cdm.data !*.dta !*.db !*.log !system/cdm/cdm.cfg
 /opt/nimsoft/robot	!*.log !*.rdb !robot.cfg !robot_env.sds
-/opt/snow/data	!*.log ! *.properties !*.snowpack !tempdata.ser
+/opt/snow/data		!*.log ! *.properties !*.snowpack !tempdata.ser
 
-/packages
 /platform
 /sbin
 
@@ -60,6 +62,12 @@ IGNORE dirmtime
 
 # Second level only, including files
 /var    !*/*/ !var/*/* !tmp/
+
+## /cpg/3rdParty - like /opt but NFS mounted; checked only on one server
+
+/cpg/3rdParty				!.etc/ !downloads/ !installs/ !scripts/
+/cpg/3rdParty/installs/introscope	!dependencymap/ !logs/ !offset/ !.settings/ !*.db !*.log
+/cpg/3rdParty/scripts 			!.git/
 
 CHECK
 
