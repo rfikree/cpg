@@ -21,15 +21,11 @@ export JAVA_HOME JAVA_VENDOR
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # WebLogic 12c if possible
-for WL12_HOME in $(ls -dt /cpg/3rdParty/installs/Oracle/*/wlserver 2>/dev/null); do
-    if [[ -f ${WL12_HOME%/*}/oracle_common/common/bin/wlst.sh ]]; then
-        for JAVA_HOME in  $(ls -dt /usr/java/jdk1.8* 2>/dev/null); do
-            break
-        done
-        WL_HOME=${WL12_HOME}
-        break
-    fi
-done
+if [ -d "/cpg/3rdParty/installs/Oracle/fmw12c-latest/wlserver" ] && [ -d "/cpg/3rdParty/installs/java/jdk1.8.0_latest" ]; then
+        WL_HOME=/cpg/3rdParty/installs/Oracle/fmw12c-latest/wlserver
+        JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.8.0_latest
+fi
+
 
 # Make new files visible to everyone - doesn't seem to work with Java
 umask 022
