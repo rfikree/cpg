@@ -48,7 +48,7 @@ trim_automation() {
     #echo PREFIX ${PREFIX}
 
     for dir in *; do
-        if ! [[ ${dir} =~ ${PREFIX}[1-5][0-9] ]]; then
+        if ! [[ ${dir} =~ ${PREFIX}[1-6][0-9] ]]; then
             echo Removing configuration for: ${dir}
             git update-index --assume-unchanged ${dir}/*/*
             rm ${dir}/*/*
