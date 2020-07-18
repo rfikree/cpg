@@ -21,9 +21,9 @@ export JAVA_HOME JAVA_VENDOR
 export WL_HOME=/cpg/3rdParty/installs/Oracle/Middleware_Home1/wlserver_10.3
 
 # WebLogic 12c if possible
-if [ -d "/cpg/3rdParty/installs/Oracle/fmw12c-latest/wlserver" ] && [ -d "/cpg/3rdParty/installs/java/jdk1.8.0_latest" ]; then
+if [ -d "/cpg/3rdParty/installs/Oracle/fmw12c-latest/wlserver" ] && [ -d "/usr/java/latest" ]; then
         WL_HOME=/cpg/3rdParty/installs/Oracle/fmw12c-latest/wlserver
-        JAVA_HOME=/cpg/3rdParty/installs/java/jdk1.8.0_latest
+        JAVA_HOME=/usr/java/latest
 fi
 
 
