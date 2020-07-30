@@ -27,7 +27,8 @@ fi
 
 PS="ps -o pid,args -u $(id -un)"
 [ -e /usr/ucb/ps ] && PS='/usr/ucb/ps axww'
-PID=( $(${PS} | awk "\$1 ~ /^${MATCH}\$/ || /[j]ava.*${MATCH}/ {print \$1}") )
+PID=( $(${PS} | /usr/xpg4/bin/awk "\$1 ~ /^${MATCH}\$/ || /[j]ava.*${MATCH}/ {print \$1}") )
+#PID=( $(${PS} | awk "\$1 ~ /^${MATCH}\$/ || /[j]ava.*${MATCH}/ {print \$1}") )
 
 if [[ ${#PID[@]} -ne 1 ]]; then
     echo Matched PIDs: ${PID[@]}
@@ -53,7 +54,8 @@ fi
 FILENAME=jmap.${server_id}.$(date +%y%m%d_%H%M).hprof
 
 echo Capturing heap dump. The application server must remain running.
-jmap -J-d64 ${FORCE} -dump:format=b,file=${HOME}/${FILENAME} ${PID}
+/cpg/3rdParty/installs/java/jdk1.8.0_latest/bin/jmap -J-d64 ${FORCE} -dump:format=b,file=${HOME}/${FILENAME} ${PID}
+#jmap -J-d64 ${FORCE} -dump:format=b,file=${HOME}/${FILENAME} ${PID}
 chmod 640 ${HOME}/${FILENAME}
 
 echo Capture is complete.  Application server may be killed if required.

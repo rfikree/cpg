@@ -35,7 +35,7 @@ EOF
 # Remove configuraton files for other stacks and enviroments
 trim_automation() {
     # Skip if we aren't running as service account
-    if ! [[ ${LOGNAME} =~ ^(dev|loc|stg|prd)[1-5][0-9]$ ]]; then
+    if ! [[ ${LOGNAME} =~ ^(dev|loc|stg|prd)[1-6][0-9]$ ]]; then
         return
     fi
 
